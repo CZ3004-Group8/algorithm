@@ -1,0 +1,1 @@
+SCALING_FACTOR = 3.5

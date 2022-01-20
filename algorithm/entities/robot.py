@@ -1,13 +1,15 @@
 from algorithm.entities.point import Point
+from algorithm.entities import colors
+from algorithm.settings import SCALING_FACTOR
 
 import math
 import pygame
 
 
 class Robot:
-    ROBOT_LENGTH = 21  # Front to back
-    ROBOT_WIDTH = 20  # Left to right
-    TURNING_RADIUS = 25  # Turning radius of the robot in centimeters.
+    ROBOT_LENGTH = 21 * SCALING_FACTOR  # Front to back
+    ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
+    TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters.
 
     def __init__(self, x, y, angle):
         """
@@ -18,9 +20,7 @@ class Robot:
         self.center = Point(x, y)
         self.angle = angle
 
-        self.color = (255, 0, 0)
-        self.pos = [10, 10]
-        self.radius = 10
+        self.color = colors.RED
 
     def rotate(self, d_angle):
         """
@@ -38,7 +38,5 @@ class Robot:
         self.angle += d_angle
 
     def update(self, screen):
-        self.pos[0] += 10
-        self.pos[1] += 10
-
-        pygame.draw.circle(screen, (255, 0, 0), self.pos, self.radius)
+        self.rotate(0.025)  # Robot always rotating anti-clockwise by 0.1 radians.
+        pygame.draw.circle(screen, (255, 0, 0), self.center.as_tuple(), self.ROBOT_LENGTH / 2)
