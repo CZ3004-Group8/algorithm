@@ -1,8 +1,8 @@
 from enum import Enum, auto
 
-from point import Point
-from robot import Robot
-from grid import Grid
+from algorithm.entities.point import Point
+from algorithm.entities.robot import Robot
+from algorithm.entities.grid import Grid
 
 
 class ImageObstacle:

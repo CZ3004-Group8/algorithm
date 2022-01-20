@@ -1,21 +1,18 @@
 import pygame
 
+from algorithm.entities.robot import Robot
+
 
 class AlgoApp:
     def __init__(self):
-        self.running = True
-
-        self.screen = None
-        self.clock = None
-
-        self.size = self.width, self.height = 800, 800
-
-    def init(self):
         pygame.init()
         self.running = True
+        self.size = self.width, self.height = 800, 800
 
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-        self.clock: pygame.time.Clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
+
+        self.robot = Robot(10, 10, 0)
 
     def settle_events(self):
         for event in pygame.event.get():
@@ -23,11 +20,12 @@ class AlgoApp:
                 self.running = False
 
     def render(self):
+        self.screen.fill((0, 0, 0), None)
+        self.robot.update(self.screen)
+
         pygame.display.flip()
 
     def execute(self):
-        self.init()
-
         while self.running:
             self.settle_events()
             self.render()

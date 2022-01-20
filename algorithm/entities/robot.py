@@ -1,16 +1,15 @@
+from algorithm.entities.point import Point
+
 import math
-
-import pygame.sprite
-
-from point import Point
+import pygame
 
 
-class Robot(pygame.sprite.Sprite):
+class Robot:
     ROBOT_LENGTH = 21  # Front to back
     ROBOT_WIDTH = 20  # Left to right
     TURNING_RADIUS = 25  # Turning radius of the robot in centimeters.
 
-    def __init__(self, x, y, angle, screen):
+    def __init__(self, x, y, angle):
         """
         We take the robot as a point in the center.
         """
@@ -19,7 +18,9 @@ class Robot(pygame.sprite.Sprite):
         self.center = Point(x, y)
         self.angle = angle
 
-        self.rect = pygame.draw.circle(screen, (255, 0, 0), (10, 10), 10)
+        self.color = (255, 0, 0)
+        self.pos = [10, 10]
+        self.radius = 10
 
     def rotate(self, d_angle):
         """
@@ -36,8 +37,8 @@ class Robot(pygame.sprite.Sprite):
         self.center.y += self.TURNING_RADIUS * (math.cos(self.angle + d_angle) - math.cos(self.angle))
         self.angle += d_angle
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
-        pass
+    def update(self, screen):
+        self.pos[0] += 10
+        self.pos[1] += 10
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        pygame.draw.circle(screen, (255, 0, 0), self.pos, self.radius)
