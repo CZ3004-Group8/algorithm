@@ -4,10 +4,11 @@ import pygame
 
 from algorithm.entities.robot import Robot
 from algorithm.entities.grid import Grid
+from algorithm.entities.image_obstacle import ImageObstacle
 
 
 class AlgoApp:
-    def __init__(self):
+    def __init__(self, obstacles):
         pygame.init()
         self.running = False
         self.size = self.width, self.height = 1000, 900
@@ -15,7 +16,7 @@ class AlgoApp:
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.clock = pygame.time.Clock()
 
-        self.grid = Grid([])
+        self.grid = Grid(obstacles)
         # Get the starting coordinate of the robot.
         start_pos = self.grid.get_start_box_rect().center
         self.robot = Robot(*start_pos, math.pi/2)
@@ -62,5 +63,13 @@ class AlgoApp:
 
 
 if __name__ == '__main__':
-    app = AlgoApp()
+    obs = [
+        ImageObstacle(115, 45, ImageObstacle.Direction.WEST),
+        ImageObstacle(25, 95, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(35, 175, ImageObstacle.Direction.WEST),
+        ImageObstacle(155, 165, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(175, 85, ImageObstacle.Direction.SOUTH),
+    ]
+
+    app = AlgoApp(obs)
     app.execute()

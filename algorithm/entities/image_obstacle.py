@@ -1,8 +1,12 @@
 from enum import Enum, auto
 
+import pygame
+
 from algorithm.entities.point import Point
 from algorithm.entities.robot import Robot
 from algorithm.entities.grid import Grid
+from algorithm.entities import colors
+from algorithm.settings import SCALING_FACTOR
 
 
 class ImageObstacle:
@@ -14,7 +18,7 @@ class ImageObstacle:
     # Direction enum
     class Direction(Enum):
         """
-        Possible directions for a ImageObstacle. This is an enumeration.
+        Possible directions for an ImageObstacle. This is an enumeration.
         """
         NORTH = auto()
         SOUTH = auto()
@@ -29,7 +33,13 @@ class ImageObstacle:
         e.g. South -> Image is pointing south.
              North -> Image is pointing north.
         """
-        self.center = Point(x, y)
+        self.center = Point(x * SCALING_FACTOR, y * SCALING_FACTOR)
+
+        # Use the center point to get all the turning points.
+        self.turning_points = [
+
+        ]
+
         self.orient = orientation
 
     def get_boundary_points(self):
@@ -43,11 +53,12 @@ class ImageObstacle:
         left = self.center.x - self.SAFETY_WIDTH
         right = self.center.x + self.SAFETY_WIDTH
 
-        return [Point(left, lower),  # Bottom left.
-                Point(right, lower),  # Bottom right.
-                Point(left, upper),  # Upper left.
-                Point(right, upper)  # Upper right.
-                ]
+        return [
+            Point(left, lower),  # Bottom left.
+            Point(right, lower),  # Bottom right.
+            Point(left, upper),  # Upper left.
+            Point(right, upper)  # Upper right.
+        ]
 
     def check_collision(self, robot: Robot):
         """
@@ -77,3 +88,10 @@ class ImageObstacle:
         """
         Returns the point that the robot should target for.
         """
+
+    def draw(self, screen, x, y):
+        # Draw the obstacle onto the grid.
+        # We need to translate the obstacle's center into that with respect to PyGame
+        # Get the coordinates of the grid's bottom left-hand corner.
+        rect = pygame.Rect(x-2.5, y-2.5, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
+        pygame.draw.rect(screen, colors.BLACK, rect)
