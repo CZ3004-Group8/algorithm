@@ -5,6 +5,7 @@ import pygame
 from algorithm.entities.robot import Robot
 from algorithm.entities.grid import Grid
 from algorithm.entities.image_obstacle import ImageObstacle
+from algorithm.entities import colors
 
 
 class AlgoApp:
@@ -41,7 +42,7 @@ class AlgoApp:
         """
         Render the screen.
         """
-        self.screen.fill((255, 255, 255), None)
+        self.screen.fill(colors.WHITE, None)
 
         self.grid.update(self.screen)
         self.robot.draw(self.screen)
@@ -65,9 +66,11 @@ class AlgoApp:
 if __name__ == '__main__':
     # Fill in obstacle positions with respect to lower bottom left corner.
     obs = [
-        ImageObstacle(5, 5, ImageObstacle.Direction.WEST),
-        ImageObstacle(15, 15, ImageObstacle.Direction.WEST),
-        ImageObstacle(25, 25, ImageObstacle.Direction.WEST),
+        ImageObstacle(115, 45, ImageObstacle.Direction.WEST),
+        ImageObstacle(25, 95, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(35, 175, ImageObstacle.Direction.WEST),
+        ImageObstacle(155, 165, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(175, 85, ImageObstacle.Direction.SOUTH),
     ]
 
     app = AlgoApp(obs)

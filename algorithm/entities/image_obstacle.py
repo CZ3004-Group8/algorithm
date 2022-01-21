@@ -13,7 +13,7 @@ class ImageObstacle:
     """
     ImageObstacle abstracts an image obstacle in the arena.
     """
-    SAFETY_WIDTH = 15 + Grid.CELL_WIDTH / 2
+    SAFETY_WIDTH = 15 * SCALING_FACTOR + Grid.CELL_WIDTH / 2
 
     # Direction enum
     class Direction(Enum):
@@ -89,10 +89,30 @@ class ImageObstacle:
         Returns the point that the robot should target for.
         """
 
-    def draw(self, screen, x, y):
+    def draw_self(self, screen):
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame
         # Get the coordinates of the grid's bottom left-hand corner.
         rect = pygame.Rect(0, 0, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
-        rect.center = (x, y)
+        rect.center = self.center.as_tuple()
         pygame.draw.rect(screen, colors.BLACK, rect)
+
+    def draw_virtual_obstacle(self, screen):
+        # Get the boundary points
+        points = self.get_boundary_points()
+
+        # Draw left border
+        pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[2].as_tuple())
+        # Draw right border
+        pygame.draw.line(screen, colors.BLUE, points[1].as_tuple(), points[3].as_tuple())
+        # Draw upper border
+        pygame.draw.line(screen, colors.BLUE, points[2].as_tuple(), points[3].as_tuple())
+        # Draw lower border
+        pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
+
+    def draw_turning_circles(self, screen):
+        pass
+
+    def draw(self, screen):
+        self.draw_self(screen)
+        self.draw_virtual_obstacle(screen)
