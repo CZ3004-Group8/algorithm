@@ -26,7 +26,7 @@ class AlgoApp:
         pygame.display.set_caption("Algorithm")
 
     def render(self):
-        self.screen.fill((0, 0, 0), None)
+        self.screen.fill((255, 255, 255), None)
 
         self.robot.update(self.screen)
         self.grid.update(self.screen)

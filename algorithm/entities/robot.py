@@ -9,7 +9,7 @@ import pygame
 class Robot:
     ROBOT_LENGTH = 21 * SCALING_FACTOR  # Front to back
     ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
-    TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters.
+    TURNING_RADIUS = 30 * SCALING_FACTOR  # Turning radius of the robot in centimeters.
 
     def __init__(self, x, y, angle):
         """
@@ -38,5 +38,5 @@ class Robot:
         self.angle += d_angle
 
     def update(self, screen):
-        self.rotate(0.025)  # Robot always rotating anti-clockwise by 0.1 radians.
+        self.rotate(-0.025)  # Robot always rotating anti-clockwise by 0.1 radians.
         pygame.draw.circle(screen, (255, 0, 0), self.center.as_tuple(), self.ROBOT_LENGTH / 2)
