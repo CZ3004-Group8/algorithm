@@ -45,10 +45,10 @@ class Robot:
 
     def update(self):
         # Rotate the image
-        angle = 0
+        angle = 0.025
         self.rotate(angle, False)
 
     def draw(self, screen):
         self.update()
 
-        pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH)
+        pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH / 2)

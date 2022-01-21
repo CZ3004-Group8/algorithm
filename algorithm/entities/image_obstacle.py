@@ -93,5 +93,6 @@ class ImageObstacle:
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame
         # Get the coordinates of the grid's bottom left-hand corner.
-        rect = pygame.Rect(x-2.5, y-2.5, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
+        rect = pygame.Rect(0, 0, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
+        rect.center = (x, y)
         pygame.draw.rect(screen, colors.BLACK, rect)

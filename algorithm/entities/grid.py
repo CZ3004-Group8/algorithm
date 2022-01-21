@@ -18,28 +18,25 @@ class Grid:
         Draw the arena borders.
         """
         # Draw upper border
-        pygame.draw.line(screen, colors.RED, (0, 1), (self.WIDTH * SCALING_FACTOR, 1))
+        pygame.draw.line(screen, colors.RED, (0, 1), (self.WIDTH, 1))
         # Draw lower border
-        pygame.draw.line(screen, colors.RED, (0, self.WIDTH * SCALING_FACTOR),
-                         (self.WIDTH * SCALING_FACTOR, self.WIDTH * SCALING_FACTOR))
+        pygame.draw.line(screen, colors.RED, (0, self.WIDTH), (self.WIDTH, self.WIDTH))
         # Draw left border
-        pygame.draw.line(screen, colors.RED, (0, 1), (0, self.WIDTH * SCALING_FACTOR))
+        pygame.draw.line(screen, colors.RED, (0, 1), (0, self.WIDTH))
         # Draw right border
-        pygame.draw.line(screen, colors.RED, (self.WIDTH * SCALING_FACTOR, 1),
-                         (self.WIDTH * SCALING_FACTOR, self.WIDTH * SCALING_FACTOR))
+        pygame.draw.line(screen, colors.RED, (self.WIDTH, 1), (self.WIDTH, self.WIDTH))
 
     def get_start_box_rect(self):
         """
         Get the Rect that shows the start box.
         """
-        return pygame.Rect(0, self.WIDTH * SCALING_FACTOR - (self.START_BOX_WIDTH * SCALING_FACTOR),
-                           self.START_BOX_WIDTH * SCALING_FACTOR,
-                           self.START_BOX_WIDTH * SCALING_FACTOR)  # left, top, width, height
+        return pygame.Rect(0, self.WIDTH - self.START_BOX_WIDTH,
+                           self.START_BOX_WIDTH, self.START_BOX_WIDTH)  # left, top, width, height
 
     def get_bottom_left_corner(self):
         # Returns the coordinate of the bottom left-hand corner of the grid.
         # This is with respect to PyGame.
-        return 0, self.WIDTH * SCALING_FACTOR
+        return 0, self.WIDTH
 
     def draw_start_box(self, screen):
         # Starting box

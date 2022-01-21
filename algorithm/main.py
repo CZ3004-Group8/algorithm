@@ -63,12 +63,11 @@ class AlgoApp:
 
 
 if __name__ == '__main__':
+    # Fill in obstacle positions with respect to lower bottom left corner.
     obs = [
-        ImageObstacle(115, 45, ImageObstacle.Direction.WEST),
-        ImageObstacle(25, 95, ImageObstacle.Direction.SOUTH),
-        ImageObstacle(35, 175, ImageObstacle.Direction.WEST),
-        ImageObstacle(155, 165, ImageObstacle.Direction.SOUTH),
-        ImageObstacle(175, 85, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(5, 5, ImageObstacle.Direction.WEST),
+        ImageObstacle(15, 15, ImageObstacle.Direction.WEST),
+        ImageObstacle(25, 25, ImageObstacle.Direction.WEST),
     ]
 
     app = AlgoApp(obs)
