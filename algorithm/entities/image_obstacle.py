@@ -35,6 +35,8 @@ class ImageObstacle:
     def get_boundary_points(self):
         """
         Get vertices at the corner of the virtual obstacle for this image.
+
+        Useful for checking if a point is within the boundary of this obstacle.
         """
         upper = self.center.y + self.SAFETY_WIDTH
         lower = self.center.y - self.SAFETY_WIDTH

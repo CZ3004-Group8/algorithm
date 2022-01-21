@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from algorithm.entities.robot import Robot
@@ -16,7 +18,7 @@ class AlgoApp:
         self.grid = Grid([])
         # Get the starting coordinate of the robot.
         start_pos = self.grid.get_start_box_rect().center
-        self.robot = Robot(*start_pos, 0)
+        self.robot = Robot(*start_pos, math.pi/2)
 
     def settle_events(self):
         """
@@ -41,7 +43,7 @@ class AlgoApp:
         self.screen.fill((255, 255, 255), None)
 
         self.grid.update(self.screen)
-        self.robot.update(self.screen)
+        self.robot.draw(self.screen)
 
         # Really render now.
         pygame.display.flip()
