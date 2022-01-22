@@ -45,7 +45,7 @@ class Robot:
             self.center.y += y_change
         self.angle += d_angle
 
-    def rotate_image(self, d_angle, to_left):
+    def rotate_image(self, to_left):
         rot_image = pygame.transform.rotate(self.image,
                                             ((-self.angle + math.pi/2) * 180 / math.pi) * (-1 if to_left else 1))
         rect = rot_image.get_rect()
@@ -57,7 +57,7 @@ class Robot:
         angle = 0.025
         to_left = False
         self.rotate(angle, to_left)
-        return self.rotate_image(angle, to_left)
+        return self.rotate_image(to_left)
 
     def draw(self, screen):
         rot_image, rect = self.update()

@@ -35,12 +35,9 @@ class ImageObstacle:
         """
         self.center = Point(x * SCALING_FACTOR, y * SCALING_FACTOR)
 
-        # Use the center point to get all the turning points.
-        self.turning_points = [
-
-        ]
-
         self.orient = orientation
+        self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
+                                                   (50, 50))
 
     def get_boundary_points(self):
         """
@@ -58,22 +55,6 @@ class ImageObstacle:
             Point(right, lower),  # Bottom right.
             Point(left, upper),  # Upper left.
             Point(right, upper)  # Upper right.
-        ]
-
-    def get_turning_circle_points(self):
-        """
-        Get the center of the circles for the obstacle's turning circles.
-        """
-        upper = self.center.y + Robot.TURNING_RADIUS
-        lower = self.center.y - Robot.TURNING_RADIUS
-        left = self.center.x - Robot.TURNING_RADIUS
-        right = self.center.x + Robot.TURNING_RADIUS
-
-        return [
-            Point(left, lower),
-            Point(right, lower),
-            Point(left, upper),
-            Point(right, upper)
         ]
 
     def check_collision(self, robot: Robot):
@@ -105,13 +86,13 @@ class ImageObstacle:
         Returns the point that the robot should target for.
         """
         if self.orient == self.Direction.NORTH:
-            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH)
+            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), self.Direction.SOUTH
         elif self.orient == self.Direction.SOUTH:
-            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH)
+            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), self.Direction.NORTH
         elif self.orient == self.Direction.WEST:
-            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y)
+            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), self.Direction.EAST
         else:
-            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y)
+            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), self.Direction.WEST
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -151,14 +132,23 @@ class ImageObstacle:
         # Draw lower border
         pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
 
-    def draw_turning_circles_center(self, screen):
-        centers = self.get_turning_circle_points()
-        for center in centers:
-            pygame.draw.circle(screen, colors.BLUE, center.as_tuple(), Robot.TURNING_RADIUS, 3)
-
     def draw_robot_target(self, screen):
-        target = self.get_robot_target()
+        target, direction = self.get_robot_target()
         pygame.draw.circle(screen, colors.RED, target.as_tuple(), 5)
+
+        rot_image = self.target_image
+        angle = 0
+        if direction == self.Direction.SOUTH:
+            angle = 180
+        elif direction == self.Direction.WEST:
+            angle = 90
+        elif direction == self.Direction.EAST:
+            angle = -90
+
+        rot_image = pygame.transform.rotate(rot_image, angle)
+        rect = rot_image.get_rect()
+        rect.center = target.as_tuple()
+        screen.blit(rot_image, rect)
 
     def draw(self, screen):
         self.draw_self(screen)
