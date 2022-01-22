@@ -104,7 +104,14 @@ class ImageObstacle:
         """
         Returns the point that the robot should target for.
         """
-
+        if self.orient == self.Direction.NORTH:
+            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH)
+        elif self.orient == self.Direction.SOUTH:
+            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH)
+        elif self.orient == self.Direction.WEST:
+            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y)
+        else:
+            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -149,7 +156,12 @@ class ImageObstacle:
         for center in centers:
             pygame.draw.circle(screen, colors.BLUE, center.as_tuple(), Robot.TURNING_RADIUS, 3)
 
+    def draw_robot_target(self, screen):
+        target = self.get_robot_target()
+        pygame.draw.circle(screen, colors.RED, target.as_tuple(), 5)
+
     def draw(self, screen):
         self.draw_self(screen)
         self.draw_virtual_obstacle(screen)
-        self.draw_turning_circles_center(screen)
+        # self.draw_turning_circles_center(screen)
+        self.draw_robot_target(screen)

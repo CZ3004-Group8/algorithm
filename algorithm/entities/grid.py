@@ -73,4 +73,4 @@ class Grid:
         self.draw_obstacles(screen)
 
         # Draw the start box turning circle
-        self.draw_start_box_turning_circle(screen)
+        # self.draw_start_box_turning_circle(screen)
