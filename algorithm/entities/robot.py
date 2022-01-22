@@ -91,6 +91,7 @@ class Robot:
             # Find the difference in angle required.
             angle_diff = math.degrees(math.atan2(y_diff, x_diff))
             print(f"Angle Difference from x-axis: {angle_diff}")
+            print("-" * 10)
             sim.center = Point(target.x, target.y)
             index += 1
 

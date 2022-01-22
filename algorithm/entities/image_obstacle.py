@@ -1,3 +1,4 @@
+import math
 from enum import Enum, auto
 
 import pygame
@@ -90,16 +91,16 @@ class ImageObstacle:
 
     def get_robot_target(self):
         """
-        Returns the point that the robot should target for.
+        Returns the point that the robot should target for, including the orientation.
         """
         if self.orient == self.Direction.NORTH:
-            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), self.Direction.SOUTH
+            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), -math.pi/2
         elif self.orient == self.Direction.SOUTH:
-            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), self.Direction.NORTH
+            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), math.pi/2
         elif self.orient == self.Direction.WEST:
-            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), self.Direction.EAST
+            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), 0
         else:
-            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), self.Direction.WEST
+            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), math.pi
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -145,11 +146,11 @@ class ImageObstacle:
 
         rot_image = self.target_image
         angle = 0
-        if direction == self.Direction.SOUTH:
+        if direction == -math.pi/2:
             angle = 180
-        elif direction == self.Direction.WEST:
+        elif direction == math.pi:
             angle = 90
-        elif direction == self.Direction.EAST:
+        elif direction == 0:
             angle = -90
 
         rot_image = pygame.transform.rotate(rot_image, angle)

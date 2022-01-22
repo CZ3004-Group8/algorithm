@@ -37,7 +37,7 @@ class Grid:
     def draw_start_box(self, screen):
         # Starting box
         start_box = self.get_start_box_rect()
-        pygame.draw.rect(screen, colors.GREEN, start_box)
+        pygame.draw.rect(screen, colors.GREY, start_box)
 
     def draw_obstacles(self, screen):
         for ob in self.obstacles:
