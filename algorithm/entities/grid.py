@@ -21,7 +21,7 @@ class Grid:
         return pygame.Rect(0, self.WIDTH - self.START_BOX_WIDTH,
                            self.START_BOX_WIDTH, self.START_BOX_WIDTH)  # left, top, width, height
 
-    def draw_borders(self, screen):
+    def draw_arena_borders(self, screen):
         """
         Draw the arena borders.
         """
@@ -43,11 +43,10 @@ class Grid:
         for ob in self.obstacles:
             ob.draw(screen)
 
-    def update(self, screen):
+    def draw(self, screen):
         # Draw arena borders
-        self.draw_borders(screen)
+        self.draw_arena_borders(screen)
         # Draw starting box
         self.draw_start_box(screen)
-
         # Draw obstacles
         self.draw_obstacles(screen)

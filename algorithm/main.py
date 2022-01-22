@@ -45,7 +45,7 @@ class AlgoApp:
         """
         self.screen.fill(colors.WHITE, None)
 
-        self.grid.update(self.screen)
+        self.grid.draw(self.screen)
         self.robot.draw(self.screen)
 
         # Really render now.
@@ -56,7 +56,8 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
-        self.robot.compute_hamiltonian_path()
+        self.robot.compute_simple_hamiltonian_path()
+        self.robot.plan_movement()
 
         while self.running:
             self.settle_events()

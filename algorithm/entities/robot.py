@@ -13,6 +13,8 @@ class Robot:
     ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
     TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
 
+    SPEED_PER_SECOND = 5 * SCALING_FACTOR
+
     def __init__(self, x, y, angle, grid):
         """
         We take the robot as a point in the center.
@@ -24,13 +26,20 @@ class Robot:
 
         self.color = colors.RED
         self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
-                                            (self.ROBOT_LENGTH/2, self.ROBOT_LENGTH/2))
+                                            (self.ROBOT_LENGTH / 2, self.ROBOT_LENGTH / 2))
+        self.rot_image = self.image  # Store rotated image
 
-        self.hamiltonian_path = []
+        # Used for storing the pre-calculated simple hamiltonian path between targets.
+        self.simple_hamiltonian_path = []
 
-    def compute_hamiltonian_path(self):
+        # Stores the specific movements that the robot will make
+        self.movements = []
+
+    def compute_simple_hamiltonian_path(self):
         """
         Get the Hamiltonian Path to all points with the best possible effort.
+
+        This is a simple calculation where we assume that we travel directly to the next obstacle.
         """
         # Generate all possible permutations for the image obstacles
         perms = list(itertools.permutations(self.grid.obstacles))
@@ -45,18 +54,45 @@ class Robot:
 
             dist = 0
             for i in range(len(targets) - 1):
-                dist += math.sqrt(((targets[i][0] - targets[i+1][0]) ** 2) +
-                                  ((targets[i][1] - targets[i+1][1]) ** 2))
+                dist += math.sqrt(((targets[i][0] - targets[i + 1][0]) ** 2) +
+                                  ((targets[i][1] - targets[i + 1][1]) ** 2))
             return dist
 
-        self.hamiltonian_path = min(perms, key=calc_distance)
-        print(f"Shortest path: {self.hamiltonian_path}")
+        self.simple_hamiltonian_path = min(perms, key=calc_distance)
+        print(f"Simple Hamiltonian Path: {self.simple_hamiltonian_path}")
 
-    def do_movement(self, obstacle):
+    def plan_movement(self):
         """
-        Plan how to move from current position to the next obstacle
+        Plan how to move to next destination based on current location.
         """
-        pass
+        # Create a new Robot to plan the route.
+        # We use this robot to track the movement of the robot for any step we take.
+        sim = Robot(self.center.x, self.center.y, math.pi / 2, self.grid)
+
+        # We try to visit all points.
+        self.movements = []
+        index = 0
+        while index < len(self.simple_hamiltonian_path):
+            # Current target
+            target, orient = self.simple_hamiltonian_path[index].get_robot_target()
+
+            # Calculate the difference in the points
+            x_diff, y_diff = target.x - sim.center.x, sim.center.y - target.y
+            print(x_diff, y_diff)
+            if x_diff >= 0 and y_diff >= 0:
+                print("Next point in 1st quadrant.")
+            elif x_diff >= 0 and y_diff < 0:
+                print("Next point in 4th quadrant.")
+            elif x_diff < 0 and y_diff >= 0:
+                print("Next point in 2nd quadrant.")
+            else:
+                print("Next point in 3rd quadrant.")
+
+            # Find the difference in angle required.
+            angle_diff = math.degrees(math.atan2(y_diff, x_diff))
+            print(f"Angle Difference from x-axis: {angle_diff}")
+            sim.center = Point(target.x, target.y)
+            index += 1
 
     def rotate(self, d_angle, to_left):
         """
@@ -68,6 +104,8 @@ class Robot:
         Take note that:
             - +ve ∆θ -> rotate counter-clockwise
             - -ve ∆θ -> rotate clockwise
+
+        Note that ∆θ is in radians.
         """
         # Get change in (x, y) coordinate.
         x_change = self.TURNING_RADIUS * (math.sin(self.angle + d_angle) - math.sin(self.angle))
@@ -81,30 +119,29 @@ class Robot:
             self.center.y += y_change
         self.angle += d_angle
 
-    def rotate_image(self, to_left):
-        rot_image = pygame.transform.rotate(self.image,
-                                            ((-self.angle + math.pi/2) * 180 / math.pi) * (-1 if to_left else 1))
-        rect = rot_image.get_rect()
-        rect.center = self.center.as_tuple()
-        return rot_image, rect
-
-    def update(self):
-        # Rotate the image
-        angle = 0.025
-        to_left = False
-        self.rotate(angle, to_left)
-        return self.rotate_image(to_left)
+        self.rot_image = pygame.transform.rotate(self.image,
+                                                 math.degrees(-self.angle + math.pi / 2) * (-1 if to_left else 1))
 
     def draw_shortest_path(self, screen):
         prev = self.grid.get_start_box_rect().center
-        for obs in self.hamiltonian_path:
+        for obs in self.simple_hamiltonian_path:
             target, _ = obs.get_robot_target()
             pygame.draw.line(screen, colors.DARK_GREEN,
                              prev, target.as_tuple())
             prev = target.as_tuple()
 
-    def draw(self, screen):
-        rot_image, rect = self.update()
-        self.draw_shortest_path(screen)
+    def draw_self(self, screen):
+        # The red background
         pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH / 2)
-        screen.blit(rot_image, rect)
+
+        # The arrow to represent the direction of the robot.
+        rect = self.rot_image.get_rect()
+        rect.center = self.center.as_tuple()
+        screen.blit(self.rot_image, rect)
+
+    def draw(self, screen):
+        # Draw the simple hamiltonian path found by the robot.
+        self.draw_shortest_path(screen)
+
+        # Draw the robot itself.
+        self.draw_self(screen)
