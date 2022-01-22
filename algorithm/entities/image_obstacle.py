@@ -60,6 +60,22 @@ class ImageObstacle:
             Point(right, upper)  # Upper right.
         ]
 
+    def get_turning_circle_points(self):
+        """
+        Get the center of the circles for the obstacle's turning circles.
+        """
+        upper = self.center.y + Robot.TURNING_RADIUS
+        lower = self.center.y - Robot.TURNING_RADIUS
+        left = self.center.x - Robot.TURNING_RADIUS
+        right = self.center.x + Robot.TURNING_RADIUS
+
+        return [
+            Point(left, lower),
+            Point(right, lower),
+            Point(left, upper),
+            Point(right, upper)
+        ]
+
     def check_collision(self, robot: Robot):
         """
         Check whether the robot's current center is within this obstacle's boundary.
@@ -110,9 +126,12 @@ class ImageObstacle:
         # Draw lower border
         pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
 
-    def draw_turning_circles(self, screen):
-        pass
+    def draw_turning_circles_center(self, screen):
+        centers = self.get_turning_circle_points()
+        for center in centers:
+            pygame.draw.circle(screen, colors.BLUE, center.as_tuple(), Robot.TURNING_RADIUS, 3)
 
     def draw(self, screen):
         self.draw_self(screen)
         self.draw_virtual_obstacle(screen)
+        self.draw_turning_circles_center(screen)
