@@ -40,6 +40,12 @@ class ImageObstacle:
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
 
+    def __str__(self):
+        return f"ImageObstacle({self.center.x / SCALING_FACTOR}, " \
+               f"{(Grid.WIDTH - self.center.y) / SCALING_FACTOR}, {self.orient})"
+
+    __repr__ = __str__
+
     def get_boundary_points(self):
         """
         Get vertices at the corner of the virtual obstacle for this image.

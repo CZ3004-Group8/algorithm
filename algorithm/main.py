@@ -20,7 +20,8 @@ class AlgoApp:
         self.grid = Grid(obstacles)
         # Get the starting coordinate of the robot.
         start_pos = self.grid.get_start_box_rect().center
-        self.robot = Robot(*start_pos, math.pi/2)
+
+        self.robot = Robot(*start_pos, math.pi/2, self.grid)
 
     def settle_events(self):
         """
@@ -55,7 +56,7 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
-        self.grid.get_shortest_path_between_targets()
+        self.robot.compute_hamiltonian_path()
 
         while self.running:
             self.settle_events()
