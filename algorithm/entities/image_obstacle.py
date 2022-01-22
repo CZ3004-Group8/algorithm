@@ -105,6 +105,7 @@ class ImageObstacle:
         Returns the point that the robot should target for.
         """
 
+
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame

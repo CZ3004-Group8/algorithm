@@ -19,6 +19,8 @@ class Robot:
         self.angle = angle
 
         self.color = colors.RED
+        self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
+                                            (self.ROBOT_LENGTH/2, self.ROBOT_LENGTH/2))
 
     def rotate(self, d_angle, to_left):
         """
@@ -43,12 +45,21 @@ class Robot:
             self.center.y += y_change
         self.angle += d_angle
 
+    def rotate_image(self, d_angle, to_left):
+        rot_image = pygame.transform.rotate(self.image,
+                                            ((-self.angle + math.pi/2) * 180 / math.pi) * (-1 if to_left else 1))
+        rect = rot_image.get_rect()
+        rect.center = self.center.as_tuple()
+        return rot_image, rect
+
     def update(self):
         # Rotate the image
         angle = 0.025
-        self.rotate(angle, False)
+        to_left = False
+        self.rotate(angle, to_left)
+        return self.rotate_image(angle, to_left)
 
     def draw(self, screen):
-        self.update()
-
+        rot_image, rect = self.update()
         pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH / 2)
+        screen.blit(rot_image, rect)
