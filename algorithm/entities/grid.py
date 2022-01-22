@@ -12,15 +12,6 @@ class Grid:
 
     def __init__(self, obstacles):
         self.obstacles = obstacles
-        self.translate_obstacle_coordinates()
-
-    def translate_obstacle_coordinates(self):
-        # Translate the obstacle coordinates correctly with respect to the grid.
-        grid_bottom_x, grid_bottom_y = self.get_bottom_left_corner()
-
-        for ob in self.obstacles:
-            ob.center.x = grid_bottom_x + ob.center.x
-            ob.center.y = grid_bottom_y - ob.center.y
 
     def get_start_box_rect(self):
         """
@@ -28,11 +19,6 @@ class Grid:
         """
         return pygame.Rect(0, self.WIDTH - self.START_BOX_WIDTH,
                            self.START_BOX_WIDTH, self.START_BOX_WIDTH)  # left, top, width, height
-
-    def get_bottom_left_corner(self):
-        # Returns the coordinate of the bottom left-hand corner of the grid.
-        # This is with respect to PyGame.
-        return 0, self.WIDTH
 
     def draw_borders(self, screen):
         """

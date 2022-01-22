@@ -33,7 +33,8 @@ class ImageObstacle:
         e.g. South -> Image is pointing south.
              North -> Image is pointing north.
         """
-        self.center = Point(x * SCALING_FACTOR, y * SCALING_FACTOR)
+        y = Grid.WIDTH - y * SCALING_FACTOR
+        self.center = Point(x * SCALING_FACTOR, y)
 
         self.orient = orientation
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
