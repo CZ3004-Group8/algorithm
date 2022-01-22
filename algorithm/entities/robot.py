@@ -1,5 +1,6 @@
 import itertools
 
+from algorithm.entities.command import TurnCommand
 from algorithm.entities.point import Point
 from algorithm.entities import colors
 from algorithm.settings import SCALING_FACTOR
@@ -13,7 +14,8 @@ class Robot:
     ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
     TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
 
-    SPEED_PER_SECOND = 5 * SCALING_FACTOR  # Speed of the robot
+    SPEED_PER_SECOND = 20 * SCALING_FACTOR  # Speed of the robot
+    S = ROBOT_LENGTH / TURNING_RADIUS  # Used for calculating dt for angle change.
 
     def __init__(self, x, y, angle, grid):
         """
@@ -91,13 +93,24 @@ class Robot:
                 print("Next point in 3rd quadrant.")
 
             # Find the difference in angle required.
-            angle_diff = math.degrees(math.atan2(y_diff, x_diff))
-            print(f"Angle from x-axis: {angle_diff}")
+            final_angle = math.atan2(y_diff, x_diff)
+            print(f"Angle from x-axis: {math.degrees(final_angle)}")
+            to_turn = final_angle - sim.angle
+            print(f"Angle to turn: {math.degrees(to_turn)}")
+
+            # Get the time required for turning
+            # ∆θ = (v∆tsins)/L
+            # ∆t = ∆θL/vsins
+            dt = abs((to_turn * self.ROBOT_LENGTH) / (self.SPEED_PER_SECOND * self.S))
+            print(f"Time for change: {dt}s")
+            self.movements.append(TurnCommand(to_turn, dt))
+
             print("-" * 10)
             sim.center = Point(target.x, target.y)
+            sim.angle = final_angle
             index += 1
 
-    def turn(self, d_angle, to_left):
+    def turn(self, d_angle, rev):
         """
         x_new = x + R(sin(∆θ + θ) − sin θ)
         y_new = y − R(cos(∆θ + θ) − cos θ)
@@ -114,18 +127,24 @@ class Robot:
         x_change = self.TURNING_RADIUS * (math.sin(self.angle + d_angle) - math.sin(self.angle))
         y_change = self.TURNING_RADIUS * (math.cos(self.angle + d_angle) - math.cos(self.angle))
 
-        if to_left:  # Robot wants to turn left.
+        if d_angle < 0 and not rev:  # Wheels to right moving forward.
+            self.center.x -= x_change
+            self.center.y -= y_change
+        elif (d_angle < 0 and rev) or \
+                (d_angle >= 0 and not rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
             self.center.x += x_change
             self.center.y += y_change
-        else:  # Robot wants to turn right.
+        else:  # Wheels to right moving backwards.
             self.center.x -= x_change
-            self.center.y += y_change
+            self.center.y -= y_change
         self.angle += d_angle
 
-        self.rot_image = pygame.transform.rotate(self.image,
-                                                 math.degrees(-self.angle + math.pi / 2) * (-1 if to_left else 1))
+        if self.angle <= -math.pi:
+            self.angle += 2 * math.pi
+        elif self.angle >= math.pi:
+            self.angle -= 2 * math.pi
 
-    def draw_shortest_path(self, screen):
+    def draw_simple_hamiltonian_path(self, screen):
         prev = self.grid.get_start_box_rect().center
         for obs in self.simple_hamiltonian_path:
             target, _ = obs.get_robot_target()
@@ -138,13 +157,15 @@ class Robot:
         pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH / 2)
 
         # The arrow to represent the direction of the robot.
-        rect = self.rot_image.get_rect()
+        rot_image = pygame.transform.rotate(self.image,
+                                            -math.degrees(math.pi / 2 - self.angle))
+        rect = rot_image.get_rect()
         rect.center = self.center.as_tuple()
-        screen.blit(self.rot_image, rect)
+        screen.blit(rot_image, rect)
 
     def draw(self, screen):
         # Draw the simple hamiltonian path found by the robot.
-        self.draw_shortest_path(screen)
+        self.draw_simple_hamiltonian_path(screen)
 
         # Draw the robot itself.
         self.draw_self(screen)

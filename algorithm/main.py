@@ -2,6 +2,7 @@ import math
 
 import pygame
 
+from algorithm import settings
 from algorithm.entities.robot import Robot
 from algorithm.entities.grid import Grid
 from algorithm.entities.image_obstacle import ImageObstacle
@@ -65,7 +66,7 @@ class AlgoApp:
             self.settle_events()
             self.render()
 
-            self.clock.tick(60)
+            self.clock.tick(settings.FRAMES)
 
 
 if __name__ == '__main__':
