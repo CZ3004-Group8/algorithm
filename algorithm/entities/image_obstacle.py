@@ -113,6 +113,23 @@ class ImageObstacle:
         rect.center = self.center.as_tuple()
         pygame.draw.rect(screen, colors.BLACK, rect)
 
+        # Draw the direction of the picture
+        rect.width = Grid.CELL_WIDTH / 2
+        rect.height = Grid.CELL_WIDTH / 2
+        rect.center = self.center.as_tuple()
+
+        if self.orient == self.Direction.NORTH:
+            rect.centery -= Grid.CELL_WIDTH / 4
+        elif self.orient == self.Direction.SOUTH:
+            rect.centery += Grid.CELL_WIDTH / 4
+        elif self.orient == self.Direction.WEST:
+            rect.centerx -= Grid.CELL_WIDTH / 4
+        else:
+            rect.centerx += Grid.CELL_WIDTH / 4
+
+        # Draw the picture place
+        pygame.draw.rect(screen, colors.RED, rect)
+
     def draw_virtual_obstacle(self, screen):
         # Get the boundary points
         points = self.get_boundary_points()

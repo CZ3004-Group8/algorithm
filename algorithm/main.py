@@ -69,7 +69,7 @@ if __name__ == '__main__':
         ImageObstacle(115, 45, ImageObstacle.Direction.WEST),
         ImageObstacle(25, 95, ImageObstacle.Direction.SOUTH),
         ImageObstacle(35, 175, ImageObstacle.Direction.WEST),
-        ImageObstacle(155, 165, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(155, 165, ImageObstacle.Direction.EAST),
         ImageObstacle(175, 85, ImageObstacle.Direction.SOUTH),
     ]
 
