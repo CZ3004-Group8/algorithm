@@ -1,5 +1,7 @@
 import itertools
+import time
 
+from algorithm import settings
 from algorithm.entities.command import TurnCommand
 from algorithm.entities.point import Point
 from algorithm.entities import colors
@@ -34,8 +36,11 @@ class Robot:
         # Used for storing the pre-calculated simple hamiltonian path between targets.
         self.simple_hamiltonian_path = []
 
-        # Stores the specific movements that the robot will make
-        self.movements = []
+        self.commands = []  # Stores the specific movements that the robot will make
+        self.curr_comm = 0
+        self.elapsed = 0  # Time since the latest command was executed.
+
+        self.path = []
 
     def compute_simple_hamiltonian_path(self):
         """
@@ -72,7 +77,7 @@ class Robot:
         sim = Robot(self.center.x, self.center.y, math.pi / 2, self.grid)
 
         # We try to visit all points.
-        self.movements = []
+        self.commands = []
         index = 0
         while index < len(self.simple_hamiltonian_path):
             # Obstacle
@@ -103,7 +108,7 @@ class Robot:
             # ∆t = ∆θL/vsins
             dt = abs((to_turn * self.ROBOT_LENGTH) / (self.SPEED_PER_SECOND * self.S))
             print(f"Time for change: {dt}s")
-            self.movements.append(TurnCommand(to_turn, dt))
+            self.commands.append(TurnCommand(to_turn, dt, False))
 
             print("-" * 10)
             sim.center = Point(target.x, target.y)
@@ -163,9 +168,31 @@ class Robot:
         rect.center = self.center.as_tuple()
         screen.blit(rot_image, rect)
 
+    def draw_path(self, screen):
+        for dot in self.path:
+            pygame.draw.circle(screen, colors.BLACK, dot, 3)
+
     def draw(self, screen):
+        # Do the current command if there are commands to execute.
+        if self.curr_comm < len(self.commands):
+            curr_comm = self.commands[self.curr_comm]
+            # Check for elapsed time of this command.
+            # If elapsed time is more than time needed for current command,
+            # then we start executing the next command.
+            if time.time() - self.elapsed > curr_comm.time:
+                print(f"Done: {curr_comm}")
+                self.curr_comm += 1
+                self.elapsed = time.time()
+            else:
+                if curr_comm.c == "turn":
+                    self.turn(curr_comm.angle / (settings.FRAMES * curr_comm.time), curr_comm.rev)
+
         # Draw the simple hamiltonian path found by the robot.
         self.draw_simple_hamiltonian_path(screen)
+
+        # Draw the path sketched by the robot
+        self.draw_path(screen)
+        self.path.append(self.center.as_tuple())
 
         # Draw the robot itself.
         self.draw_self(screen)
