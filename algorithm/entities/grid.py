@@ -1,5 +1,6 @@
 import pygame
 
+from algorithm.entities.robot import Robot
 from algorithm.settings import SCALING_FACTOR
 from algorithm.entities import colors
 
@@ -57,6 +58,11 @@ class Grid:
         for ob in self.obstacles:
             ob.draw(screen)
 
+    def draw_start_box_turning_circle(self, screen):
+        start_rect = self.get_start_box_rect()
+        start_rect.centerx += Robot.TURNING_RADIUS
+        pygame.draw.circle(screen, colors.BLUE, start_rect.center, Robot.TURNING_RADIUS, 3)
+
     def update(self, screen):
         # Draw arena borders
         self.draw_borders(screen)
@@ -65,3 +71,6 @@ class Grid:
 
         # Draw obstacles
         self.draw_obstacles(screen)
+
+        # Draw the start box turning circle
+        self.draw_start_box_turning_circle(screen)
