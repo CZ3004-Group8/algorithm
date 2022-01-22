@@ -12,7 +12,7 @@ class AlgoApp:
     def __init__(self, obstacles):
         pygame.init()
         self.running = False
-        self.size = self.width, self.height = 1000, 900
+        self.size = self.width, self.height = 850, 850
 
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.clock = pygame.time.Clock()
@@ -56,6 +56,8 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
+
+        # Get the robot reading before starting.
         self.robot.compute_simple_hamiltonian_path()
         self.robot.plan_movement()
 

@@ -13,7 +13,7 @@ class Robot:
     ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
     TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
 
-    SPEED_PER_SECOND = 5 * SCALING_FACTOR
+    SPEED_PER_SECOND = 5 * SCALING_FACTOR  # Speed of the robot
 
     def __init__(self, x, y, angle, grid):
         """
@@ -73,8 +73,10 @@ class Robot:
         self.movements = []
         index = 0
         while index < len(self.simple_hamiltonian_path):
+            # Obstacle
+            obstacle = self.simple_hamiltonian_path[index]
             # Current target
-            target, orient = self.simple_hamiltonian_path[index].get_robot_target()
+            target, orient = obstacle.get_robot_target()
 
             # Calculate the difference in the points
             x_diff, y_diff = target.x - sim.center.x, sim.center.y - target.y
@@ -90,12 +92,12 @@ class Robot:
 
             # Find the difference in angle required.
             angle_diff = math.degrees(math.atan2(y_diff, x_diff))
-            print(f"Angle Difference from x-axis: {angle_diff}")
+            print(f"Angle from x-axis: {angle_diff}")
             print("-" * 10)
             sim.center = Point(target.x, target.y)
             index += 1
 
-    def rotate(self, d_angle, to_left):
+    def turn(self, d_angle, to_left):
         """
         x_new = x + R(sin(∆θ + θ) − sin θ)
         y_new = y − R(cos(∆θ + θ) − cos θ)

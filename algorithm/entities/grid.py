@@ -26,13 +26,13 @@ class Grid:
         Draw the arena borders.
         """
         # Draw upper border
-        pygame.draw.line(screen, colors.RED, (0, 1), (self.WIDTH, 1))
+        pygame.draw.line(screen, colors.RED, (0, 0), (self.WIDTH, 0))
         # Draw lower border
         pygame.draw.line(screen, colors.RED, (0, self.WIDTH), (self.WIDTH, self.WIDTH))
         # Draw left border
-        pygame.draw.line(screen, colors.RED, (0, 1), (0, self.WIDTH))
+        pygame.draw.line(screen, colors.RED, (0, 0), (0, self.WIDTH))
         # Draw right border
-        pygame.draw.line(screen, colors.RED, (self.WIDTH, 1), (self.WIDTH, self.WIDTH))
+        pygame.draw.line(screen, colors.RED, (self.WIDTH, 0), (self.WIDTH, self.WIDTH))
 
     def draw_start_box(self, screen):
         # Starting box
