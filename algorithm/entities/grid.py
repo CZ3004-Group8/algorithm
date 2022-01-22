@@ -1,4 +1,7 @@
+import math
+
 import pygame
+import itertools
 
 from algorithm.settings import SCALING_FACTOR
 from algorithm.entities import colors
@@ -12,6 +15,34 @@ class Grid:
 
     def __init__(self, obstacles):
         self.obstacles = obstacles
+        self.shortest_path = []
+
+    def get_shortest_path_between_targets(self):
+        """
+        Get the Hamiltonian Path to all points with the best possible effort.
+        """
+        # Get all the targets
+        targets = [self.get_start_box_rect().center]  # Position of the robot
+        # Add all the other points
+        for obs in self.obstacles:
+            target, _ = obs.get_robot_target()
+            targets.append(target.as_tuple())
+
+        # Generate all possible permutations
+        perms = list(itertools.permutations(targets[1:]))
+        perms = [targets[0:1] + list(perm) for perm in perms]
+
+        # Get the path that has the least distance travelled.
+        def calc_distance(path):
+            dist = 0
+            for index in range(len(path) - 1):
+                dist += math.sqrt(((path[index][0] - path[index+1][0]) ** 2) +
+                                  ((path[index][1] - path[index+1][1]) ** 2))
+            return dist
+
+        self.shortest_path = min(perms, key=calc_distance)
+        print(f"Shortest path: {self.shortest_path}")
+        print(f"wrt grid: {[(x / SCALING_FACTOR, (Grid.WIDTH - y) / SCALING_FACTOR) for x, y in self.shortest_path]}")
 
     def get_start_box_rect(self):
         """
@@ -42,6 +73,11 @@ class Grid:
         for ob in self.obstacles:
             ob.draw(screen)
 
+    def draw_shortest_path(self, screen):
+        for index in range(len(self.shortest_path)-1):
+            pygame.draw.line(screen, colors.DARK_GREEN,
+                             self.shortest_path[index], self.shortest_path[index+1])
+
     def update(self, screen):
         # Draw arena borders
         self.draw_borders(screen)
@@ -50,3 +86,6 @@ class Grid:
 
         # Draw obstacles
         self.draw_obstacles(screen)
+
+        # Draw the shortest path
+        self.draw_shortest_path(screen)

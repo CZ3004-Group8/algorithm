@@ -55,6 +55,7 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
+        self.grid.get_shortest_path_between_targets()
 
         while self.running:
             self.settle_events()
@@ -69,9 +70,9 @@ if __name__ == '__main__':
     obs = [
         ImageObstacle(115, 45, ImageObstacle.Direction.WEST),
         ImageObstacle(25, 95, ImageObstacle.Direction.SOUTH),
-        ImageObstacle(35, 175, ImageObstacle.Direction.EAST),
+        ImageObstacle(35, 175, ImageObstacle.Direction.SOUTH),
         ImageObstacle(155, 165, ImageObstacle.Direction.WEST),
-        ImageObstacle(175, 85, ImageObstacle.Direction.SOUTH),
+        ImageObstacle(175, 85, ImageObstacle.Direction.WEST),
     ]
 
     app = AlgoApp(obs)
