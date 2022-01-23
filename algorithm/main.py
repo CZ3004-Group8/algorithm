@@ -59,8 +59,7 @@ class AlgoApp:
         self.init()
 
         # Get the robot reading before starting.
-        self.robot.compute_simple_hamiltonian_path()
-        self.robot.plan_movement()
+        self.robot.brain.compute_simple_hamiltonian_path()
 
         while self.running:
             self.settle_events()
