@@ -1,6 +1,3 @@
-import time
-
-from algorithm import settings
 from algorithm.entities.brain import Brain
 from algorithm.entities.point import Point
 from algorithm.entities import colors
@@ -90,20 +87,6 @@ class Robot:
             pygame.draw.circle(screen, colors.BLACK, dot, 3)
 
     def draw(self, screen):
-        # Do the current command if there are commands to execute.
-        if self.curr_comm < len(self.commands):
-            curr_comm = self.commands[self.curr_comm]
-            # Check for elapsed time of this command.
-            # If elapsed time is more than time needed for current command,
-            # then we start executing the next command.
-            if time.time() - self.elapsed > curr_comm.time:
-                print(f"Done: {curr_comm}")
-                self.curr_comm += 1
-                self.elapsed = time.time()
-            else:
-                if curr_comm.c == "turn":
-                    self.turn(curr_comm.angle / (settings.FRAMES * curr_comm.time), curr_comm.rev)
-
         # Draw the simple hamiltonian path found by the robot.
         self.draw_simple_hamiltonian_path(screen)
 

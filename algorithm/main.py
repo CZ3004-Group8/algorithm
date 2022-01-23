@@ -52,17 +52,22 @@ class AlgoApp:
         # Really render now.
         pygame.display.flip()
 
+    def do_updates(self):
+        pass
+
     def execute(self):
         """
         Initialise the app and start the game loop.
         """
         self.init()
 
-        # Get the robot reading before starting.
-        self.robot.brain.compute_simple_hamiltonian_path()
-
         while self.running:
+            # Check for Pygame events.
             self.settle_events()
+            # Do required updates.
+            self.do_updates()
+
+            # Render the new frame.
             self.render()
 
             self.clock.tick(settings.FRAMES)
