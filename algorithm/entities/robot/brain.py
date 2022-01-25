@@ -7,8 +7,13 @@ class Brain:
         self.robot = robot
         self.grid = grid
 
+        # Compute the simple Hamiltonian path for all obstacles
         self.simple_hamiltonian = []
         self.compute_simple_hamiltonian_path()
+
+        # Create all the commands required to finish the course.
+        self.commands = []
+        self.plan_path()
 
     def compute_simple_hamiltonian_path(self):
         """
@@ -38,8 +43,13 @@ class Brain:
         for obs in self.simple_hamiltonian:
             print(f"\t{obs}")
 
-    def plan_next_move(self):
+    def plan_start(self):
+        # Get the starting turning circle from the grid.
+        grid_start = self.grid.start_turning_circle
+
+    def plan_path(self):
         """
         Plan the next movements to get to the next target.
         """
-        pass
+        # Plan from start to next obstacle.
+        self.plan_start()
