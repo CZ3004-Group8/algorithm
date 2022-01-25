@@ -1,5 +1,7 @@
 import pygame
 
+from algorithm.entities.grid.turning_circle import TurningCircle
+from algorithm.entities.robot.robot import Robot
 from algorithm.settings import SCALING_FACTOR
 from algorithm.entities.assets import colors
 
@@ -14,12 +16,19 @@ class Grid:
         self.obstacles = obstacles
         self.shortest_path = []
 
+        self.start_turning_circle = self.generate_start_turning_circle()
+
     def get_start_box_rect(self):
         """
         Get the Rect that shows the start box.
         """
         return pygame.Rect(0, self.WIDTH - self.START_BOX_WIDTH,
                            self.START_BOX_WIDTH, self.START_BOX_WIDTH)  # left, top, width, height
+
+    def generate_start_turning_circle(self):
+        start_rect = self.get_start_box_rect()
+        start_rect.centerx += Robot.TURNING_RADIUS
+        return TurningCircle(*start_rect.center)
 
     def draw_arena_borders(self, screen):
         """
@@ -43,6 +52,9 @@ class Grid:
         for ob in self.obstacles:
             ob.draw(screen)
 
+    def draw_start_box_turning_circle(self, screen):
+        self.start_turning_circle.draw(screen)
+
     def draw(self, screen):
         # Draw arena borders
         self.draw_arena_borders(screen)
@@ -50,3 +62,5 @@ class Grid:
         self.draw_start_box(screen)
         # Draw obstacles
         self.draw_obstacles(screen)
+        # Draw the start box turning circle
+        self.draw_start_box_turning_circle(screen)

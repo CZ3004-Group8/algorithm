@@ -98,30 +98,6 @@ class Obstacle:
                 upper_left_circle, lower_left_circle
             ]
 
-    def check_collision(self, robot: Robot):
-        """
-        Check whether the robot's current center is within this obstacle's boundary.
-
-        https://stackoverflow.com/questions/8721406/how-to-determine-if-a-point-is-inside-a-2d-convex-polygon
-        """
-        # Get the robot's current center.
-        r_center = robot.center
-
-        # Get the boundary points for this image obstacle.
-        b_points = self.get_boundary_points()
-
-        first = second = 0
-        result = False
-        while first < len(b_points):
-            if (b_points[first].y > r_center.y) != (b_points[second].y > r_center.y) and \
-                    (r_center.x < (b_points[second].x - b_points[first].x) * (
-                            r_center.y - b_points[first].y / (b_points[second].y - b_points[first].y)
-                            + b_points[first].x)):
-                result = not result
-            second = first
-            first += 1
-        return result
-
     def get_robot_target(self):
         """
         Returns the point that the robot should target for, including the orientation.
