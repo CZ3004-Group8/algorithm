@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 import pygame
 
+from algorithm.entities.grid.turning_circle import TurningCircle
 from algorithm.entities.point import Point
 from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid.grid import Grid
@@ -10,16 +11,16 @@ from algorithm.entities.assets import colors
 from algorithm.settings import SCALING_FACTOR
 
 
-class ImageObstacle:
+class Obstacle:
     """
-    ImageObstacle abstracts an image obstacle in the arena.
+    Obstacle abstracts an image obstacle in the arena.
     """
-    SAFETY_WIDTH = 15 * SCALING_FACTOR + Grid.CELL_WIDTH / 2
+    SAFETY_WIDTH = Robot.TURNING_RADIUS
 
     # Direction enum
     class Direction(Enum):
         """
-        Possible directions for an ImageObstacle. This is an enumeration.
+        Possible directions for an Obstacle. This is an enumeration.
         """
         NORTH = auto()
         SOUTH = auto()
@@ -28,7 +29,7 @@ class ImageObstacle:
 
     def __init__(self, x, y, orientation: Direction):
         """
-        We store the center of the ImageObstacle.
+        We store the center of the Obstacle.
 
         The orientation of the image is where the image is pointing.
         e.g. South -> Image is pointing south.
@@ -40,9 +41,10 @@ class ImageObstacle:
         self.orient = orientation
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
+        self.turning_circles = self.generate_turning_circles()
 
     def __str__(self):
-        return f"ImageObstacle({self.center.x / SCALING_FACTOR}, " \
+        return f"Obstacle({self.center.x / SCALING_FACTOR}, " \
                f"{(Grid.WIDTH - self.center.y) / SCALING_FACTOR}, {self.orient})"
 
     __repr__ = __str__
@@ -64,6 +66,37 @@ class ImageObstacle:
             Point(left, upper),  # Upper left.
             Point(right, upper)  # Upper right.
         ]
+
+    def generate_turning_circles(self):
+        """
+        Get the center of the circles for the obstacle's turning circles.
+        """
+        upper = self.center.y - Robot.TURNING_RADIUS
+        lower = self.center.y + Robot.TURNING_RADIUS
+        left = self.center.x - Robot.TURNING_RADIUS
+        right = self.center.x + Robot.TURNING_RADIUS
+
+        upper_left_circle = TurningCircle(left, upper)
+        lower_left_circle = TurningCircle(left, lower)
+        upper_right_circle = TurningCircle(right, upper)
+        lower_right_circle = TurningCircle(right, lower)
+
+        if self.orient == self.Direction.NORTH:
+            return [
+                upper_left_circle, upper_right_circle
+            ]
+        elif self.orient == self.Direction.SOUTH:
+            return [
+                lower_left_circle, lower_right_circle
+            ]
+        elif self.orient == self.Direction.EAST:
+            return [
+                upper_right_circle, lower_right_circle
+            ]
+        else:
+            return [
+                upper_left_circle, lower_left_circle
+            ]
 
     def check_collision(self, robot: Robot):
         """
@@ -140,6 +173,10 @@ class ImageObstacle:
         # Draw lower border
         pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
 
+    def draw_turning_circles(self, screen):
+        for circle in self.turning_circles:
+            circle.draw(screen)
+
     def draw_robot_target(self, screen):
         target, direction = self.get_robot_target()
         pygame.draw.circle(screen, colors.RED, target.as_tuple(), 5)
@@ -161,5 +198,5 @@ class ImageObstacle:
     def draw(self, screen):
         self.draw_self(screen)
         self.draw_virtual_obstacle(screen)
-        # self.draw_turning_circles_center(screen)
+        self.draw_turning_circles(screen)
         self.draw_robot_target(screen)
