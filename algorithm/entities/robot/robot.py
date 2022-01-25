@@ -1,6 +1,6 @@
-from algorithm.entities.brain import Brain
+from algorithm.entities.robot.brain import Brain
 from algorithm.entities.point import Point
-from algorithm.entities import colors
+from algorithm.entities.assets import colors
 from algorithm.settings import SCALING_FACTOR
 
 import math

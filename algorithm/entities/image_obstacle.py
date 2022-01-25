@@ -4,9 +4,9 @@ from enum import Enum, auto
 import pygame
 
 from algorithm.entities.point import Point
-from algorithm.entities.robot import Robot
+from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid import Grid
-from algorithm.entities import colors
+from algorithm.entities.assets import colors
 from algorithm.settings import SCALING_FACTOR
 
 

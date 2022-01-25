@@ -1,7 +1,7 @@
 import pygame
 
 from algorithm.settings import SCALING_FACTOR
-from algorithm.entities import colors
+from algorithm.entities.assets import colors
 
 
 class Grid:

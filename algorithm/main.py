@@ -3,10 +3,10 @@ import math
 import pygame
 
 from algorithm import settings
-from algorithm.entities.robot import Robot
+from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid import Grid
 from algorithm.entities.image_obstacle import ImageObstacle
-from algorithm.entities import colors
+from algorithm.entities.assets import colors
 
 
 class AlgoApp:
@@ -40,6 +40,9 @@ class AlgoApp:
         self.running = True
         pygame.display.set_caption("Algorithm")
 
+    def do_updates(self):
+        pass
+
     def render(self):
         """
         Render the screen.
@@ -51,9 +54,6 @@ class AlgoApp:
 
         # Really render now.
         pygame.display.flip()
-
-    def do_updates(self):
-        pass
 
     def execute(self):
         """
