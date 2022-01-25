@@ -5,7 +5,7 @@ import pygame
 
 from algorithm.entities.point import Point
 from algorithm.entities.robot.robot import Robot
-from algorithm.entities.grid import Grid
+from algorithm.entities.grid.grid import Grid
 from algorithm.entities.assets import colors
 from algorithm.settings import SCALING_FACTOR
 

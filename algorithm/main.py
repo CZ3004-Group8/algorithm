@@ -4,8 +4,8 @@ import pygame
 
 from algorithm import settings
 from algorithm.entities.robot.robot import Robot
-from algorithm.entities.grid import Grid
-from algorithm.entities.image_obstacle import ImageObstacle
+from algorithm.entities.grid.grid import Grid
+from algorithm.entities.grid.image_obstacle import ImageObstacle
 from algorithm.entities.assets import colors
 
 
