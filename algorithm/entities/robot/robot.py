@@ -82,17 +82,25 @@ class Robot:
         rect.center = self.center.as_tuple()
         screen.blit(rot_image, rect)
 
-    def draw_path(self, screen):
+    def draw_historic_path(self, screen):
         for dot in self.path_hist:
             pygame.draw.circle(screen, colors.BLACK, dot, 3)
+
+    def draw_commands(self, screen):
+        for c in self.brain.commands:
+            for coor in c:
+                pygame.draw.circle(screen, colors.DARK_YELLOW, coor, 5)
 
     def draw(self, screen):
         # Draw the simple hamiltonian path found by the robot.
         self.draw_simple_hamiltonian_path(screen)
 
         # Draw the path sketched by the robot
-        self.draw_path(screen)
+        self.draw_historic_path(screen)
         self.path_hist.append(self.center.as_tuple())
 
         # Draw the robot itself.
         self.draw_self(screen)
+
+        # Draw turning points?
+        self.draw_commands(screen)
