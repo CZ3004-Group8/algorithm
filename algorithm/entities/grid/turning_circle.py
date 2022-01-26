@@ -23,6 +23,11 @@ class TurningCircle:
     __repr__ = __str__
 
     def find_tangents(self, other) -> List[Tuple[float, float]]:
+        """
+        Applicable only for this application, due to certain assumptions (for eg, same radius for both circles).
+
+        The find the original algorithm, look below.
+        """
         c1c2 = math.hypot(other.center.x - self.center.x, other.center.y - self.center.y)
         t0 = math.atan2(other.center.y - self.center.y, other.center.x - self.center.x)
         ps: List[Tuple[float, float]] = []
