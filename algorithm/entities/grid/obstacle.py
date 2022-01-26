@@ -83,19 +83,19 @@ class Obstacle:
 
         if self.orient == self.Direction.NORTH:
             return [
-                upper_left_circle, upper_right_circle
+                upper_left_circle, upper_right_circle  # Upper left, Upper right
             ]
         elif self.orient == self.Direction.SOUTH:
             return [
-                lower_left_circle, lower_right_circle
+                lower_left_circle, lower_right_circle  # Lower left, Lower right
             ]
         elif self.orient == self.Direction.EAST:
             return [
-                upper_right_circle, lower_right_circle
+                upper_right_circle, lower_right_circle  # Upper right, Lower right
             ]
         else:
             return [
-                upper_left_circle, lower_left_circle
+                upper_left_circle, lower_left_circle  # Upper left, Lower left
             ]
 
     def get_robot_target(self):

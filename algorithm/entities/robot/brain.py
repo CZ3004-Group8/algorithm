@@ -8,7 +8,7 @@ class Brain:
         self.grid = grid
 
         # Compute the simple Hamiltonian path for all obstacles
-        self.simple_hamiltonian = []
+        self.simple_hamiltonian = tuple()
         self.compute_simple_hamiltonian_path()
 
         # Create all the commands required to finish the course.
@@ -44,8 +44,13 @@ class Brain:
             print(f"\t{obs}")
 
     def plan_start(self):
+        print("Planning from starting point to next obstacle.")
+
         # Get the starting turning circle from the grid.
         grid_start = self.grid.start_turning_circle
+        # Get the next image obstacle to travel to.
+        next_obs = self.simple_hamiltonian[0].turning_circles
+        print(f"Planning from {grid_start} to either of {next_obs}")
 
     def plan_path(self):
         """
