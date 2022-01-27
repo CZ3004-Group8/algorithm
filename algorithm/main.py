@@ -3,6 +3,7 @@ import math
 import pygame
 
 from algorithm import settings
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid.grid import Grid
 from algorithm.entities.grid.obstacle import Obstacle
@@ -77,11 +78,11 @@ if __name__ == '__main__':
     # Fill in obstacle positions with respect to lower bottom left corner.
     # (x-coordinate, y-coordinate, Direction)
     obs = [
-        Obstacle(115, 45, Obstacle.Direction.WEST),
-        Obstacle(25, 95, Obstacle.Direction.SOUTH),
-        Obstacle(35, 175, Obstacle.Direction.SOUTH),
-        Obstacle(155, 165, Obstacle.Direction.WEST),
-        Obstacle(175, 85, Obstacle.Direction.WEST),
+        Obstacle(115, 45, Direction.WEST),
+        Obstacle(25, 95, Direction.SOUTH),
+        Obstacle(35, 175, Direction.SOUTH),
+        Obstacle(155, 165, Direction.WEST),
+        Obstacle(175, 85, Direction.WEST),
     ]
 
     app = AlgoApp(obs)

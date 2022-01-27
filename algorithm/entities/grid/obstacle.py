@@ -1,8 +1,8 @@
 import math
-from enum import Enum, auto
 
 import pygame
 
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.grid.turning_circle import TurningCircle
 from algorithm.entities.point import Point
 from algorithm.entities.robot.robot import Robot
@@ -16,16 +16,6 @@ class Obstacle:
     Obstacle abstracts an image obstacle in the arena.
     """
     SAFETY_WIDTH = Robot.TURNING_RADIUS
-
-    # Direction enum
-    class Direction(Enum):
-        """
-        Possible directions for an Obstacle. This is an enumeration.
-        """
-        NORTH = auto()
-        SOUTH = auto()
-        EAST = auto()
-        WEST = auto()
 
     def __init__(self, x, y, orientation: Direction):
         """
@@ -81,15 +71,16 @@ class Obstacle:
         upper_right_circle = TurningCircle(right, upper)
         lower_right_circle = TurningCircle(right, lower)
 
-        if self.orient == self.Direction.NORTH:
+        # UPPER PRIORITY, LEFT PRIORITY
+        if self.orient == Direction.NORTH:
             return [
                 upper_left_circle, upper_right_circle  # Upper left, Upper right
             ]
-        elif self.orient == self.Direction.SOUTH:
+        elif self.orient == Direction.SOUTH:
             return [
                 lower_left_circle, lower_right_circle  # Lower left, Lower right
             ]
-        elif self.orient == self.Direction.EAST:
+        elif self.orient == Direction.EAST:
             return [
                 upper_right_circle, lower_right_circle  # Upper right, Lower right
             ]
@@ -102,14 +93,14 @@ class Obstacle:
         """
         Returns the point that the robot should target for, including the orientation.
         """
-        if self.orient == self.Direction.NORTH:
-            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), -math.pi/2
-        elif self.orient == self.Direction.SOUTH:
-            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), math.pi/2
-        elif self.orient == self.Direction.WEST:
-            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), 0
+        if self.orient == Direction.NORTH:
+            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), Direction.SOUTH
+        elif self.orient == Direction.SOUTH:
+            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), Direction.NORTH
+        elif self.orient == Direction.WEST:
+            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), Direction.EAST
         else:
-            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), math.pi
+            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), Direction.WEST
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -124,11 +115,11 @@ class Obstacle:
         rect.height = Grid.CELL_WIDTH / 2
         rect.center = self.center.as_tuple()
 
-        if self.orient == self.Direction.NORTH:
+        if self.orient == Direction.NORTH:
             rect.centery -= Grid.CELL_WIDTH / 4
-        elif self.orient == self.Direction.SOUTH:
+        elif self.orient == Direction.SOUTH:
             rect.centery += Grid.CELL_WIDTH / 4
-        elif self.orient == self.Direction.WEST:
+        elif self.orient == Direction.WEST:
             rect.centerx -= Grid.CELL_WIDTH / 4
         else:
             rect.centerx += Grid.CELL_WIDTH / 4
@@ -159,7 +150,7 @@ class Obstacle:
 
         rot_image = self.target_image
         angle = 0
-        if direction == -math.pi/2:
+        if direction == -math.pi / 2:
             angle = 180
         elif direction == math.pi:
             angle = 90
