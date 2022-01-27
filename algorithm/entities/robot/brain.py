@@ -51,8 +51,8 @@ class Brain:
         # Get the next image obstacle to travel to.
         next_obs_circles = self.simple_hamiltonian[0].turning_circles
         print(f"Planning from {grid_start} to either of {next_obs_circles}")
-        for c in next_obs_circles:
-            self.commands.append(grid_start.find_tangents(c))
+        self.commands.extend(grid_start.find_tangents(next_obs_circles[0]))
+        self.commands.extend(next_obs_circles[0].find_tangents(grid_start))
 
     def plan_path(self):
         """
