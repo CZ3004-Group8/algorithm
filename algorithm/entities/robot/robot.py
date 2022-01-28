@@ -87,8 +87,8 @@ class Robot:
             pygame.draw.circle(screen, colors.BLACK, dot, 3)
 
     def draw_commands(self, screen):
-        for c in self.brain.commands:
-            pygame.draw.circle(screen, colors.DARK_YELLOW, c, 5)
+        for (start, end), color in zip(self.brain.commands, colors.TANGENT_COLOURS):
+            pygame.draw.line(screen, color, start.as_tuple(), end.as_tuple(), 5)
 
     def draw(self, screen):
         # Draw the simple hamiltonian path found by the robot.

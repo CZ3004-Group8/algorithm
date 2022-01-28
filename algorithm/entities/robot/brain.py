@@ -103,9 +103,14 @@ class Brain:
 
         # Calculate all tangents from source and then from target
         source_points = start_circle.find_tangents(target_circle)
-        self.commands.extend(source_points)
         target_points = target_circle.find_tangents(start_circle)
-        self.commands.extend(target_points)
+
+        # TODO: How to find corresponding tangent?
+        for source_point in source_points:
+            for target_point in target_points:
+                print(f"Checking {source_point} with {target_point}")
+                if start_circle.check_corresponding_tangent(source_point, target_circle, target_point):
+                    self.commands.append((source_point, target_point))
 
     def plan_rest(self):
         pass
