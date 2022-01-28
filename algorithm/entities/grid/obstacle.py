@@ -1,5 +1,3 @@
-import math
-
 import pygame
 
 from algorithm.entities.assets.direction import Direction
@@ -150,11 +148,11 @@ class Obstacle:
 
         rot_image = self.target_image
         angle = 0
-        if direction == -math.pi / 2:
+        if direction == Direction.SOUTH:
             angle = 180
-        elif direction == math.pi:
+        elif direction == Direction.WEST:
             angle = 90
-        elif direction == 0:
+        elif direction == Direction.EAST:
             angle = -90
 
         rot_image = pygame.transform.rotate(rot_image, angle)
