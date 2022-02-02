@@ -29,6 +29,9 @@ class Robot:
 
         self.path_hist = []
 
+    def get_current_pos(self):
+        return self.center, self.angle
+
     def turn(self, d_angle, rev):
         """
         x_new = x + R(sin(∆θ + θ) − sin θ)
@@ -62,6 +65,25 @@ class Robot:
             self.angle += 2 * math.pi
         elif self.angle >= math.pi:
             self.angle -= 2 * math.pi
+
+    def turn_left(self, rev):
+        self.turn(-math.pi / 2, rev)
+
+    def turn_right(self, rev):
+        self.turn(math.pi / 2, rev)
+
+    def straight(self, dt, rev):
+        # Get straight distance travelled within this time.
+        distance = dt * self.SPEED_PER_SECOND
+        
+        if self.angle == 0:
+            self.center.x += distance if not rev else -distance
+        elif self.angle == math.pi / 2:
+            self.center.y -= distance if not rev else -distance
+        elif self.angle == -math.pi / 2:
+            self.center.y += distance if not rev else -distance
+        else:
+            self.center.x -= distance if not rev else -distance
 
     def draw_simple_hamiltonian_path(self, screen):
         prev = self.brain.grid.get_start_box_rect().center

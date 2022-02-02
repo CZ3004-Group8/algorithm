@@ -1,6 +1,7 @@
+import math
+
 import pygame
 
-from algorithm.entities.assets.direction import Direction
 from algorithm.entities.point import Point
 from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid.grid import Grid
@@ -14,7 +15,7 @@ class Obstacle:
     """
     SAFETY_WIDTH = Robot.TURNING_RADIUS
 
-    def __init__(self, x, y, orientation: Direction):
+    def __init__(self, x, y, orientation):
         """
         We store the center of the Obstacle.
 
@@ -57,14 +58,14 @@ class Obstacle:
         """
         Returns the point that the robot should target for, including the orientation.
         """
-        if self.orient == Direction.NORTH:
-            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), Direction.SOUTH
-        elif self.orient == Direction.SOUTH:
-            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), Direction.NORTH
-        elif self.orient == Direction.WEST:
-            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), Direction.EAST
+        if self.orient == math.pi / 2:
+            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), -math.pi / 2
+        elif self.orient == -math.pi / 2:
+            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), math.pi / 2
+        elif self.orient == math.pi:
+            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), 0
         else:
-            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), Direction.WEST
+            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), math.pi
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -79,11 +80,11 @@ class Obstacle:
         rect.height = Grid.CELL_WIDTH / 2
         rect.center = self.center.as_tuple()
 
-        if self.orient == Direction.NORTH:
+        if self.orient == math.pi / 2:
             rect.centery -= Grid.CELL_WIDTH / 4
-        elif self.orient == Direction.SOUTH:
+        elif self.orient == -math.pi / 2:
             rect.centery += Grid.CELL_WIDTH / 4
-        elif self.orient == Direction.WEST:
+        elif self.orient == math.pi:
             rect.centerx -= Grid.CELL_WIDTH / 4
         else:
             rect.centerx += Grid.CELL_WIDTH / 4
@@ -110,11 +111,11 @@ class Obstacle:
 
         rot_image = self.target_image
         angle = 0
-        if direction == Direction.SOUTH:
+        if direction == -math.pi / 2:
             angle = 180
-        elif direction == Direction.WEST:
+        elif direction == math.pi:
             angle = 90
-        elif direction == Direction.EAST:
+        elif direction == 0:
             angle = -90
 
         rot_image = pygame.transform.rotate(rot_image, angle)

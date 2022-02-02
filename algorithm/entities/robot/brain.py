@@ -47,4 +47,43 @@ class Brain:
         """
         Plan the next movements to get to the next target.
         """
-        pass
+
+        # Plan the path.
+        curr_pos, curr_angle = self.robot.get_current_pos()
+        for obs in self.simple_hamiltonian:
+            print("-" * 40)
+            target_pos, target_angle = obs.get_robot_target()
+            self.plan_curr_to_target(curr_pos, curr_angle, target_pos, target_angle)
+            print("-" * 40)
+            # Update the current pos and angle
+            curr_pos, curr_angle = target_pos, target_angle
+
+    @classmethod
+    def plan_curr_to_target(cls, curr_center, curr_angle, target_center, target_angle):
+        # Get the x, y difference between the current and target
+        x_diff, y_diff = target_center.x - curr_center.x, curr_center.y - target_center.y
+
+        if x_diff >= 0 and y_diff >= 0:
+            quad = 1
+            print("Next point in 1st quadrant.")
+        elif x_diff >= 0 and y_diff < 0:
+            quad = 4
+            print("Next point in 4th quadrant.")
+        elif x_diff < 0 and y_diff >= 0:
+            quad = 2
+            print("Next point in 2nd quadrant.")
+        else:
+            quad = 3
+            print("Next point in 3rd quadrant.")
+
+        # Check if the x_diff is within the limits.
+        # If not, we have to move the robot.
+        angle_diff = target_angle - curr_angle
+        if angle_diff == 0:
+            print("Target orientation same.")
+        elif angle_diff == math.pi:
+            print("Target orientation is opposite.")
+        elif angle_diff == math.pi / 2:
+            print("Target orientation is left of current.")
+        else:
+            print("Target orientation is right of current.")
