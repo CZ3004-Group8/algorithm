@@ -1,8 +1,7 @@
 import math
-
 import pygame
 
-from algorithm.entities.point import Point
+from algorithm.entities.position import Position
 from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid.grid import Grid
 from algorithm.entities.assets import colors
@@ -24,15 +23,14 @@ class Obstacle:
              North -> Image is pointing north.
         """
         y = Grid.WIDTH - y * SCALING_FACTOR
-        self.center = Point(x * SCALING_FACTOR, y)
+        self.pos = Position(x * SCALING_FACTOR, y, orientation)
 
-        self.orient = orientation
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
 
     def __str__(self):
-        return f"Obstacle({self.center.x / SCALING_FACTOR}, " \
-               f"{(Grid.WIDTH - self.center.y) / SCALING_FACTOR}, {self.orient})"
+        return f"Obstacle({self.pos.x / SCALING_FACTOR}, " \
+               f"{(Grid.WIDTH - self.pos.y) / SCALING_FACTOR}, {self.pos.angle})"
 
     __repr__ = __str__
 
@@ -42,49 +40,49 @@ class Obstacle:
 
         Useful for checking if a point is within the boundary of this obstacle.
         """
-        upper = self.center.y + self.SAFETY_WIDTH
-        lower = self.center.y - self.SAFETY_WIDTH
-        left = self.center.x - self.SAFETY_WIDTH
-        right = self.center.x + self.SAFETY_WIDTH
+        upper = self.pos.y + self.SAFETY_WIDTH
+        lower = self.pos.y - self.SAFETY_WIDTH
+        left = self.pos.x - self.SAFETY_WIDTH
+        right = self.pos.x + self.SAFETY_WIDTH
 
         return [
-            Point(left, lower),  # Bottom left.
-            Point(right, lower),  # Bottom right.
-            Point(left, upper),  # Upper left.
-            Point(right, upper)  # Upper right.
+            Position(left, lower, 0),  # Bottom left.
+            Position(right, lower, 0),  # Bottom right.
+            Position(left, upper, 0),  # Upper left.
+            Position(right, upper, 0)  # Upper right.
         ]
 
-    def get_robot_target(self):
+    def get_robot_target_pos(self):
         """
         Returns the point that the robot should target for, including the orientation.
         """
-        if self.orient == math.pi / 2:
-            return Point(self.center.x, self.center.y - self.SAFETY_WIDTH), -math.pi / 2
-        elif self.orient == -math.pi / 2:
-            return Point(self.center.x, self.center.y + self.SAFETY_WIDTH), math.pi / 2
-        elif self.orient == math.pi:
-            return Point(self.center.x - self.SAFETY_WIDTH, self.center.y), 0
+        if self.pos.angle == math.pi / 2:
+            return Position(self.pos.x, self.pos.y - self.SAFETY_WIDTH, -math.pi / 2)
+        elif self.pos.angle == -math.pi / 2:
+            return Position(self.pos.x, self.pos.y + self.SAFETY_WIDTH, math.pi / 2)
+        elif self.pos.angle == math.pi:
+            return Position(self.pos.x - self.SAFETY_WIDTH, self.pos.y, 0)
         else:
-            return Point(self.center.x + self.SAFETY_WIDTH, self.center.y), math.pi
+            return Position(self.pos.x + self.SAFETY_WIDTH, self.pos.y, math.pi)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame
         # Get the coordinates of the grid's bottom left-hand corner.
         rect = pygame.Rect(0, 0, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
-        rect.center = self.center.as_tuple()
+        rect.center = self.pos.xy()
         pygame.draw.rect(screen, colors.BLACK, rect)
 
         # Draw the direction of the picture
         rect.width = Grid.CELL_WIDTH / 2
         rect.height = Grid.CELL_WIDTH / 2
-        rect.center = self.center.as_tuple()
+        rect.center = self.pos.xy()
 
-        if self.orient == math.pi / 2:
+        if self.pos.angle == math.pi / 2:
             rect.centery -= Grid.CELL_WIDTH / 4
-        elif self.orient == -math.pi / 2:
+        elif self.pos.angle == -math.pi / 2:
             rect.centery += Grid.CELL_WIDTH / 4
-        elif self.orient == math.pi:
+        elif self.pos.angle == math.pi:
             rect.centerx -= Grid.CELL_WIDTH / 4
         else:
             rect.centerx += Grid.CELL_WIDTH / 4
@@ -97,30 +95,30 @@ class Obstacle:
         points = self.get_boundary_points()
 
         # Draw left border
-        pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[2].as_tuple())
+        pygame.draw.line(screen, colors.BLUE, points[0].xy(), points[2].xy())
         # Draw right border
-        pygame.draw.line(screen, colors.BLUE, points[1].as_tuple(), points[3].as_tuple())
+        pygame.draw.line(screen, colors.BLUE, points[1].xy(), points[3].xy())
         # Draw upper border
-        pygame.draw.line(screen, colors.BLUE, points[2].as_tuple(), points[3].as_tuple())
+        pygame.draw.line(screen, colors.BLUE, points[2].xy(), points[3].xy())
         # Draw lower border
-        pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
+        pygame.draw.line(screen, colors.BLUE, points[0].xy(), points[1].xy())
 
     def draw_robot_target(self, screen):
-        target, direction = self.get_robot_target()
-        pygame.draw.circle(screen, colors.RED, target.as_tuple(), 5)
+        target = self.get_robot_target_pos()
+        pygame.draw.circle(screen, colors.RED, target.xy(), 5)
 
         rot_image = self.target_image
         angle = 0
-        if direction == -math.pi / 2:
+        if target.angle == -math.pi / 2:
             angle = 180
-        elif direction == math.pi:
+        elif target.angle == math.pi:
             angle = 90
-        elif direction == 0:
+        elif target.angle == 0:
             angle = -90
 
         rot_image = pygame.transform.rotate(rot_image, angle)
         rect = rot_image.get_rect()
-        rect.center = target.as_tuple()
+        rect.center = target.xy()
         screen.blit(rot_image, rect)
 
     def draw(self, screen):

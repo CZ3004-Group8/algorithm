@@ -29,8 +29,7 @@ class Brain:
             # Create all target points, including the start.
             targets = [self.grid.get_start_box_rect().center]
             for ob in path:
-                target, _ = ob.get_robot_target()
-                targets.append(target.as_tuple())
+                targets.append(ob.get_robot_target_pos().xy())
 
             dist = 0
             for i in range(len(targets) - 1):
@@ -49,19 +48,19 @@ class Brain:
         """
 
         # Plan the path.
-        curr_pos, curr_angle = self.robot.get_current_pos()
+        curr_pos = self.robot.get_current_pos()
         for obs in self.simple_hamiltonian:
             print("-" * 40)
-            target_pos, target_angle = obs.get_robot_target()
-            self.plan_curr_to_target(curr_pos, curr_angle, target_pos, target_angle)
+            target_pos = obs.get_robot_target_pos()
+            self.plan_curr_to_target(curr_pos, target_pos)
             print("-" * 40)
             # Update the current pos and angle
-            curr_pos, curr_angle = target_pos, target_angle
+            curr_pos = target_pos
 
     @classmethod
-    def plan_curr_to_target(cls, curr_center, curr_angle, target_center, target_angle):
+    def plan_curr_to_target(cls, curr_pos, target_pos):
         # Get the x, y difference between the current and target
-        x_diff, y_diff = target_center.x - curr_center.x, curr_center.y - target_center.y
+        x_diff, y_diff = target_pos.x - curr_pos.x, curr_pos.y - target_pos.y
 
         # Figure out which quadrant the next target is
         # WITH RESPECT TO the current location and orientation.
@@ -80,13 +79,13 @@ class Brain:
             print("Next point in 4th quadrant.")
 
         # We change it to depend on the current orientation.
-        if curr_angle == 0:
+        if curr_pos.angle == 0:
             print("Robot currently facing east.")
             quad += 1
-        elif curr_angle == -math.pi / 2:
+        elif curr_pos.angle == -math.pi / 2:
             print("Robot currently facing south.")
             quad += 2
-        elif curr_angle == math.pi:
+        elif curr_pos.angle == math.pi:
             print("Robot currently facing west.")
             quad += 3
         else:
@@ -97,7 +96,7 @@ class Brain:
 
         # Check if the x_diff is within the limits.
         # If not, we have to move the robot.
-        angle_diff = target_angle - curr_angle
+        angle_diff = target_pos.angle - curr_pos.angle
         if angle_diff == 0:
             print("Target orientation same.")
         elif angle_diff == math.pi:

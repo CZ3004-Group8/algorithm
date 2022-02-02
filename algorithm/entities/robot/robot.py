@@ -1,10 +1,10 @@
-from algorithm.entities.robot.brain import Brain
-from algorithm.entities.point import Point
-from algorithm.entities.assets import colors
-from algorithm.settings import SCALING_FACTOR
-
 import math
 import pygame
+
+from algorithm.entities.robot.brain import Brain
+from algorithm.entities.position import Position
+from algorithm.entities.assets import colors
+from algorithm.settings import SCALING_FACTOR
 
 
 class Robot:
@@ -19,8 +19,7 @@ class Robot:
         """
         We take the robot as a point in the center.
         """
-        self.center = Point(x, y)
-        self.angle = angle
+        self.pos = Position(x, y, angle)
         self.brain = Brain(self, grid)
 
         self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
@@ -30,7 +29,7 @@ class Robot:
         self.path_hist = []
 
     def get_current_pos(self):
-        return self.center, self.angle
+        return self.pos
 
     def turn(self, d_angle, rev):
         """
@@ -46,25 +45,25 @@ class Robot:
         Note that ∆θ is in radians.
         """
         # Get change in (x, y) coordinate.
-        x_change = self.TURNING_RADIUS * (math.sin(self.angle + d_angle) - math.sin(self.angle))
-        y_change = self.TURNING_RADIUS * (math.cos(self.angle + d_angle) - math.cos(self.angle))
+        x_change = self.TURNING_RADIUS * (math.sin(self.pos.angle + d_angle) - math.sin(self.pos.angle))
+        y_change = self.TURNING_RADIUS * (math.cos(self.pos.angle + d_angle) - math.cos(self.pos.angle))
 
         if d_angle < 0 and not rev:  # Wheels to right moving forward.
-            self.center.x -= x_change
-            self.center.y -= y_change
+            self.pos.x -= x_change
+            self.pos.y -= y_change
         elif (d_angle < 0 and rev) or \
                 (d_angle >= 0 and not rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
-            self.center.x += x_change
-            self.center.y += y_change
+            self.pos.x += x_change
+            self.pos.y += y_change
         else:  # Wheels to right moving backwards.
-            self.center.x -= x_change
-            self.center.y -= y_change
-        self.angle += d_angle
+            self.pos.x -= x_change
+            self.pos.y -= y_change
+        self.pos.angle += d_angle
 
-        if self.angle <= -math.pi:
-            self.angle += 2 * math.pi
-        elif self.angle >= math.pi:
-            self.angle -= 2 * math.pi
+        if self.pos.angle <= -math.pi:
+            self.pos.angle += 2 * math.pi
+        elif self.pos.angle >= math.pi:
+            self.pos.angle -= 2 * math.pi
 
     def turn_left(self, rev):
         self.turn(-math.pi / 2, rev)
@@ -76,32 +75,32 @@ class Robot:
         # Get straight distance travelled within this time.
         distance = dt * self.SPEED_PER_SECOND
         
-        if self.angle == 0:
-            self.center.x += distance if not rev else -distance
-        elif self.angle == math.pi / 2:
-            self.center.y -= distance if not rev else -distance
-        elif self.angle == -math.pi / 2:
-            self.center.y += distance if not rev else -distance
+        if self.pos.angle == 0:
+            self.pos.x += distance if not rev else -distance
+        elif self.pos.angle == math.pi / 2:
+            self.pos.y -= distance if not rev else -distance
+        elif self.pos.angle == -math.pi / 2:
+            self.pos.y += distance if not rev else -distance
         else:
-            self.center.x -= distance if not rev else -distance
+            self.pos.x -= distance if not rev else -distance
 
     def draw_simple_hamiltonian_path(self, screen):
         prev = self.brain.grid.get_start_box_rect().center
         for obs in self.brain.simple_hamiltonian:
-            target, _ = obs.get_robot_target()
+            target = obs.get_robot_target_pos()
             pygame.draw.line(screen, colors.DARK_GREEN,
-                             prev, target.as_tuple())
-            prev = target.as_tuple()
+                             prev, target.xy())
+            prev = target.xy()
 
     def draw_self(self, screen):
         # The red background
-        pygame.draw.circle(screen, colors.RED, self.center.as_tuple(), self.ROBOT_WIDTH / 2)
+        pygame.draw.circle(screen, colors.RED, self.pos.xy(), self.ROBOT_WIDTH / 2)
 
         # The arrow to represent the direction of the robot.
         rot_image = pygame.transform.rotate(self.image,
-                                            -math.degrees(math.pi / 2 - self.angle))
+                                            -math.degrees(math.pi / 2 - self.pos.angle))
         rect = rot_image.get_rect()
-        rect.center = self.center.as_tuple()
+        rect.center = self.pos.xy()
         screen.blit(rot_image, rect)
 
     def draw_historic_path(self, screen):
@@ -114,7 +113,7 @@ class Robot:
 
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
-        self.path_hist.append(self.center.as_tuple())
+        self.path_hist.append(self.pos.xy())
 
         # Draw the robot itself.
         self.draw_self(screen)
