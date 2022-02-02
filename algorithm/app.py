@@ -12,7 +12,7 @@ class AlgoApp:
     def __init__(self, obstacles):
         pygame.init()
         self.running = False
-        self.size = self.width, self.height = 850, 850
+        self.size = self.width, self.height = settings.WINDOW_SIZE
 
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.clock = pygame.time.Clock()

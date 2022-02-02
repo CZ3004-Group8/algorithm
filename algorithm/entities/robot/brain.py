@@ -63,18 +63,37 @@ class Brain:
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_center.x - curr_center.x, curr_center.y - target_center.y
 
+        # Figure out which quadrant the next target is
+        # WITH RESPECT TO the current location and orientation.
+        # Note that we use 0-indexing.
+        quad = 3
         if x_diff >= 0 and y_diff >= 0:
-            quad = 1
+            quad = 0
             print("Next point in 1st quadrant.")
-        elif x_diff >= 0 and y_diff < 0:
-            quad = 4
-            print("Next point in 4th quadrant.")
         elif x_diff < 0 and y_diff >= 0:
-            quad = 2
+            quad = 1
             print("Next point in 2nd quadrant.")
-        else:
-            quad = 3
+        elif x_diff < 0 and y_diff < 0:
+            quad = 2
             print("Next point in 3rd quadrant.")
+        else:
+            print("Next point in 4th quadrant.")
+
+        # We change it to depend on the current orientation.
+        if curr_angle == 0:
+            print("Robot currently facing east.")
+            quad += 1
+        elif curr_angle == -math.pi / 2:
+            print("Robot currently facing south.")
+            quad += 2
+        elif curr_angle == math.pi:
+            print("Robot currently facing west.")
+            quad += 3
+        else:
+            print("Robot currently facing north.")
+        # Modulo and make it 1-indexed.
+        quad = (quad % 4) + 1
+        print(f"With respect to current position and orientation, obstacle is at quadrant {quad}")
 
         # Check if the x_diff is within the limits.
         # If not, we have to move the robot.
