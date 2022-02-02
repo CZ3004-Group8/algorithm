@@ -1,7 +1,6 @@
 import pygame
 
 from algorithm.entities.assets.direction import Direction
-from algorithm.entities.grid.turning_circle import TurningCircle
 from algorithm.entities.point import Point
 from algorithm.entities.robot.robot import Robot
 from algorithm.entities.grid.grid import Grid
@@ -29,7 +28,6 @@ class Obstacle:
         self.orient = orientation
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
-        self.turning_circles = self.generate_turning_circles()
 
     def __str__(self):
         return f"Obstacle({self.center.x / SCALING_FACTOR}, " \
@@ -54,38 +52,6 @@ class Obstacle:
             Point(left, upper),  # Upper left.
             Point(right, upper)  # Upper right.
         ]
-
-    def generate_turning_circles(self):
-        """
-        Get the center of the circles for the obstacle's turning circles.
-        """
-        upper = self.center.y - Robot.TURNING_RADIUS
-        lower = self.center.y + Robot.TURNING_RADIUS
-        left = self.center.x - Robot.TURNING_RADIUS
-        right = self.center.x + Robot.TURNING_RADIUS
-
-        upper_left_circle = TurningCircle(left, upper)
-        lower_left_circle = TurningCircle(left, lower)
-        upper_right_circle = TurningCircle(right, upper)
-        lower_right_circle = TurningCircle(right, lower)
-
-        # UPPER PRIORITY, LEFT PRIORITY
-        if self.orient == Direction.NORTH:
-            return [
-                upper_left_circle, upper_right_circle  # Upper left, Upper right
-            ]
-        elif self.orient == Direction.SOUTH:
-            return [
-                lower_left_circle, lower_right_circle  # Lower left, Lower right
-            ]
-        elif self.orient == Direction.EAST:
-            return [
-                upper_right_circle, lower_right_circle  # Upper right, Lower right
-            ]
-        else:
-            return [
-                upper_left_circle, lower_left_circle  # Upper left, Lower left
-            ]
 
     def get_robot_target(self):
         """
@@ -138,10 +104,6 @@ class Obstacle:
         # Draw lower border
         pygame.draw.line(screen, colors.BLUE, points[0].as_tuple(), points[1].as_tuple())
 
-    def draw_turning_circles(self, screen):
-        for circle in self.turning_circles:
-            circle.draw(screen)
-
     def draw_robot_target(self, screen):
         target, direction = self.get_robot_target()
         pygame.draw.circle(screen, colors.RED, target.as_tuple(), 5)
@@ -163,5 +125,4 @@ class Obstacle:
     def draw(self, screen):
         self.draw_self(screen)
         self.draw_virtual_obstacle(screen)
-        self.draw_turning_circles(screen)
         self.draw_robot_target(screen)
