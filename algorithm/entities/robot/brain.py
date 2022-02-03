@@ -1,6 +1,8 @@
 import itertools
 import math
 
+from algorithm.entities.position import Position
+
 
 class Brain:
     def __init__(self, robot, grid):
@@ -57,10 +59,21 @@ class Brain:
             # Update the current pos and angle
             curr_pos = target_pos
 
+    def plan_curr_to_target(self, curr_pos, target_pos):
+        """
+        Plan a path for the robot to travel from the current position to the target position.
+        """
+        # Get the current offset of the obstacle from the robot's perspective.
+        offset_pos = self.wrt_bot(curr_pos, target_pos)
+
     @classmethod
-    def plan_curr_to_target(cls, curr_pos, target_pos):
+    def wrt_bot(cls, bot_pos, target_pos) -> Position:
+        """
+        Return a new Position object that has the bot always facing north and at the origin, and having the target
+        offset from the robot.
+        """
         # Get the x, y difference between the current and target
-        x_diff, y_diff = target_pos.x - curr_pos.x, curr_pos.y - target_pos.y
+        x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
 
         # Figure out which quadrant the next target is
         # WITH RESPECT TO the current location and orientation.
@@ -79,13 +92,13 @@ class Brain:
             print("Next point in 4th quadrant.")
 
         # We change it to depend on the current orientation.
-        if curr_pos.angle == 0:
+        if bot_pos.angle == 0:
             print("Robot currently facing east.")
             quad += 1
-        elif curr_pos.angle == -math.pi / 2:
+        elif bot_pos.angle == -math.pi / 2:
             print("Robot currently facing south.")
             quad += 2
-        elif curr_pos.angle == math.pi:
+        elif bot_pos.angle == math.pi:
             print("Robot currently facing west.")
             quad += 3
         else:
@@ -94,14 +107,5 @@ class Brain:
         quad = (quad % 4) + 1
         print(f"With respect to current position and orientation, obstacle is at quadrant {quad}")
 
-        # Check if the x_diff is within the limits.
-        # If not, we have to move the robot.
-        angle_diff = target_pos.angle - curr_pos.angle
-        if angle_diff == 0:
-            print("Target orientation same.")
-        elif angle_diff == math.pi:
-            print("Target orientation is opposite.")
-        elif angle_diff == math.pi / 2:
-            print("Target orientation is left of current.")
-        else:
-            print("Target orientation is right of current.")
+        # TODO: Junyan, do it here.
+        return None
