@@ -1,8 +1,6 @@
 import itertools
 import math
-
-from algorithm.entities.position import Position
-
+from algorithm import settings
 
 class Brain:
     def __init__(self, robot, grid):
@@ -59,27 +57,16 @@ class Brain:
             # Update the current pos and angle
             curr_pos = target_pos
 
-    def plan_curr_to_target(self, curr_pos, target_pos):
-        """
-        Plan a path for the robot to travel from the current position to the target position.
-        """
-        # Get the current offset of the obstacle from the robot's perspective.
-        offset_pos = self.wrt_bot(curr_pos, target_pos)
-        # TODO: Use the offset position to plan the path from robot's current position to target position.
-
     @classmethod
-    def wrt_bot(cls, bot_pos, target_pos) -> Position:
-        """
-        Return a new Position object that has the bot always facing north and at the origin, and having the target
-        offset from the robot.
-        """
+    def plan_curr_to_target(cls, curr_pos, target_pos):
         # Get the x, y difference between the current and target
-        x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
+        x_diff, y_diff = target_pos.x - curr_pos.x, curr_pos.y - target_pos.y
 
         # Figure out which quadrant the next target is
         # WITH RESPECT TO the current location and orientation.
         # Note that we use 0-indexing.
         quad = 3
+        facing = 0
         if x_diff >= 0 and y_diff >= 0:
             quad = 0
             print("Next point in 1st quadrant.")
@@ -93,20 +80,38 @@ class Brain:
             print("Next point in 4th quadrant.")
 
         # We change it to depend on the current orientation.
-        if bot_pos.angle == 0:
+        if curr_pos.angle == 0:
             print("Robot currently facing east.")
             quad += 1
-        elif bot_pos.angle == -math.pi / 2:
+            facing = 3
+        elif curr_pos.angle == -math.pi / 2:
             print("Robot currently facing south.")
             quad += 2
-        elif bot_pos.angle == math.pi:
+            facing = 2
+        elif curr_pos.angle == math.pi:
             print("Robot currently facing west.")
             quad += 3
+            facing = 1
         else:
             print("Robot currently facing north.")
         # Modulo and make it 1-indexed.
         quad = (quad % 4) + 1
         print(f"With respect to current position and orientation, obstacle is at quadrant {quad}")
 
-        # TODO: Junyan, do it here.
-        return None
+        # check target's next coordinates with respect to robot's pov
+        newcoord_x = curr_pos.x + (math.cos(facing*0.5) * (x_diff)) - (math.sin(facing*0.5) * (y_diff)) - curr_pos.x
+        newcoord_y = curr_pos.y + (math.sin(facing*0.5) * (x_diff)) + (math.cos(facing*0.5) * (y_diff)) - curr_pos.y
+        print(f"Target's new coordinate wrt to robot's POV is {newcoord_x/settings.SCALING_FACTOR}, {newcoord_y/settings.SCALING_FACTOR}")
+
+        # Check if the x_diff is within the limits.
+        # If not, we have to move the robot.
+        angle_diff = target_pos.angle - curr_pos.angle
+        if angle_diff == 0:
+            print("Target orientation same.")
+        elif angle_diff == math.pi:
+            print("Target orientation is opposite.")
+        elif angle_diff == math.pi / 2:
+            print("Target orientation is left of current.")
+        else:
+            print("Target orientation is right of current.")
+
