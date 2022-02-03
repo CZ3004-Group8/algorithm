@@ -1,7 +1,4 @@
-class Command:
-    def __init__(self, c, time):
-        self.c = c
-        self.time = time  # Time in milliseconds
+from algorithm.entities.commands.command import Command
 
 
 class TurnCommand(Command):
