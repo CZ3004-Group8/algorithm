@@ -37,13 +37,16 @@ class AlgoApp:
         Set initial values for the app.
         """
         self.running = True
-        pygame.display.set_caption("Algorithm")
 
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.clock = pygame.time.Clock()
 
         # Connect to RPi
+        pygame.display.set_caption("Connecting to Raspberry Pi...")
         self.connection.connect()
+
+        # On successful connect
+        pygame.display.set_caption("Algorithm")
 
     def do_updates(self):
         pass
