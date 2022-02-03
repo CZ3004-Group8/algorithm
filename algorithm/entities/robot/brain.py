@@ -65,6 +65,7 @@ class Brain:
         """
         # Get the current offset of the obstacle from the robot's perspective.
         offset_pos = self.wrt_bot(curr_pos, target_pos)
+        # TODO: Use the offset position to plan the path from robot's current position to target position.
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
