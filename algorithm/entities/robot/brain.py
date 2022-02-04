@@ -1,7 +1,7 @@
 import itertools
 import math
+
 from algorithm import settings
-from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.position import Position
 
 
@@ -82,21 +82,10 @@ class Brain:
             self.plan_fourth_quadrant(offset_pos)
 
     def plan_first_quadrant(self, offset_pos):
-        # If image is to the south
-        if offset_pos.angle == -math.pi / 2:
-            self.first_quadrant_facing_south(offset_pos)
+        pass
 
     def first_quadrant_facing_south(self, offset_pos):
-        # We always do a reverse turn to face east.
-        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
-        # Update the offset
-        offset_pos.y += self.robot.TURNING_RADIUS
-        offset_pos.x += self.robot.TURNING_RADIUS
-
-        # Check that the x-offset is at least the turning radius.
-        # If not, we have to reverse.
-        if offset_pos.x < self.robot.TURNING_RADIUS:
-            pass
+        pass
 
     def plan_second_quadrant(self, offset_pos):
         pass
