@@ -7,6 +7,6 @@ class StraightCommand(Command):
         self.dist = dist
 
     def __str__(self):
-        return f"StraightCommand(dist={self.dist}, rev={self.rev})"
+        return f"StraightCommand(dist={self.dist})"
 
     __repr__ = __str__
