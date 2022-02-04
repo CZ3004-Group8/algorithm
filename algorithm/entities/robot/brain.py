@@ -6,11 +6,11 @@ from algorithm.entities.position import Position
 
 
 class Brain:
-    OFFSET_THRESHOLD: int = 0
+    OFFSET_THRESHOLD: int = 0  # Set later.
 
     def __init__(self, robot, grid):
         self.robot = robot
-        self.OFFSET_THRESHOLD = self.robot.TURNING_RADIUS
+        self.OFFSET_THRESHOLD = self.robot.TURNING_RADIUS  # SET HERE.
 
         self.grid = grid
 
