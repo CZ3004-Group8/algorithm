@@ -123,7 +123,7 @@ class Brain:
         # Update the offset.
         offset_pos.x += self.robot.TURNING_RADIUS
         offset_pos.y += self.robot.TURNING_RADIUS
-        
+
         # Check how much distance to travel forward
         dist = offset_pos.x
         self.commands.append(StraightCommand(dist, 0, False))
@@ -158,6 +158,14 @@ class Brain:
 
     def fourth_quadrant_facing_south(self, offset_pos):
         print("Planning path to fourth quadrant, south image.")
+        # Do a reverse turn to face east.
+        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
+        # Update the offset.
+        offset_pos.x += self.robot.TURNING_RADIUS
+        offset_pos.y += self.robot.TURNING_RADIUS
+
+        # Check that we have enough x-offset to make the final 180 turn to face the obstacle.
+        # In this case, we need to ensure that after we turn, we have 3 * turning-radius distance.
 
 
     @classmethod
