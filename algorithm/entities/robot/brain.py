@@ -2,6 +2,7 @@ import itertools
 import math
 
 from algorithm import settings
+from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.position import Position
 
@@ -100,9 +101,22 @@ class Brain:
             # Apply this command on the current position
             curr_pos = turn_command.apply_on_pos(curr_pos)
 
-            # Then we go straight about
+            # Then we go straight about turning_radius + safety width.
+            straight_dist = settings.ROBOT_TURN_RADIUS + settings.OBSTACLE_SAFETY_WIDTH
+            straight_command = StraightCommand(straight_dist, 0)
+            self.commands.append(straight_command)
+            curr_pos = straight_command.apply_on_pos(curr_pos)
 
-            # TODO: Plan a way around the current obstacle.
+            # Then we do a forward turn to the left.
+            turn_command = TurnCommand(math.pi / 2, 0, False)
+            self.commands.append(turn_command)
+            curr_pos = turn_command.apply_on_pos(curr_pos)
+
+            # Go straight about turning_radius
+            straight_command = StraightCommand(settings.ROBOT_TURN_RADIUS, 0)
+            self.commands.append(straight_command)
+            curr_pos = straight_command.apply_on_pos(curr_pos)
+
             # Then, we recursively plan our way to the target.
             self.plan_curr_to_target(curr_pos, target_pos, is_start)
             return

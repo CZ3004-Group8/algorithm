@@ -11,7 +11,7 @@ class Obstacle:
     """
     Obstacle abstracts an image obstacle in the arena.
     """
-    SAFETY_WIDTH = settings.ROBOT_TURN_RADIUS
+    SAFETY_WIDTH = settings.OBSTACLE_SAFETY_WIDTH
 
     def __init__(self, x, y, orientation):
         """
