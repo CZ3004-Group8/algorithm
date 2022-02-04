@@ -66,7 +66,32 @@ class Brain:
         # Get the current offset of the obstacle from the robot's perspective.
         # Take note that the offset is in pygame coordinates (which is scaled)
         offset_pos = self.wrt_bot(curr_pos, target_pos)
-        # TODO: Find which quadrant the obstacle is wrt to the robot.
+        # Find which quadrant the obstacle is wrt to the robot.
+        angle = math.atan2(offset_pos.y, offset_pos.x)
+        if 0 <= angle < math.pi / 2:
+            print("Obstacle in robot's 1st quadrant.")
+            self.plan_first_quadrant()
+        elif math.pi / 2 <= angle <= math.pi:
+            print("Obstacle in robot's 2nd quadrant.")
+            self.plan_second_quadrant()
+        elif -math.pi <= angle < -math.pi / 2:
+            print("Obstacle in robot's 3rd quadrant.")
+            self.plan_third_quadrant()
+        elif -math.pi / 2 <= angle < 0:
+            print("Obstacle in robot's 4th quadrant.")
+            self.plan_fourth_quadrant()
+
+    def plan_first_quadrant(self):
+        pass
+
+    def plan_second_quadrant(self):
+        pass
+
+    def plan_third_quadrant(self):
+        pass
+
+    def plan_fourth_quadrant(self):
+        pass
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
@@ -92,9 +117,9 @@ class Brain:
             print("Robot currently facing north.")
 
         # check target's next coordinates with respect to robot's pov
-        newcoord_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
-        newcoord_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
-        print(f"Target's new coordinate wrt to robot's POV is {newcoord_x / settings.SCALING_FACTOR}, "
-              f"{newcoord_y / settings.SCALING_FACTOR}")
+        offset_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
+        offset_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
+        print(f"Target's new coordinate wrt to robot's POV is {offset_x / settings.SCALING_FACTOR}, "
+              f"{offset_y / settings.SCALING_FACTOR}")
 
-        return Position(newcoord_x, newcoord_y, 0)
+        return Position(offset_x, offset_y, 0)
