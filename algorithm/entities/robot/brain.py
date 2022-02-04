@@ -104,7 +104,7 @@ class Brain:
 
             # TODO: Plan a way around the current obstacle.
             # Then, we recursively plan our way to the target.
-            self.plan_curr_to_target(curr_pos, target_pos)
+            self.plan_curr_to_target(curr_pos, target_pos, is_start)
             return
 
     def plan_second_quadrant(self, curr_pos, target_pos, is_start):
