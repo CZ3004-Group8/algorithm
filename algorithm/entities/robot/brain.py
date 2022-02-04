@@ -1,6 +1,7 @@
 import itertools
 import math
 from algorithm import settings
+from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.position import Position
 
@@ -84,9 +85,14 @@ class Brain:
     def plan_first_quadrant(self, offset_pos):
         # If image is to the south
         if offset_pos.angle == -math.pi / 2:
+            print("Image is facing south.")
             self.first_quadrant_facing_south(offset_pos)
+        elif offset_pos.angle == 0:
+            print("Image is facing east.")
+            self.first_quadrant_facing_east(offset_pos)
 
     def first_quadrant_facing_south(self, offset_pos):
+        print("Planning path to first quadrant, south image.")
         # We always do a reverse turn to face east.
         self.commands.append(TurnCommand(-math.pi / 2, 0, True))
         # Update the offset
@@ -94,9 +100,56 @@ class Brain:
         offset_pos.x += self.robot.TURNING_RADIUS
 
         # Check that the x-offset is at least the turning radius.
-        # If not, we have to reverse.
+        # If not, we have to reverse until the x-offset is at least the turn radius.
         if offset_pos.x < self.robot.TURNING_RADIUS:
-            pass
+            dist = self.robot.TURNING_RADIUS - offset_pos.x
+            self.commands.append(StraightCommand(dist, 0, True))
+            # Update the offset
+            offset_pos.x += dist
+
+        # Then we travel until we are at least turning-distance distance away.
+        dist = offset_pos.x - self.robot.TURNING_RADIUS
+        self.commands.append(StraightCommand(dist, 0, False))
+        # Update the offset
+        offset_pos.x -= dist
+
+        # Then, we do a forward turn to the left.
+        self.commands.append(TurnCommand(math.pi / 2, 0, False))
+
+    def first_quadrant_facing_east(self, offset_pos):
+        print("Planning path to first quadrant, east image.")
+        # We always do a reverse turn to face east.
+        self.commands.append(TurnCommand(math.pi / 2, 0, True))
+        # Update the offset.
+        offset_pos.x += self.robot.TURNING_RADIUS
+        offset_pos.y += self.robot.TURNING_RADIUS
+
+        # We have to check that the x-offset is at least less than 0.
+        if offset_pos.x > 0:
+            # We have to travel forward until we are at least at the same
+            # x-coordinate as the target position.
+            dist = offset_pos.x
+            self.commands.append(StraightCommand(dist, 0, False))
+            # Update the offset
+            offset_pos.x = 0
+
+        # Then, we do a forward turn to the left.
+        self.commands.append(TurnCommand(math.pi / 2, 0, False))
+        # Update the offset
+        offset_pos.x -= self.robot.TURNING_RADIUS
+        offset_pos.y -= self.robot.TURNING_RADIUS
+
+        # Then we have to check if the y-offset is large enough for us to make another turn
+        # to the left in order to face the correct direction.
+        if offset_pos.y < self.robot.TURNING_RADIUS:
+            # If not, we have to reverse to give the minimum distance.
+            dist = self.robot.TURNING_RADIUS - offset_pos.y
+            self.commands.append(StraightCommand(dist, 0, True))
+            # Update the offset.
+            offset_pos.y += dist
+
+        # Then, we make a forward left turn to reach the target.
+        self.commands.append(TurnCommand(math.pi / 2, 0, False))
 
     def plan_second_quadrant(self, offset_pos):
         pass
