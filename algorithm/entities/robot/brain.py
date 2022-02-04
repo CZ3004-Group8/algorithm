@@ -1,14 +1,17 @@
 import itertools
 import math
+
 from algorithm import settings
-from algorithm.entities.commands.straight_command import StraightCommand
-from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.position import Position
 
 
 class Brain:
+    OFFSET_THRESHOLD: int = 0
+
     def __init__(self, robot, grid):
         self.robot = robot
+        self.OFFSET_THRESHOLD = self.robot.TURNING_RADIUS
+
         self.grid = grid
 
         # Compute the simple Hamiltonian path for all obstacles
@@ -71,102 +74,42 @@ class Brain:
         angle = math.atan2(offset_pos.y, offset_pos.x)
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
-            self.plan_first_quadrant(offset_pos)
+            self.plan_first_quadrant(curr_pos, target_pos)
         elif math.pi / 2 <= angle <= math.pi:
             print("Obstacle in robot's 2nd quadrant.")
-            self.plan_second_quadrant(offset_pos)
+            self.plan_second_quadrant(curr_pos, target_pos)
         elif -math.pi <= angle < -math.pi / 2:
             print("Obstacle in robot's 3rd quadrant.")
-            self.plan_third_quadrant(offset_pos)
+            self.plan_third_quadrant(curr_pos, target_pos)
         elif -math.pi / 2 <= angle < 0:
             print("Obstacle in robot's 4th quadrant.")
-            self.plan_fourth_quadrant(offset_pos)
+            self.plan_fourth_quadrant(curr_pos, target_pos)
 
-    def plan_first_quadrant(self, offset_pos):
-        # If image is to the south
+    def plan_first_quadrant(self, curr_pos, target_pos):
+        # Calculate offset
+        offset_pos = self.wrt_bot(curr_pos, target_pos)
+
         if offset_pos.angle == -math.pi / 2:
-            print("Image is facing south.")
-            self.first_quadrant_facing_south(offset_pos)
-        elif offset_pos.angle == 0:
-            print("Image is facing east.")
-            self.first_quadrant_facing_east(offset_pos)
+            self.first_quadrant_south_image(curr_pos, target_pos)
 
-    def first_quadrant_facing_south(self, offset_pos):
-        print("Planning path to first quadrant, south image.")
-        # We always do a reverse turn to face east.
-        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
-        # Update the offset
-        offset_pos.y += self.robot.TURNING_RADIUS
-        offset_pos.x += self.robot.TURNING_RADIUS
+    def first_quadrant_south_image(self, curr_pos, target_pos):
+        offset_pos = self.wrt_bot(curr_pos, target_pos)
+        # If the target obstacle is directly north, then we have a problem, due to possibility
+        # of collision. In this case, we have to "sidestep" the current obstacle.
+        if -self.OFFSET_THRESHOLD <= offset_pos.x <= self.OFFSET_THRESHOLD:
+            pass
 
-        # Check the amount of distance that we have to travel along the x-offset.
-        # We have to leave turning-radius distance left to make the final turn.
-        dist = offset_pos.x - self.robot.TURNING_RADIUS
-        self.commands.append(StraightCommand(dist, 0, False))
-        # Update the offset.
-        offset_pos.x -= dist
-
-        # Then we make a forward turn to the left.
-        self.commands.append(TurnCommand(math.pi / 2, 0, False))
-        # Update the offset.
-        offset_pos.x -= dist
-        offset_pos.y -= dist
-
-        # Check the remaining amount to travel along the y-offset.
-        dist = offset_pos.y
-        self.commands.append(StraightCommand(dist, 0, False))
-
-    def first_quadrant_facing_east(self, offset_pos):
-        print("Planning path to first quadrant, east image.")
-        # We always make a reverse turn to face east.
-        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
-        # Update the offset.
-        offset_pos.x += self.robot.TURNING_RADIUS
-        offset_pos.y += self.robot.TURNING_RADIUS
-
-        # Check how much distance to travel forward
-        dist = offset_pos.x
-        self.commands.append(StraightCommand(dist, 0, False))
-        # Update the offset.
-        offset_pos.x -= dist
-
-        # Do a forward turn to the left.
-        self.commands.append(TurnCommand(math.pi / 2, 0, False))
-        # Update the offset.
-        offset_pos.x -= self.robot.TURNING_RADIUS
-        offset_pos.y -= self.robot.TURNING_RADIUS
-
-        # Check the distance to travel forward.
-        dist = offset_pos.y - self.robot.TURNING_RADIUS
-        self.commands.append(StraightCommand(dist, 0, False))
-        # Update the offset
-        offset_pos.y -= dist
-
-        # Then, we make a last forward turn to the left.
-        self.commands.append(TurnCommand(math.pi / 2, 0, False))
-
-    def plan_second_quadrant(self, offset_pos):
+    def plan_second_quadrant(self, curr_pos, target_pos):
         pass
 
-    def plan_third_quadrant(self, offset_pos):
+    def plan_third_quadrant(self, curr_pos, target_pos):
         pass
 
-    def plan_fourth_quadrant(self, offset_pos):
-        # If image is facing to the south
-        if offset_pos.angle == -math.pi / 2:
-            self.fourth_quadrant_facing_south(offset_pos)
+    def plan_fourth_quadrant(self, curr_pos, target_pos):
+        pass
 
-    def fourth_quadrant_facing_south(self, offset_pos):
-        print("Planning path to fourth quadrant, south image.")
-        # Do a reverse turn to face east.
-        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
-        # Update the offset.
-        offset_pos.x += self.robot.TURNING_RADIUS
-        offset_pos.y += self.robot.TURNING_RADIUS
-
-        # Check that we have enough x-offset to make the final 180 turn to face the obstacle.
-        # In this case, we need to ensure that after we turn, we have 3 * turning-radius distance.
-
+    def fourth_quadrant_facing_south(self, curr_pos, target_pos):
+        pass
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
