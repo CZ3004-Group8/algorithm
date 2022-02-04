@@ -10,7 +10,7 @@ from algorithm.settings import SCALING_FACTOR
 class Robot:
     ROBOT_LENGTH = 21 * SCALING_FACTOR  # Front to back
     ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
-    TURNING_RADIUS = 25 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
+    TURNING_RADIUS = 30 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
 
     SPEED_PER_SECOND = 20 * SCALING_FACTOR  # Speed of the robot
     S = ROBOT_LENGTH / TURNING_RADIUS  # Used for calculating dt for angle change.
