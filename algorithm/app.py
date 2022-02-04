@@ -3,6 +3,7 @@ import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
+from algorithm.entities.connection import rpi_connection
 from algorithm.entities.grid.grid import Grid
 from algorithm.entities.robot.robot import Robot
 
@@ -12,14 +13,14 @@ class AlgoApp:
         pygame.init()
         self.running = False
         self.size = self.width, self.height = settings.WINDOW_SIZE
+        self.screen = self.clock = None
 
-        self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-        self.clock = pygame.time.Clock()
+        # RPi connection
+        self.connection = rpi_connection.RPiConnection()
 
         self.grid = Grid(obstacles)
         # Get the starting coordinate of the robot.
         start_pos = self.grid.get_start_box_rect().center
-
         self.robot = Robot(*start_pos, math.pi/2, self.grid)
 
     def settle_events(self):
@@ -36,6 +37,15 @@ class AlgoApp:
         Set initial values for the app.
         """
         self.running = True
+
+        self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.clock = pygame.time.Clock()
+
+        # Connect to RPi
+        pygame.display.set_caption("Connecting to Raspberry Pi...")
+        self.connection.connect()
+
+        # On successful connect
         pygame.display.set_caption("Algorithm")
 
     def do_updates(self):
