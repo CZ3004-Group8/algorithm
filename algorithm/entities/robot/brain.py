@@ -104,7 +104,7 @@ class Brain:
             # Then, we recursively plan our way to the target.
             self.plan_curr_to_target(curr_pos, target_pos)
             return
-        
+
     def plan_second_quadrant(self, curr_pos, target_pos):
         pass
 
