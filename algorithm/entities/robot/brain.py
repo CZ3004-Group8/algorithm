@@ -54,15 +54,17 @@ class Brain:
         """
         # Plan the path.
         curr_pos = self.robot.get_current_pos()
+        is_start = True
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
-            self.plan_curr_to_target(curr_pos, target_pos)
+            self.plan_curr_to_target(curr_pos, target_pos, is_start)
+            is_start = False
             print("-" * 40)
             # Update the current pos and angle
             curr_pos = target_pos
 
-    def plan_curr_to_target(self, curr_pos, target_pos):
+    def plan_curr_to_target(self, curr_pos, target_pos, is_start):
         """
         Plan a path for the robot to travel from the current position to the target position.
         """
@@ -73,21 +75,21 @@ class Brain:
         angle = math.atan2(offset_pos.y, offset_pos.x)
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
-            self.plan_first_quadrant(curr_pos, target_pos)
+            self.plan_first_quadrant(curr_pos, target_pos, is_start)
         elif math.pi / 2 <= angle <= math.pi:
             print("Obstacle in robot's 2nd quadrant.")
-            self.plan_second_quadrant(curr_pos, target_pos)
+            self.plan_second_quadrant(curr_pos, target_pos, is_start)
         elif -math.pi <= angle < -math.pi / 2:
             print("Obstacle in robot's 3rd quadrant.")
-            self.plan_third_quadrant(curr_pos, target_pos)
+            self.plan_third_quadrant(curr_pos, target_pos, is_start)
         elif -math.pi / 2 <= angle < 0:
             print("Obstacle in robot's 4th quadrant.")
-            self.plan_fourth_quadrant(curr_pos, target_pos)
+            self.plan_fourth_quadrant(curr_pos, target_pos, is_start)
 
-    def plan_first_quadrant(self, curr_pos, target_pos):
+    def plan_first_quadrant(self, curr_pos, target_pos, is_start):
         pass
 
-    def first_quadrant_south_image(self, curr_pos, target_pos):
+    def first_quadrant_south_image(self, curr_pos, target_pos, is_start):
         offset_pos = self.wrt_bot(curr_pos, target_pos)
         # If the target obstacle is directly north, then we have a problem, due to possibility
         # of collision. In this case, we have to "sidestep" the current obstacle.
@@ -96,16 +98,13 @@ class Brain:
             self.commands.append(TurnCommand(-math.pi / 2, 0, True))
             # TODO: Update curr_pos to show that the robot has turned.
 
-    def plan_second_quadrant(self, curr_pos, target_pos):
+    def plan_second_quadrant(self, curr_pos, target_pos, is_start):
         pass
 
-    def plan_third_quadrant(self, curr_pos, target_pos):
+    def plan_third_quadrant(self, curr_pos, target_pos, is_start):
         pass
 
-    def plan_fourth_quadrant(self, curr_pos, target_pos):
-        pass
-
-    def fourth_quadrant_facing_south(self, curr_pos, target_pos):
+    def plan_fourth_quadrant(self, curr_pos, target_pos, is_start):
         pass
 
     @classmethod
