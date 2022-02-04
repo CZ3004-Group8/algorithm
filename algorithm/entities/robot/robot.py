@@ -2,6 +2,8 @@ import math
 import pygame
 
 from algorithm import settings
+from algorithm.entities.commands.straight_command import StraightCommand
+from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.robot.brain import Brain
 from algorithm.entities.position import Position
 from algorithm.entities.assets import colors
@@ -44,26 +46,9 @@ class Robot:
 
         Note that ∆θ is in radians.
         """
-        # Get change in (x, y) coordinate.
-        x_change = self.TURNING_RADIUS * (math.sin(self.pos.angle + d_angle) - math.sin(self.pos.angle))
-        y_change = self.TURNING_RADIUS * (math.cos(self.pos.angle + d_angle) - math.cos(self.pos.angle))
-
-        if d_angle < 0 and not rev:  # Wheels to right moving forward.
-            self.pos.x -= x_change
-            self.pos.y -= y_change
-        elif (d_angle < 0 and rev) or \
-                (d_angle >= 0 and not rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
-            self.pos.x += x_change
-            self.pos.y += y_change
-        else:  # Wheels to right moving backwards.
-            self.pos.x -= x_change
-            self.pos.y -= y_change
-        self.pos.angle += d_angle
-
-        if self.pos.angle <= -math.pi:
-            self.pos.angle += 2 * math.pi
-        elif self.pos.angle >= math.pi:
-            self.pos.angle -= 2 * math.pi
+        # Create a turn command.
+        turn_command = TurnCommand(d_angle, 0, rev)
+        self.pos = turn_command.apply_on_pos(self.pos)
 
     def turn_left(self, rev):
         self.turn(-math.pi / 2, rev)
@@ -73,16 +58,11 @@ class Robot:
 
     def straight(self, dt, rev):
         # Get straight distance travelled within this time.
-        distance = dt * self.SPEED_PER_SECOND
-        
-        if self.pos.angle == 0:
-            self.pos.x += distance if not rev else -distance
-        elif self.pos.angle == math.pi / 2:
-            self.pos.y -= distance if not rev else -distance
-        elif self.pos.angle == -math.pi / 2:
-            self.pos.y += distance if not rev else -distance
-        else:
-            self.pos.x -= distance if not rev else -distance
+        distance = dt * self.SPEED_PER_SECOND * (-1 if rev else 1)
+
+        # Create the straight command
+        straight_command = StraightCommand(distance, 0)
+        self.pos = straight_command.apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
         prev = self.brain.grid.get_start_box_rect().center
