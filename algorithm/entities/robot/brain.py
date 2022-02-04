@@ -99,56 +99,50 @@ class Brain:
         offset_pos.y += self.robot.TURNING_RADIUS
         offset_pos.x += self.robot.TURNING_RADIUS
 
-        # Check that the x-offset is at least the turning radius.
-        # If not, we have to reverse until the x-offset is at least the turn radius.
-        if offset_pos.x < self.robot.TURNING_RADIUS:
-            dist = self.robot.TURNING_RADIUS - offset_pos.x
-            self.commands.append(StraightCommand(dist, 0, True))
-            # Update the offset
-            offset_pos.x += dist
-
-        # Then we travel until we are at least turning-distance distance away.
+        # Check the amount of distance that we have to travel along the x-offset.
+        # We have to leave turning-radius distance left to make the final turn.
         dist = offset_pos.x - self.robot.TURNING_RADIUS
         self.commands.append(StraightCommand(dist, 0, False))
-        # Update the offset
+        # Update the offset.
         offset_pos.x -= dist
 
-        # Then, we do a forward turn to the left.
+        # Then we make a forward turn to the left.
         self.commands.append(TurnCommand(math.pi / 2, 0, False))
+        # Update the offset.
+        offset_pos.x -= dist
+        offset_pos.y -= dist
+
+        # Check the remaining amount to travel along the y-offset.
+        dist = offset_pos.y
+        self.commands.append(StraightCommand(dist, 0, False))
 
     def first_quadrant_facing_east(self, offset_pos):
         print("Planning path to first quadrant, east image.")
-        # We always do a reverse turn to face east.
-        self.commands.append(TurnCommand(math.pi / 2, 0, True))
+        # We always make a reverse turn to face east.
+        self.commands.append(TurnCommand(-math.pi / 2, 0, True))
         # Update the offset.
         offset_pos.x += self.robot.TURNING_RADIUS
         offset_pos.y += self.robot.TURNING_RADIUS
+        
+        # Check how much distance to travel forward
+        dist = offset_pos.x
+        self.commands.append(StraightCommand(dist, 0, False))
+        # Update the offset.
+        offset_pos.x -= dist
 
-        # We have to check that the x-offset is at least less than 0.
-        if offset_pos.x > 0:
-            # We have to travel forward until we are at least at the same
-            # x-coordinate as the target position.
-            dist = offset_pos.x
-            self.commands.append(StraightCommand(dist, 0, False))
-            # Update the offset
-            offset_pos.x = 0
-
-        # Then, we do a forward turn to the left.
+        # Do a forward turn to the left.
         self.commands.append(TurnCommand(math.pi / 2, 0, False))
-        # Update the offset
+        # Update the offset.
         offset_pos.x -= self.robot.TURNING_RADIUS
         offset_pos.y -= self.robot.TURNING_RADIUS
 
-        # Then we have to check if the y-offset is large enough for us to make another turn
-        # to the left in order to face the correct direction.
-        if offset_pos.y < self.robot.TURNING_RADIUS:
-            # If not, we have to reverse to give the minimum distance.
-            dist = self.robot.TURNING_RADIUS - offset_pos.y
-            self.commands.append(StraightCommand(dist, 0, True))
-            # Update the offset.
-            offset_pos.y += dist
+        # Check the distance to travel forward.
+        dist = offset_pos.y - self.robot.TURNING_RADIUS
+        self.commands.append(StraightCommand(dist, 0, False))
+        # Update the offset
+        offset_pos.y -= dist
 
-        # Then, we make a forward left turn to reach the target.
+        # Then, we make a last forward turn to the left.
         self.commands.append(TurnCommand(math.pi / 2, 0, False))
 
     def plan_second_quadrant(self, offset_pos):
@@ -158,7 +152,13 @@ class Brain:
         pass
 
     def plan_fourth_quadrant(self, offset_pos):
-        pass
+        # If image is facing to the south
+        if offset_pos.angle == -math.pi / 2:
+            self.fourth_quadrant_facing_south(offset_pos)
+
+    def fourth_quadrant_facing_south(self, offset_pos):
+        print("Planning path to fourth quadrant, south image.")
+
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
