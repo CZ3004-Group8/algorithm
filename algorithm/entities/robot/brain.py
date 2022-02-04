@@ -91,11 +91,20 @@ class Brain:
         offset_pos = self.wrt_bot(curr_pos, target_pos)
         # If the target obstacle is directly north, then we have a problem, due to possibility
         # of collision. In this case, we have to "sidestep" the current obstacle.
-        if -self.OFFSET_THRESHOLD <= offset_pos.x <= self.OFFSET_THRESHOLD:
+        if offset_pos.x <= self.OFFSET_THRESHOLD:
             # We reverse turn and face east.
-            self.commands.append(TurnCommand(-math.pi / 2, 0, True))
-            # TODO: Update curr_pos to show that the robot has turned.
+            turn_command = TurnCommand(-math.pi / 2, 0, True)
+            self.commands.append(turn_command)
+            # Apply this command on the current position
+            curr_pos = turn_command.apply_on_pos(curr_pos)
 
+            # Then we go straight about
+
+            # TODO: Plan a way around the current obstacle.
+            # Then, we recursively plan our way to the target.
+            self.plan_curr_to_target(curr_pos, target_pos)
+            return
+        
     def plan_second_quadrant(self, curr_pos, target_pos):
         pass
 
