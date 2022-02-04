@@ -1,4 +1,8 @@
+import math
+
+from algorithm import settings
 from algorithm.entities.commands.command import Command
+from algorithm.entities.position import Position
 
 
 class TurnCommand(Command):
@@ -12,8 +16,7 @@ class TurnCommand(Command):
 
     __repr__ = __str__
 
-    @classmethod
-    def apply_on_pos(cls, pos):
+    def apply_on_pos(self, curr_pos: Position) -> Position:
         """
         x_new = x + R(sin(∆θ + θ) − sin θ)
         y_new = y − R(cos(∆θ + θ) − cos θ)
@@ -27,22 +30,24 @@ class TurnCommand(Command):
         Note that ∆θ is in radians.
         """
         # Get change in (x, y) coordinate.
-        x_change = self.TURNING_RADIUS * (math.sin(self.pos.angle + d_angle) - math.sin(self.pos.angle))
-        y_change = self.TURNING_RADIUS * (math.cos(self.pos.angle + d_angle) - math.cos(self.pos.angle))
+        x_change = settings.ROBOT_TURN_RADIUS * (math.sin(curr_pos.angle + self.angle) - math.sin(curr_pos.angle))
+        y_change = settings.ROBOT_TURN_RADIUS * (math.cos(curr_pos.angle + self.angle) - math.cos(curr_pos.angle))
 
-        if d_angle < 0 and not rev:  # Wheels to right moving forward.
-            self.pos.x -= x_change
-            self.pos.y -= y_change
-        elif (d_angle < 0 and rev) or \
-                (d_angle >= 0 and not rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
-            self.pos.x += x_change
-            self.pos.y += y_change
+        if self.angle < 0 and not self.rev:  # Wheels to right moving forward.
+            curr_pos.x -= x_change
+            curr_pos.y -= y_change
+        elif (self.angle < 0 and self.rev) or \
+                (self.angle >= 0 and not self.rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
+            curr_pos.x += x_change
+            curr_pos.y += y_change
         else:  # Wheels to right moving backwards.
-            self.pos.x -= x_change
-            self.pos.y -= y_change
-        self.pos.angle += d_angle
+            curr_pos.x -= x_change
+            curr_pos.y -= y_change
+        curr_pos.angle += self.angle
 
-        if self.pos.angle <= -math.pi:
-            self.pos.angle += 2 * math.pi
-        elif self.pos.angle >= math.pi:
-            self.pos.angle -= 2 * math.pi
+        if curr_pos.angle <= -math.pi:
+            curr_pos.angle += 2 * math.pi
+        elif curr_pos.angle >= math.pi:
+            curr_pos.angle -= 2 * math.pi
+
+        return curr_pos
