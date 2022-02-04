@@ -2,16 +2,15 @@ import itertools
 import math
 
 from algorithm import settings
+from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.position import Position
 
 
 class Brain:
-    OFFSET_THRESHOLD: int = 0  # Set later.
+    OFFSET_THRESHOLD = settings.ROBOT_TURN_RADIUS  # Set later.
 
     def __init__(self, robot, grid):
         self.robot = robot
-        self.OFFSET_THRESHOLD = self.robot.TURNING_RADIUS  # SET HERE.
-
         self.grid = grid
 
         # Compute the simple Hamiltonian path for all obstacles
@@ -89,7 +88,13 @@ class Brain:
         pass
 
     def first_quadrant_south_image(self, curr_pos, target_pos):
-        pass
+        offset_pos = self.wrt_bot(curr_pos, target_pos)
+        # If the target obstacle is directly north, then we have a problem, due to possibility
+        # of collision. In this case, we have to "sidestep" the current obstacle.
+        if -self.OFFSET_THRESHOLD <= offset_pos.x <= self.OFFSET_THRESHOLD:
+            # We reverse turn and face east.
+            self.commands.append(TurnCommand(-math.pi / 2, 0, True))
+            # TODO: Update curr_pos to show that the robot has turned.
 
     def plan_second_quadrant(self, curr_pos, target_pos):
         pass

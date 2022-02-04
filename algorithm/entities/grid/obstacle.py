@@ -1,9 +1,8 @@
 import math
 import pygame
 
+from algorithm import settings
 from algorithm.entities.position import Position
-from algorithm.entities.robot.robot import Robot
-from algorithm.entities.grid.grid import Grid
 from algorithm.entities.assets import colors
 from algorithm.settings import SCALING_FACTOR
 
@@ -12,7 +11,7 @@ class Obstacle:
     """
     Obstacle abstracts an image obstacle in the arena.
     """
-    SAFETY_WIDTH = Robot.TURNING_RADIUS
+    SAFETY_WIDTH = settings.ROBOT_TURN_RADIUS
 
     def __init__(self, x, y, orientation):
         """
@@ -22,15 +21,14 @@ class Obstacle:
         e.g. South -> Image is pointing south.
              North -> Image is pointing north.
         """
-        y = Grid.WIDTH - y * SCALING_FACTOR
+        y = settings.GRID_LENGTH - y * SCALING_FACTOR
         self.pos = Position(x * SCALING_FACTOR, y, orientation)
 
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
 
     def __str__(self):
-        return f"Obstacle({self.pos.x / SCALING_FACTOR}, " \
-               f"{(Grid.WIDTH - self.pos.y) / SCALING_FACTOR}, {self.pos.angle})"
+        return f"Obstacle({self.pos})"
 
     __repr__ = __str__
 
@@ -69,23 +67,23 @@ class Obstacle:
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame
         # Get the coordinates of the grid's bottom left-hand corner.
-        rect = pygame.Rect(0, 0, Grid.CELL_WIDTH, Grid.CELL_WIDTH)
+        rect = pygame.Rect(0, 0, settings.GRID_CELL_LENGTH, settings.GRID_CELL_LENGTH)
         rect.center = self.pos.xy()
         pygame.draw.rect(screen, colors.BLACK, rect)
 
         # Draw the direction of the picture
-        rect.width = Grid.CELL_WIDTH / 2
-        rect.height = Grid.CELL_WIDTH / 2
+        rect.width = settings.GRID_CELL_LENGTH / 2
+        rect.height = settings.GRID_CELL_LENGTH / 2
         rect.center = self.pos.xy()
 
         if self.pos.angle == math.pi / 2:
-            rect.centery -= Grid.CELL_WIDTH / 4
+            rect.centery -= settings.GRID_CELL_LENGTH / 4
         elif self.pos.angle == -math.pi / 2:
-            rect.centery += Grid.CELL_WIDTH / 4
+            rect.centery += settings.GRID_CELL_LENGTH / 4
         elif self.pos.angle == math.pi:
-            rect.centerx -= Grid.CELL_WIDTH / 4
+            rect.centerx -= settings.GRID_CELL_LENGTH / 4
         else:
-            rect.centerx += Grid.CELL_WIDTH / 4
+            rect.centerx += settings.GRID_CELL_LENGTH / 4
 
         # Draw the picture place
         pygame.draw.rect(screen, colors.RED, rect)

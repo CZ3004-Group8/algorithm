@@ -1,18 +1,18 @@
 import math
 import pygame
 
+from algorithm import settings
 from algorithm.entities.robot.brain import Brain
 from algorithm.entities.position import Position
 from algorithm.entities.assets import colors
-from algorithm.settings import SCALING_FACTOR
 
 
 class Robot:
-    ROBOT_LENGTH = 21 * SCALING_FACTOR  # Front to back
-    ROBOT_WIDTH = 20 * SCALING_FACTOR  # Left to right
-    TURNING_RADIUS = 30 * SCALING_FACTOR  # Turning radius of the robot in centimeters. Theoretical value is 25.
+    ROBOT_LENGTH = settings.ROBOT_LENGTH  # Front to back
+    ROBOT_WIDTH = settings.ROBOT_LENGTH  # Left to right
+    TURNING_RADIUS = settings.ROBOT_TURN_RADIUS  # Turning radius of the robot in centimeters. Theoretical value is 25.
 
-    SPEED_PER_SECOND = 20 * SCALING_FACTOR  # Speed of the robot
+    SPEED_PER_SECOND = settings.ROBOT_SPEED_PER_SECOND  # Speed of the robot
     S = ROBOT_LENGTH / TURNING_RADIUS  # Used for calculating dt for angle change.
 
     def __init__(self, x, y, angle, grid):

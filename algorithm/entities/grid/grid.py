@@ -1,14 +1,15 @@
 import pygame
 
+from algorithm import settings
 from algorithm.settings import SCALING_FACTOR
 from algorithm.entities.assets import colors
 
 
 class Grid:
-    WIDTH = 200 * SCALING_FACTOR  # The grid is 20x20 cells.
-    CELL_WIDTH = 10 * SCALING_FACTOR  # Width in centimeters of one cell.
+    WIDTH = settings.GRID_LENGTH  # The grid is 20x20 cells.
+    CELL_WIDTH = settings.GRID_CELL_LENGTH  # Width in centimeters of one cell.
 
-    START_BOX_WIDTH = 30 * SCALING_FACTOR  # Width of the starting box for the robot.
+    START_BOX_WIDTH = settings.GRID_START_BOX_LENGTH  # Width of the starting box for the robot.
 
     def __init__(self, obstacles):
         self.obstacles = obstacles
