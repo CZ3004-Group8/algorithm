@@ -64,8 +64,9 @@ class Brain:
         Plan a path for the robot to travel from the current position to the target position.
         """
         # Get the current offset of the obstacle from the robot's perspective.
+        # Take note that the offset is in pygame coordinates (which is scaled)
         offset_pos = self.wrt_bot(curr_pos, target_pos)
-        # Find which quadrant the obstacle is wrt to the robot.
+        # TODO: Find which quadrant the obstacle is wrt to the robot.
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
