@@ -43,7 +43,8 @@ class AlgoApp:
 
         # Connect to RPi
         pygame.display.set_caption("Connecting to Raspberry Pi...")
-        self.connection.connect()
+        if settings.MUST_CONNECT:
+            self.connection.connect()
 
         # On successful connect
         pygame.display.set_caption("Algorithm")

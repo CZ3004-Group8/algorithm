@@ -6,8 +6,12 @@ from algorithm.entities.position import Position
 
 
 class Brain:
+    OFFSET_THRESHOLD: int = 0
+
     def __init__(self, robot, grid):
         self.robot = robot
+        self.OFFSET_THRESHOLD = self.robot.TURNING_RADIUS
+
         self.grid = grid
 
         # Compute the simple Hamiltonian path for all obstacles
@@ -70,16 +74,16 @@ class Brain:
         angle = math.atan2(offset_pos.y, offset_pos.x)
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
-            self.plan_first_quadrant(offset_pos)
+            self.plan_first_quadrant(curr_pos, target_pos)
         elif math.pi / 2 <= angle <= math.pi:
             print("Obstacle in robot's 2nd quadrant.")
-            self.plan_second_quadrant(offset_pos)
+            self.plan_second_quadrant(curr_pos, target_pos)
         elif -math.pi <= angle < -math.pi / 2:
             print("Obstacle in robot's 3rd quadrant.")
-            self.plan_third_quadrant(offset_pos)
+            self.plan_third_quadrant(curr_pos, target_pos)
         elif -math.pi / 2 <= angle < 0:
             print("Obstacle in robot's 4th quadrant.")
-            self.plan_fourth_quadrant(offset_pos)
+            self.plan_fourth_quadrant(curr_pos, target_pos)
 
     def plan_first_quadrant(self, offset_pos):
         pass
@@ -87,13 +91,16 @@ class Brain:
     def first_quadrant_facing_south(self, offset_pos):
         pass
 
-    def plan_second_quadrant(self, offset_pos):
+    def plan_second_quadrant(self, curr_pos, target_pos):
         pass
 
-    def plan_third_quadrant(self, offset_pos):
+    def plan_third_quadrant(self, curr_pos, target_pos):
         pass
 
-    def plan_fourth_quadrant(self, offset_pos):
+    def plan_fourth_quadrant(self, curr_pos, target_pos):
+        pass
+
+    def fourth_quadrant_facing_south(self, curr_pos, target_pos):
         pass
 
     @classmethod
