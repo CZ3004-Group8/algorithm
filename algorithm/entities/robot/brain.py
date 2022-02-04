@@ -85,10 +85,10 @@ class Brain:
             print("Obstacle in robot's 4th quadrant.")
             self.plan_fourth_quadrant(curr_pos, target_pos)
 
-    def plan_first_quadrant(self, offset_pos):
+    def plan_first_quadrant(self, curr_pos, target_pos):
         pass
 
-    def first_quadrant_facing_south(self, offset_pos):
+    def first_quadrant_south_image(self, curr_pos, target_pos):
         pass
 
     def plan_second_quadrant(self, curr_pos, target_pos):
