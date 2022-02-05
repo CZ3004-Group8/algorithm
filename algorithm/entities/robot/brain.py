@@ -100,13 +100,13 @@ class Brain:
             # 3. Reposition until enough x-offset to line up x-coordinate after a forward turn to the right.
             # 4. Do a forward turn to the right.
             # 5. Go straight until we reach the target.
-            step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS, 0)
+            step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS)
             self.commands.append(step_1)
             # Update offsets
             offset_pos.y -= settings.ROBOT_TURN_RADIUS
             curr_pos = step_1.apply_on_pos(curr_pos)
 
-            step_2 = TurnCommand(math.pi / 2, 0, True)
+            step_2 = TurnCommand(math.pi / 2, True)
             self.commands.append(step_2)
             # Update offsets
             offset_pos.y += settings.ROBOT_TURN_RADIUS
@@ -115,19 +115,19 @@ class Brain:
 
             # offset_x must be -turning_radius.
             realign_dist = -settings.ROBOT_TURN_RADIUS - offset_pos.x
-            step_3 = StraightCommand(realign_dist, 0)
+            step_3 = StraightCommand(realign_dist)
             # Update offsets
             offset_pos.x = -settings.ROBOT_TURN_RADIUS
             curr_pos = step_3.apply_on_pos(curr_pos)
 
-            step_4 = TurnCommand(-math.pi / 2, 0, False)
+            step_4 = TurnCommand(-math.pi / 2, False)
             self.commands.append(step_4)
             # Update offsets
             offset_pos.x += settings.ROBOT_TURN_RADIUS
             offset_pos.y -= settings.ROBOT_TURN_RADIUS
             curr_pos = step_4.apply_on_pos(curr_pos)
 
-            step_5 = StraightCommand(offset_pos.y, 0)
+            step_5 = StraightCommand(offset_pos.y)
             self.commands.append(step_5)
             # Only need to update curr_pos
             curr_pos = step_5.apply_on_pos(curr_pos)
@@ -141,19 +141,19 @@ class Brain:
         # 3. Do a forward turn to the right.
         # 4. Go forward another safety width distance.
         # 5. Recursively check for the path.
-        step_1 = TurnCommand(math.pi / 2, 0, True)
+        step_1 = TurnCommand(math.pi / 2, True)
         self.commands.append(step_1)
         curr_pos = step_1.apply_on_pos(curr_pos)
 
-        step_2 = StraightCommand(-settings.OBSTACLE_SAFETY_WIDTH, 0)
+        step_2 = StraightCommand(-settings.OBSTACLE_SAFETY_WIDTH)
         self.commands.append(step_2)
         curr_pos = step_2.apply_on_pos(curr_pos)
 
-        step_3 = TurnCommand(-math.pi / 2, 0, False)
+        step_3 = TurnCommand(-math.pi / 2, False)
         self.commands.append(step_3)
         curr_pos = step_3.apply_on_pos(curr_pos)
 
-        step_4 = StraightCommand(settings.OBSTACLE_SAFETY_WIDTH, 0)
+        step_4 = StraightCommand(settings.OBSTACLE_SAFETY_WIDTH)
         self.commands.append(step_4)
         curr_pos = step_4.apply_on_pos(curr_pos)
 
@@ -178,30 +178,30 @@ class Brain:
             # 3. Reposition until enough x-offset to line up x-coordinate after a forward turn to the left.
             # 4. Do a forward turn to the left.
             # 5. Go straight until we reach the target.
-            step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS, 0)
+            step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS)
             self.commands.append(step_1)
             offset_pos.y -= settings.ROBOT_TURN_RADIUS
             curr_pos = step_1.apply_on_pos(curr_pos)
 
-            step_2 = TurnCommand(-math.pi / 2, 0, True)
+            step_2 = TurnCommand(-math.pi / 2, True)
             self.commands.append(step_2)
             offset_pos.x -= settings.ROBOT_TURN_RADIUS
             offset_pos.y += settings.ROBOT_TURN_RADIUS
             curr_pos = step_2.apply_on_pos(curr_pos)
 
             realign_dist = offset_pos.x - settings.ROBOT_TURN_RADIUS
-            step_3 = StraightCommand(realign_dist, 0)
+            step_3 = StraightCommand(realign_dist)
             self.commands.append(step_3)
             offset_pos.x = settings.ROBOT_TURN_RADIUS
             curr_pos = step_3.apply_on_pos(curr_pos)
 
-            step_4 = TurnCommand(math.pi / 2, 0, False)
+            step_4 = TurnCommand(math.pi / 2, False)
             self.commands.append(step_4)
             offset_pos.x += settings.ROBOT_TURN_RADIUS
             offset_pos.y -= settings.ROBOT_TURN_RADIUS
             curr_pos = step_3.apply_on_pos(curr_pos)
 
-            step_5 = StraightCommand(offset_pos.y, 0)
+            step_5 = StraightCommand(offset_pos.y)
             self.commands.append(step_5)
             curr_pos = step_5.apply_on_pos(curr_pos)
             # END.
@@ -214,19 +214,19 @@ class Brain:
         # 3. Do a forward turn to the left.
         # 4. Go forward another safety width distance.
         # 5. Recursively check for the path.
-        step_1 = TurnCommand(-math.pi / 2, 0, True)
+        step_1 = TurnCommand(-math.pi / 2, True)
         self.commands.append(step_1)
         curr_pos = step_1.apply_on_pos(curr_pos)
 
-        step_2 = StraightCommand(-settings.OBSTACLE_SAFETY_WIDTH, 0)
+        step_2 = StraightCommand(-settings.OBSTACLE_SAFETY_WIDTH)
         self.commands.append(step_2)
         curr_pos = step_2.apply_on_pos(curr_pos)
 
-        step_3 = TurnCommand(math.pi / 2, 0, False)
+        step_3 = TurnCommand(math.pi / 2, False)
         self.commands.append(step_3)
         curr_pos = step_3.apply_on_pos(curr_pos)
 
-        step_4 = StraightCommand(settings.OBSTACLE_SAFETY_WIDTH, 0)
+        step_4 = StraightCommand(settings.OBSTACLE_SAFETY_WIDTH)
         self.commands.append(step_4)
         curr_pos = step_4.apply_on_pos(curr_pos)
 
@@ -250,42 +250,42 @@ class Brain:
         # 5. Do a forward turn to the right.
         # 6. Realign to allow turning_radius distance between current and target x-coordinate.
         # 7. Do a forward turn to the right.
-        step_1 = TurnCommand(math.pi / 2, 0, True)
+        step_1 = TurnCommand(math.pi / 2, True)
         self.commands.append(step_1)
         offset_pos.x -= settings.ROBOT_TURN_RADIUS
         offset_pos.y += settings.ROBOT_TURN_RADIUS
         curr_pos = step_1.apply_on_pos(curr_pos)
 
         realign_dist = -(settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS) - offset_pos.x
-        step_2 = StraightCommand(realign_dist, 0)
+        step_2 = StraightCommand(realign_dist)
         self.commands.append(step_2)
         offset_pos.x = -(settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS)
         curr_pos = step_2.apply_on_pos(curr_pos)
 
-        step_3 = TurnCommand(math.pi / 2, 0, False)
+        step_3 = TurnCommand(math.pi / 2, False)
         self.commands.append(step_3)
         offset_pos.x += settings.ROBOT_TURN_RADIUS
         offset_pos.y += settings.ROBOT_TURN_RADIUS
         curr_pos = step_3.apply_on_pos(curr_pos)
 
-        step_4 = StraightCommand(-offset_pos.y, 0)
+        step_4 = StraightCommand(-offset_pos.y)
         self.commands.append(step_4)
         offset_pos.y = 0
         curr_pos = step_4.apply_on_pos(curr_pos)
 
-        step_5 = TurnCommand(-math.pi / 2, 0, False)
+        step_5 = TurnCommand(-math.pi / 2, False)
         self.commands.append(step_5)
         offset_pos.x += settings.ROBOT_TURN_RADIUS
         offset_pos.y += settings.ROBOT_TURN_RADIUS
         curr_pos = step_5.apply_on_pos(curr_pos)
 
         realign_dist = -offset_pos.x - settings.ROBOT_TURN_RADIUS
-        step_6 = StraightCommand(realign_dist, 0)
+        step_6 = StraightCommand(realign_dist)
         self.commands.append(step_6)
         offset_pos.x = -settings.ROBOT_TURN_RADIUS
         curr_pos = step_6.apply_on_pos(curr_pos)
 
-        step_7 = TurnCommand(-math.pi / 2, 0, False)
+        step_7 = TurnCommand(-math.pi / 2, False)
         self.commands.append(step_7)
         curr_pos = step_7.apply_on_pos(curr_pos)
         # END
@@ -308,42 +308,42 @@ class Brain:
         # 5. Do a forward turn to the left.
         # 6. Realign to allow turning_radius distance between current and target x-coordinate.
         # 7. Do a forward turn to the left.
-        step_1 = TurnCommand(-math.pi / 2, 0, True)
+        step_1 = TurnCommand(-math.pi / 2, True)
         self.commands.append(step_1)
         offset_pos.x += settings.ROBOT_TURN_RADIUS
         offset_pos.y -= settings.ROBOT_TURN_RADIUS
         curr_pos = step_1.apply_on_pos(curr_pos)
 
         realign_dist = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS - offset_pos.x
-        step_2 = StraightCommand(realign_dist, 0)
+        step_2 = StraightCommand(realign_dist)
         self.commands.append(step_2)
         offset_pos.x = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS
         curr_pos = step_2.apply_on_pos(curr_pos)
 
-        step_3 = TurnCommand(-math.pi / 2, 0, False)
+        step_3 = TurnCommand(-math.pi / 2, False)
         self.commands.append(step_3)
         offset_pos.x -= settings.ROBOT_TURN_RADIUS
         offset_pos.y -= settings.ROBOT_TURN_RADIUS
         curr_pos = step_3.apply_on_pos(curr_pos)
 
-        step_4 = StraightCommand(-offset_pos.y, 0)
+        step_4 = StraightCommand(-offset_pos.y)
         self.commands.append(step_4)
         offset_pos.y = 0
         curr_pos = step_4.apply_on_pos(curr_pos)
 
-        step_5 = TurnCommand(math.pi / 2, 0, False)
+        step_5 = TurnCommand(math.pi / 2, False)
         self.commands.append(step_5)
         offset_pos.x -= settings.ROBOT_TURN_RADIUS
         offset_pos.y -= settings.ROBOT_TURN_RADIUS
         curr_pos = step_5.apply_on_pos(curr_pos)
 
         realign_dist = settings.ROBOT_TURN_RADIUS - offset_pos.x
-        step_6 = StraightCommand(realign_dist, 0)
+        step_6 = StraightCommand(realign_dist)
         self.commands.append(step_6)
         offset_pos.x = settings.ROBOT_TURN_RADIUS
         curr_pos = step_6.apply_on_pos(curr_pos)
 
-        step_7 = TurnCommand(math.pi / 2, 0, False)
+        step_7 = TurnCommand(math.pi / 2, False)
         self.commands.append(step_7)
         curr_pos = step_7.apply_on_pos(curr_pos)
         # END

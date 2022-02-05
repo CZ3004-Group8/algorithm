@@ -6,7 +6,8 @@ from algorithm.entities.position import Position
 
 
 class TurnCommand(Command):
-    def __init__(self, angle, time, rev):
+    def __init__(self, angle, rev):
+        time = abs((angle * settings.ROBOT_LENGTH) / (settings.ROBOT_SPEED_PER_SECOND * settings.ROBOT_S_FACTOR))
         super().__init__("turn", time)
         self.angle = angle
         self.rev = rev

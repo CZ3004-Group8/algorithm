@@ -1,11 +1,13 @@
 import math
 
+from algorithm import settings
 from algorithm.entities.commands.command import Command
 from algorithm.entities.position import Position
 
 
 class StraightCommand(Command):
-    def __init__(self, dist, time):
+    def __init__(self, dist):
+        time = dist / settings.ROBOT_SPEED_PER_SECOND
         super().__init__("straight", time)
         self.dist = dist
 

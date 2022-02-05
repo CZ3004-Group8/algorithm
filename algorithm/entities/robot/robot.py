@@ -10,12 +10,7 @@ from algorithm.entities.assets import colors
 
 
 class Robot:
-    ROBOT_LENGTH = settings.ROBOT_LENGTH  # Front to back
-    ROBOT_WIDTH = settings.ROBOT_LENGTH  # Left to right
-    TURNING_RADIUS = settings.ROBOT_TURN_RADIUS  # Turning radius of the robot in centimeters. Theoretical value is 25.
-
-    SPEED_PER_SECOND = settings.ROBOT_SPEED_PER_SECOND  # Speed of the robot
-    S = ROBOT_LENGTH / TURNING_RADIUS  # Used for calculating dt for angle change.
+    S = settings.ROBOT_LENGTH / settings.ROBOT_TURN_RADIUS  # Used for calculating dt for angle change.
 
     def __init__(self, x, y, angle, grid):
         """
@@ -25,7 +20,7 @@ class Robot:
         self.brain = Brain(self, grid)
 
         self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
-                                            (self.ROBOT_LENGTH / 2, self.ROBOT_LENGTH / 2))
+                                            (settings.ROBOT_LENGTH / 2, settings.ROBOT_LENGTH / 2))
         self.rot_image = self.image  # Store rotated image
 
         self.path_hist = []
@@ -47,7 +42,7 @@ class Robot:
         Note that ∆θ is in radians.
         """
         # Create a turn command.
-        turn_command = TurnCommand(d_angle, 0, rev)
+        turn_command = TurnCommand(d_angle, rev)
         self.pos = turn_command.apply_on_pos(self.pos)
 
     def turn_left(self, rev):
@@ -56,12 +51,12 @@ class Robot:
     def turn_right(self, rev):
         self.turn(math.pi / 2, rev)
 
-    def straight(self, dt, rev):
+    def straight(self, dt):
         # Get straight distance travelled within this time.
-        distance = dt * self.SPEED_PER_SECOND * (-1 if rev else 1)
+        distance = dt * settings.ROBOT_SPEED_PER_SECOND
 
         # Create the straight command
-        straight_command = StraightCommand(distance, 0)
+        straight_command = StraightCommand(distance)
         self.pos = straight_command.apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
@@ -74,7 +69,7 @@ class Robot:
 
     def draw_self(self, screen):
         # The red background
-        pygame.draw.circle(screen, colors.RED, self.pos.xy(), self.ROBOT_WIDTH / 2)
+        pygame.draw.circle(screen, colors.RED, self.pos.xy(), settings.ROBOT_LENGTH / 2)
 
         # The arrow to represent the direction of the robot.
         rot_image = pygame.transform.rotate(self.image,
