@@ -21,9 +21,14 @@ class TurnCommand(Command):
         self.rev = rev
 
     def __str__(self):
-        return f"TurnCommand({self.angle:.2f}rad, {self.time:.2f}s, rev={self.rev})"
+        return f"TurnCommand({self.angle:.2f}rad, {self.total_ticks} ticks, rev={self.rev})"
 
     __repr__ = __str__
+
+    def process_one_tick(self, robot):
+        self.tick()
+        angle = self.angle / self.total_ticks
+        robot.turn(angle, self.rev)
 
     def apply_on_pos(self, curr_pos: Position):
         """

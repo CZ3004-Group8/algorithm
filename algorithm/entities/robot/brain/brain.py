@@ -74,6 +74,7 @@ class Brain:
             is_start = False
             print("-" * 40)
             curr_pos = target_pos
+            break  # NOTE: Processing only until first node for now.
 
     def plan_curr_to_target(self, curr_pos: Position, target_pos: Position, is_start: bool):
         """

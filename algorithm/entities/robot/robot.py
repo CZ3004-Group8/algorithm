@@ -5,6 +5,7 @@ import pygame
 from algorithm import settings
 from algorithm.entities.assets import colors
 from algorithm.entities.assets.direction import Direction
+from algorithm.entities.commands.command import Command
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.grid.position import Position
@@ -25,7 +26,7 @@ class Robot:
                                             (settings.ROBOT_LENGTH / 2, settings.ROBOT_LENGTH / 2))
         self.rot_image = self.image  # Store rotated image
 
-        self.path_hist = []
+        self.path_hist = []  # Stores the history of the path taken by the robot.
 
         self.current_command = 0  # Index of the current command being executed.
 
@@ -99,4 +100,15 @@ class Robot:
 
     def update(self):
         # If no more commands to execute, then return.
-        pass
+        if len(self.brain.commands) == 0:
+            return
+
+        # If not, the first command in the list is always the command to execute.
+        command: Command = self.brain.commands[0]
+        command.process_one_tick(self)
+        # If there are no more ticks to do, then we can assume that we have
+        # successfully completed this command, and so we can remove it.
+        # The next time this method is run, then we will process the next command in the list.
+        if command.ticks <= 0:
+            print(f"Finished processing {command}")
+            self.brain.commands.popleft()

@@ -12,15 +12,20 @@ class StraightCommand(Command):
         Specified distance is scaled. Do not divide the provided distance by the scaling factor!
         """
         # Calculate the time needed to travel the required distance.
-        time = dist / settings.ROBOT_SPEED_PER_SECOND
+        time = abs(dist / settings.ROBOT_SPEED_PER_SECOND)
         super().__init__(self.COMMAND_TYPE, time)
 
         self.dist = dist
 
     def __str__(self):
-        return f"StraightCommand(dist={self.dist / settings.SCALING_FACTOR} in {self.time:.2f}s)"
+        return f"StraightCommand(dist={self.dist / settings.SCALING_FACTOR}, {self.total_ticks} ticks)"
 
     __repr__ = __str__
+
+    def process_one_tick(self, robot):
+        self.tick()
+        distance = self.dist / self.total_ticks
+        robot.straight(distance)
 
     def apply_on_pos(self, curr_pos: Position):
         """
