@@ -1,5 +1,6 @@
 import itertools
 import math
+from collections import deque
 from typing import Tuple
 
 from algorithm import settings
@@ -26,7 +27,7 @@ class Brain:
         self.simple_hamiltonian = tuple()
 
         # Create all the commands required to finish the course.
-        self.commands = []
+        self.commands = deque()
 
     def compute_simple_hamiltonian_path(self) -> Tuple[Obstacle]:
         """
@@ -65,14 +66,14 @@ class Brain:
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
         curr_pos = self.robot.get_current_pos().copy()
-        is_start = True
+        is_start = True  # At starting position, the robot has no obstacle in front of it.
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
-            print(curr_pos, target_pos)
             self.plan_curr_to_target(curr_pos, target_pos, is_start)
             is_start = False
             print("-" * 40)
+            curr_pos = target_pos
 
     def plan_curr_to_target(self, curr_pos: Position, target_pos: Position, is_start: bool):
         """
@@ -81,6 +82,8 @@ class Brain:
         # Get the current offset of the obstacle from the robot's perspective.
         # Take note that the offset is in pygame coordinates (which is scaled)
         offset_pos = self.wrt_bot(curr_pos, target_pos)
+        print(f"Target's new coordinate wrt to robot's POV is {offset_pos.x / settings.SCALING_FACTOR}, "
+              f"{offset_pos.y / settings.SCALING_FACTOR}")
         # Find which quadrant the obstacle is wrt to the robot.
         angle = math.atan2(offset_pos.y, offset_pos.x)
 
@@ -102,7 +105,7 @@ class Brain:
             self.fourth.extend_then_clear_commands(self.commands)
 
     @staticmethod
-    def wrt_bot(bot_pos, target_pos) -> Position:
+    def wrt_bot(bot_pos: Position, target_pos: Position) -> Position:
         """
         Return a new Position object that has the bot always facing north and at the origin, and having the target
         offset from the robot.
@@ -112,23 +115,16 @@ class Brain:
 
         facing = 0
         # We change it to depend on the current orientation.
-        if bot_pos.direction == 0:
-            print("Robot currently facing east.")
+        if bot_pos.direction == Direction.RIGHT:
             facing = 3
-        elif bot_pos.direction == -math.pi / 2:
-            print("Robot currently facing south.")
+        elif bot_pos.direction == Direction.BOTTOM:
             facing = 2
-        elif bot_pos.direction == math.pi:
-            print("Robot currently facing west.")
+        elif bot_pos.direction == Direction.LEFT:
             facing = 1
-        else:
-            print("Robot currently facing north.")
 
         # check target's next coordinates with respect to robot's pov
         offset_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
         offset_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
-        print(f"Target's new coordinate wrt to robot's POV is {offset_x / settings.SCALING_FACTOR}, "
-              f"{offset_y / settings.SCALING_FACTOR}")
 
         # TODO: Logic to get correct direction.
         return Position(offset_x, offset_y, Direction.BOTTOM)

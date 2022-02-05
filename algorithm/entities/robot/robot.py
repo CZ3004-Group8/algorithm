@@ -1,13 +1,14 @@
 import math
+
 import pygame
 
 from algorithm import settings
+from algorithm.entities.assets import colors
 from algorithm.entities.assets.direction import Direction
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
-from algorithm.entities.robot.brain.brain import Brain
 from algorithm.entities.grid.position import Position
-from algorithm.entities.assets import colors
+from algorithm.entities.robot.brain.brain import Brain
 
 
 class Robot:

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections import deque
 
 from algorithm.entities.grid.position import Position
 
@@ -8,7 +9,7 @@ class QuadrantBrain(ABC):
         self.brain = brain
         self.commands = []
 
-    def extend_then_clear_commands(self, li: list):
+    def extend_then_clear_commands(self, li: deque):
         li.extend(self.commands)
         self.commands.clear()
 
