@@ -8,8 +8,6 @@ from algorithm.entities.position import Position
 
 
 class Brain:
-    OFFSET_THRESHOLD = settings.ROBOT_TURN_RADIUS  # Set later.
-
     def __init__(self, robot, grid):
         self.robot = robot
         self.grid = grid
@@ -59,11 +57,11 @@ class Brain:
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
-            self.plan_curr_to_target(curr_pos, target_pos, is_start)
+            dest_pos = self.plan_curr_to_target(curr_pos, target_pos, is_start)
             is_start = False
             print("-" * 40)
-            # Update the current pos and angle
-            curr_pos = target_pos
+            # Update the current pos and angle.
+            curr_pos = dest_pos
 
     def plan_curr_to_target(self, curr_pos, target_pos, is_start):
         """
@@ -76,59 +74,100 @@ class Brain:
         angle = math.atan2(offset_pos.y, offset_pos.x)
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
-            self.plan_first_quadrant(curr_pos, target_pos, is_start)
+            return self.plan_first_quadrant(curr_pos, target_pos, is_start)
         elif math.pi / 2 <= angle <= math.pi:
             print("Obstacle in robot's 2nd quadrant.")
-            self.plan_second_quadrant(curr_pos, target_pos, is_start)
+            return self.plan_second_quadrant(curr_pos, target_pos, is_start)
         elif -math.pi <= angle < -math.pi / 2:
             print("Obstacle in robot's 3rd quadrant.")
-            self.plan_third_quadrant(curr_pos, target_pos, is_start)
+            return self.plan_third_quadrant(curr_pos, target_pos, is_start)
         elif -math.pi / 2 <= angle < 0:
             print("Obstacle in robot's 4th quadrant.")
-            self.plan_fourth_quadrant(curr_pos, target_pos, is_start)
+            return self.plan_fourth_quadrant(curr_pos, target_pos, is_start)
 
     def plan_first_quadrant(self, curr_pos, target_pos, is_start):
-        pass
+        return target_pos
 
     def first_quadrant_south_image(self, curr_pos, target_pos, is_start):
+        # Get the offset.
         offset_pos = self.wrt_bot(curr_pos, target_pos)
-        # If the target obstacle is directly north, then we have a problem, due to possibility
-        # of collision. In this case, we have to "sidestep" the current obstacle.
-        if offset_pos.x <= self.OFFSET_THRESHOLD:
-            # We reverse turn and face east.
-            turn_command = TurnCommand(-math.pi / 2, 0, True)
-            self.commands.append(turn_command)
-            # Apply this command on the current position
-            curr_pos = turn_command.apply_on_pos(curr_pos)
 
-            # Then we go straight about turning_radius + safety width.
-            straight_dist = settings.ROBOT_TURN_RADIUS + settings.OBSTACLE_SAFETY_WIDTH
-            straight_command = StraightCommand(straight_dist, 0)
-            self.commands.append(straight_command)
-            curr_pos = straight_command.apply_on_pos(curr_pos)
+        # If robot is moving from a starting point (no obstacle in front of the robot).
+        if is_start:
+            # STEPS:
+            # 1. Go forward turning_radius distance.
+            # 2. Do a reverse turn to face west.
+            # 3. Reposition until enough x-offset to line up x-coordinate after a forward turn to the right.
+            # 4. Do a forward turn to the right.
+            # 5. Go straight until we reach the target.
+            step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS, 0)
+            self.commands.append(step_1)
+            # Update offsets
+            offset_pos.y -= settings.ROBOT_TURN_RADIUS
+            curr_pos = step_1.apply_on_pos(curr_pos)
 
-            # Then we do a forward turn to the left.
-            turn_command = TurnCommand(math.pi / 2, 0, False)
-            self.commands.append(turn_command)
-            curr_pos = turn_command.apply_on_pos(curr_pos)
+            step_2 = TurnCommand(math.pi / 2, 0, True)
+            self.commands.append(step_2)
+            # Update offsets
+            offset_pos.y += settings.ROBOT_TURN_RADIUS
+            offset_pos.x -= settings.ROBOT_TURN_RADIUS
+            curr_pos = step_2.apply_on_pos(curr_pos)
 
-            # Go straight about turning_radius
-            straight_command = StraightCommand(settings.ROBOT_TURN_RADIUS, 0)
-            self.commands.append(straight_command)
-            curr_pos = straight_command.apply_on_pos(curr_pos)
+            # offset_x must be -turning_radius.
+            realign_dist = -settings.ROBOT_TURN_RADIUS - offset_pos.x
+            step_3 = StraightCommand(realign_dist, 0)
+            # Update offsets
+            offset_pos.x = -settings.ROBOT_TURN_RADIUS
+            curr_pos = step_3.apply_on_pos(curr_pos)
 
-            # Then, we recursively plan our way to the target.
-            self.plan_curr_to_target(curr_pos, target_pos, is_start)
-            return
+            step_4 = TurnCommand(-math.pi / 2, 0, False)
+            self.commands.append(step_4)
+            # Update offsets
+            offset_pos.x += settings.ROBOT_TURN_RADIUS
+            offset_pos.y -= settings.ROBOT_TURN_RADIUS
+            curr_pos = step_4.apply_on_pos(curr_pos)
+
+            step_5 = StraightCommand(offset_pos.y, 0)
+            self.commands.append(step_5)
+            # Only need to update curr_pos
+            curr_pos = step_5.apply_on_pos(curr_pos)
+            # END
+            return curr_pos
+
+        # There is an obstacle in front of the robot, so we need to move the robot away.
+        # STEPS:
+        # 1. Do a reverse turn to face to the west.
+        # 2. Reverse another safety width distance.
+        # 3. Do a forward turn to the right.
+        # 4. Go forward another safety width distance.
+        # 5. Recursively check for the path.
+        step_1 = TurnCommand(math.pi / 2, 0, True)
+        self.commands.append(step_1)
+        curr_pos = step_1.apply_on_pos(curr_pos)
+
+        step_2 = StraightCommand(-settings.OBSTACLE_SAFETY_WIDTH, 0)
+        self.commands.append(step_2)
+        curr_pos = step_2.apply_on_pos(curr_pos)
+
+        step_3 = TurnCommand(-math.pi / 2, 0, False)
+        self.commands.append(step_3)
+        curr_pos = step_3.apply_on_pos(curr_pos)
+
+        step_4 = StraightCommand(settings.OBSTACLE_SAFETY_WIDTH, 0)
+        self.commands.append(step_4)
+        curr_pos = step_4.apply_on_pos(curr_pos)
+
+        # We set is_start to True, since we have moved away from the obstacle.
+        return self.plan_curr_to_target(curr_pos, target_pos, True)
 
     def plan_second_quadrant(self, curr_pos, target_pos, is_start):
-        pass
+        return target_pos
 
     def plan_third_quadrant(self, curr_pos, target_pos, is_start):
-        pass
+        return target_pos
 
     def plan_fourth_quadrant(self, curr_pos, target_pos, is_start):
-        pass
+        return target_pos
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
