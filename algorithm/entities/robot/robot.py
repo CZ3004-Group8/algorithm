@@ -110,5 +110,5 @@ class Robot:
         # successfully completed this command, and so we can remove it.
         # The next time this method is run, then we will process the next command in the list.
         if command.ticks <= 0:
-            print(f"Finished processing {command}")
+            print(f"Finished processing {command}, {self.pos}")
             self.brain.commands.popleft()

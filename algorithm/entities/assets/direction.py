@@ -34,7 +34,7 @@ class Direction(Enum):
             return self.RIGHT
         elif math.isclose(angle, math.pi / 2):
             return self.TOP
-        elif math.isclose(angle, math.pi):
+        elif math.isclose(angle, math.pi) or math.isclose(angle, -math.pi):
             return self.LEFT
         elif math.isclose(angle, -math.pi / 2):
             return self.BOTTOM

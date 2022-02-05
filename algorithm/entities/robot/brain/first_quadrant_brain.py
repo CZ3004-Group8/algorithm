@@ -30,7 +30,7 @@ class FirstQuadrantBrain(QuadrantBrain):
             # 4. Do a forward turn to the right.
             # 5. Go straight until we reach the target.
             step_1 = StraightCommand(settings.ROBOT_TURN_RADIUS)
-            self.brain.commands.append(step_1)
+            self.commands.append(step_1)
             # Update offsets
             offset_pos.y -= settings.ROBOT_TURN_RADIUS
             step_1.apply_on_pos(curr_pos)
@@ -59,7 +59,6 @@ class FirstQuadrantBrain(QuadrantBrain):
 
             step_5 = StraightCommand(offset_pos.y)
             self.commands.append(step_5)
-            # Only need to update curr_pos
             step_5.apply_on_pos(curr_pos)
             # END
             return

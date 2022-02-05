@@ -50,13 +50,7 @@ class Brain:
                 dist += math.sqrt(((targets[i][0] - targets[i + 1][0]) ** 2) +
                                   ((targets[i][1] - targets[i + 1][1]) ** 2))
             return dist
-
-        simple_hamiltonian = min(perms, key=calc_distance)
-        print(f"Simple Hamiltonian Path:")
-        for obs in simple_hamiltonian:
-            print(f"\t{obs}")
-
-        return simple_hamiltonian
+        return min(perms, key=calc_distance)
 
     def plan_path(self):
         """
@@ -66,7 +60,7 @@ class Brain:
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
         curr_pos = self.robot.get_current_pos().copy()
-        is_start = True  # At starting position, the robot has no obstacle in front of it.
+        is_start = False  # At starting position, the robot has no obstacle in front of it.
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
@@ -75,6 +69,9 @@ class Brain:
             print("-" * 40)
             curr_pos = target_pos
             break  # NOTE: Processing only until first node for now.
+
+        for c in self.commands:
+            print(c)
 
     def plan_curr_to_target(self, curr_pos: Position, target_pos: Position, is_start: bool):
         """
