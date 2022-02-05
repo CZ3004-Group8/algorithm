@@ -291,6 +291,55 @@ class Brain:
     def fourth_quadrant_south_image(self, curr_pos, target_pos, is_start):
         offset_pos = self.wrt_bot(curr_pos, target_pos)
 
+        # STEPS:
+        # 1. Do a reverse turn to face east.
+        # 2. Readjust to allow safety_width + turning_radius distance between target x-coordinate.
+        # 3. Do a forward turn to the right.
+        # 4. Go forward until lined up with target y-coordinate.
+        # 5. Do a forward turn to the left.
+        # 6. Realign to allow turning_radius distance between current and target x-coordinate.
+        # 7. Do a forward turn to the left.
+        step_1 = TurnCommand(-math.pi / 2, 0, True)
+        self.commands.append(step_1)
+        offset_pos.x += settings.ROBOT_TURN_RADIUS
+        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        curr_pos = step_1.apply_on_pos(curr_pos)
+
+        realign_dist = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS - offset_pos.x
+        step_2 = StraightCommand(realign_dist, 0)
+        self.commands.append(step_2)
+        offset_pos.x = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS
+        curr_pos = step_2.apply_on_pos(curr_pos)
+
+        step_3 = TurnCommand(-math.pi / 2, 0, False)
+        self.commands.append(step_3)
+        offset_pos.x -= settings.ROBOT_TURN_RADIUS
+        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        curr_pos = step_3.apply_on_pos(curr_pos)
+
+        step_4 = StraightCommand(-offset_pos.y, 0)
+        self.commands.append(step_4)
+        offset_pos.y = 0
+        curr_pos = step_4.apply_on_pos(curr_pos)
+
+        step_5 = TurnCommand(math.pi / 2, 0, False)
+        self.commands.append(step_5)
+        offset_pos.x -= settings.ROBOT_TURN_RADIUS
+        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        curr_pos = step_5.apply_on_pos(curr_pos)
+
+        realign_dist = settings.ROBOT_TURN_RADIUS - offset_pos.x
+        step_6 = StraightCommand(realign_dist, 0)
+        self.commands.append(step_6)
+        offset_pos.x = settings.ROBOT_TURN_RADIUS
+        curr_pos = step_6.apply_on_pos(curr_pos)
+
+        step_7 = TurnCommand(math.pi / 2, 0, False)
+        self.commands.append(step_7)
+        curr_pos = step_7.apply_on_pos(curr_pos)
+        # END
+        return curr_pos
+
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:
         """
