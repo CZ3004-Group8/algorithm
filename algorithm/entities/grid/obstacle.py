@@ -1,9 +1,9 @@
-import math
 import pygame
 
 from algorithm import settings
-from algorithm.entities.position import Position
 from algorithm.entities.assets import colors
+from algorithm.entities.assets.direction import Direction
+from algorithm.entities.grid.position import Position
 from algorithm.settings import SCALING_FACTOR
 
 
@@ -11,19 +11,23 @@ class Obstacle:
     """
     Obstacle abstracts an image obstacle in the arena.
     """
-    SAFETY_WIDTH = settings.OBSTACLE_SAFETY_WIDTH
 
-    def __init__(self, x, y, orientation):
+    def __init__(self, x, y, direction: Direction):
         """
         We store the center of the Obstacle.
 
         The orientation of the image is where the image is pointing.
         e.g. South -> Image is pointing south.
              North -> Image is pointing north.
-        """
-        y = settings.GRID_LENGTH - y * SCALING_FACTOR
-        self.pos = Position(x * SCALING_FACTOR, y, orientation)
 
+        Note that the provided x, y coordinates should be in terms of the grid.
+        The constructor will translate them to be PyGame coordinates.
+        """
+        # Translate given coordinates to be in PyGame coordinates.
+        y = settings.GRID_LENGTH - y * SCALING_FACTOR
+        self.pos = Position(x * SCALING_FACTOR, y, direction)
+
+        # Arrow to draw at the target coordinate.
         self.target_image = pygame.transform.scale(pygame.image.load("entities/assets/target-arrow.png"),
                                                    (50, 50))
 
@@ -38,30 +42,31 @@ class Obstacle:
 
         Useful for checking if a point is within the boundary of this obstacle.
         """
-        upper = self.pos.y + self.SAFETY_WIDTH
-        lower = self.pos.y - self.SAFETY_WIDTH
-        left = self.pos.x - self.SAFETY_WIDTH
-        right = self.pos.x + self.SAFETY_WIDTH
+        upper = self.pos.y + settings.OBSTACLE_SAFETY_WIDTH
+        lower = self.pos.y - settings.OBSTACLE_SAFETY_WIDTH
+        left = self.pos.x - settings.OBSTACLE_SAFETY_WIDTH
+        right = self.pos.x + settings.OBSTACLE_SAFETY_WIDTH
 
         return [
-            Position(left, lower, 0),  # Bottom left.
-            Position(right, lower, 0),  # Bottom right.
-            Position(left, upper, 0),  # Upper left.
-            Position(right, upper, 0)  # Upper right.
+            # Note that in this case, the direction does not matter.
+            Position(left, lower, Direction.LEFT),  # Bottom left.
+            Position(right, lower, Direction.LEFT),  # Bottom right.
+            Position(left, upper, Direction.LEFT),  # Upper left.
+            Position(right, upper, Direction.LEFT)  # Upper right.
         ]
 
     def get_robot_target_pos(self):
         """
-        Returns the point that the robot should target for, including the orientation.
+        Returns the point that the robot should target for, including the target orientation.
         """
-        if self.pos.angle == math.pi / 2:
-            return Position(self.pos.x, self.pos.y - self.SAFETY_WIDTH, -math.pi / 2)
-        elif self.pos.angle == -math.pi / 2:
-            return Position(self.pos.x, self.pos.y + self.SAFETY_WIDTH, math.pi / 2)
-        elif self.pos.angle == math.pi:
-            return Position(self.pos.x - self.SAFETY_WIDTH, self.pos.y, 0)
+        if self.pos.direction == Direction.TOP:
+            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM)
+        elif self.pos.direction == Direction.BOTTOM:
+            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP)
+        elif self.pos.direction == Direction.LEFT:
+            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT)
         else:
-            return Position(self.pos.x + self.SAFETY_WIDTH, self.pos.y, math.pi)
+            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
@@ -76,11 +81,11 @@ class Obstacle:
         rect.height = settings.GRID_CELL_LENGTH / 2
         rect.center = self.pos.xy()
 
-        if self.pos.angle == math.pi / 2:
+        if self.pos.direction == Direction.TOP:
             rect.centery -= settings.GRID_CELL_LENGTH / 4
-        elif self.pos.angle == -math.pi / 2:
+        elif self.pos.direction == Direction.BOTTOM:
             rect.centery += settings.GRID_CELL_LENGTH / 4
-        elif self.pos.angle == math.pi:
+        elif self.pos.direction == Direction.LEFT:
             rect.centerx -= settings.GRID_CELL_LENGTH / 4
         else:
             rect.centerx += settings.GRID_CELL_LENGTH / 4
@@ -107,11 +112,11 @@ class Obstacle:
 
         rot_image = self.target_image
         angle = 0
-        if target.angle == -math.pi / 2:
+        if target.direction == Direction.BOTTOM:
             angle = 180
-        elif target.angle == math.pi:
+        elif target.direction == Direction.LEFT:
             angle = 90
-        elif target.angle == 0:
+        elif target.direction == Direction.RIGHT:
             angle = -90
 
         rot_image = pygame.transform.rotate(rot_image, angle)

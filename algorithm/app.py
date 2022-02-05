@@ -1,15 +1,18 @@
-import math
+from typing import List
+
 import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.connection import rpi_connection
 from algorithm.entities.grid.grid import Grid
+from algorithm.entities.grid.obstacle import Obstacle
 from algorithm.entities.robot.robot import Robot
 
 
 class AlgoApp:
-    def __init__(self, obstacles):
+    def __init__(self, obstacles: List[Obstacle]):
         pygame.init()
         self.running = False
         self.size = self.width, self.height = settings.WINDOW_SIZE
@@ -21,7 +24,7 @@ class AlgoApp:
         self.grid = Grid(obstacles)
         # Get the starting coordinate of the robot.
         start_pos = self.grid.get_start_box_rect().center
-        self.robot = Robot(*start_pos, math.pi/2, self.grid)
+        self.robot = Robot(*start_pos, Direction.TOP, self.grid)
 
     def settle_events(self):
         """
@@ -69,7 +72,8 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
-        print(self.robot.pos)
+        self.robot.brain.plan_path()
+
         while self.running:
             # Check for Pygame events.
             self.settle_events()

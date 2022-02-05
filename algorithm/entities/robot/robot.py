@@ -1,24 +1,23 @@
 import math
-import time
-
 import pygame
 
 from algorithm import settings
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
-from algorithm.entities.robot.brain import Brain
-from algorithm.entities.position import Position
+from algorithm.entities.robot.brain.brain import Brain
+from algorithm.entities.grid.position import Position
 from algorithm.entities.assets import colors
 
 
 class Robot:
-    S = settings.ROBOT_LENGTH / settings.ROBOT_TURN_RADIUS  # Used for calculating dt for angle change.
-
-    def __init__(self, x, y, angle, grid):
+    def __init__(self, x, y, direction: Direction, grid):
         """
         We take the robot as a point in the center.
+
+        Note that the specified x, y coordinates are PyGame coordinates.
         """
-        self.pos = Position(x, y, angle)
+        self.pos = Position(x, y, direction)
         self.brain = Brain(self, grid)
 
         self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
@@ -28,13 +27,18 @@ class Robot:
         self.path_hist = []
 
         self.current_command = 0  # Index of the current command being executed.
-        self.command_started = time.time()  # Keep track of when last command was executed.
 
     def get_current_pos(self):
         return self.pos
 
     def turn(self, d_angle, rev):
         """
+        Turns the robot by the specified angle, and whether to do it in reverse or not.
+        Take note that the angle is in radians.
+
+        A negative angle will always cause the robot to be rotated in a clockwise manner, regardless
+        of the value of rev.
+
         x_new = x + R(sin(∆θ + θ) − sin θ)
         y_new = y − R(cos(∆θ + θ) − cos θ)
         θ_new = θ + ∆θ
@@ -46,14 +50,15 @@ class Robot:
 
         Note that ∆θ is in radians.
         """
-        # Create a turn command.
-        turn_command = TurnCommand(d_angle, rev)
-        self.pos = turn_command.apply_on_pos(self.pos)
+        TurnCommand(d_angle, rev).apply_on_pos(self.pos)
 
     def straight(self, dist):
-        # Create the straight command
-        straight_command = StraightCommand(dist)
-        self.pos = straight_command.apply_on_pos(self.pos)
+        """
+        Make a robot go straight.
+
+        A negative number indicates that the robot will move in reverse, and vice versa.
+        """
+        StraightCommand(dist).apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
         prev = self.brain.grid.get_start_box_rect().center
@@ -85,6 +90,7 @@ class Robot:
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
         if len(self.path_hist) == 0 or self.pos.xy() != self.path_hist[-1]:
+            # Only add a new point history if there is none, and it is different from previous history.
             self.path_hist.append(self.pos.xy())
 
         # Draw the robot itself.
@@ -92,23 +98,4 @@ class Robot:
 
     def update(self):
         # If no more commands to execute, then return.
-        if self.current_command >= len(self.brain.commands):
-            return
-
-        command = self.brain.commands[self.current_command]
-        # Check for elapsed time of this command.
-        # If elapsed time is more than time needed for current command,
-        # then we start executing the next command.
-        if time.time() - self.command_started >= command.time:
-            print(f"{command} finished.")
-            print(self.pos)
-            self.current_command += 1
-            self.command_started = time.time()
-            return
-
-        # Check the command to execute.
-        total_frames = settings.FRAMES * command.time
-        if command.c == "turn":
-            self.turn(command.angle / total_frames, command.rev)
-        elif command.c == "straight":
-            self.straight(command.dist / total_frames)
+        pass

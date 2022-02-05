@@ -2,13 +2,21 @@ import math
 
 from algorithm import settings
 from algorithm.entities.commands.command import Command
-from algorithm.entities.position import Position
+from algorithm.entities.grid.position import Position
 
 
 class TurnCommand(Command):
+    COMMAND_TYPE = "turn"
+
     def __init__(self, angle, rev):
+        """
+        Angle to turn and whether the turn is done in reverse or not.
+
+        Note that negative angles will always result in the robot being rotated clockwise.
+        """
         time = abs((angle * settings.ROBOT_LENGTH) / (settings.ROBOT_SPEED_PER_SECOND * settings.ROBOT_S_FACTOR))
-        super().__init__("turn", time)
+        super().__init__(self.COMMAND_TYPE, time)
+
         self.angle = angle
         self.rev = rev
 
@@ -17,7 +25,7 @@ class TurnCommand(Command):
 
     __repr__ = __str__
 
-    def apply_on_pos(self, curr_pos: Position) -> Position:
+    def apply_on_pos(self, curr_pos: Position):
         """
         x_new = x + R(sin(∆θ + θ) − sin θ)
         y_new = y − R(cos(∆θ + θ) − cos θ)
@@ -37,8 +45,8 @@ class TurnCommand(Command):
         if self.angle < 0 and not self.rev:  # Wheels to right moving forward.
             curr_pos.x -= x_change
             curr_pos.y -= y_change
-        elif (self.angle < 0 and self.rev) or \
-                (self.angle >= 0 and not self.rev):  # (Wheels to left moving backwards) or (Wheels to left moving forwards).
+        elif (self.angle < 0 and self.rev) or (self.angle >= 0 and not self.rev):
+            # (Wheels to left moving backwards) or (Wheels to left moving forwards).
             curr_pos.x += x_change
             curr_pos.y += y_change
         else:  # Wheels to right moving backwards.
@@ -51,4 +59,5 @@ class TurnCommand(Command):
         elif curr_pos.angle >= math.pi:
             curr_pos.angle -= 2 * math.pi
 
-        return curr_pos
+        # Update the Position's direction.
+        curr_pos.direction = curr_pos.direction.get_direction(curr_pos.angle)
