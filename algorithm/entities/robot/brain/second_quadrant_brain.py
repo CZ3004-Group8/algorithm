@@ -1,6 +1,7 @@
 import math
 
 from algorithm import settings
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.grid.position import Position
@@ -12,7 +13,9 @@ class SecondQuadrantBrain(QuadrantBrain):
         super().__init__(brain)
 
     def plan(self, curr_pos: Position, target_pos: Position, is_start: bool):
-        pass
+        offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
+        if offset_pos.direction == Direction.BOTTOM:
+            self.south_image(curr_pos, target_pos, is_start)
 
     def south_image(self, curr_pos, target_pos, is_start):
         # Get the offset
@@ -33,7 +36,7 @@ class SecondQuadrantBrain(QuadrantBrain):
 
             step_2 = TurnCommand(-math.pi / 2, True)
             self.commands.append(step_2)
-            offset_pos.x -= settings.ROBOT_TURN_RADIUS
+            offset_pos.x += settings.ROBOT_TURN_RADIUS
             offset_pos.y += settings.ROBOT_TURN_RADIUS
             step_2.apply_on_pos(curr_pos)
 
@@ -53,6 +56,7 @@ class SecondQuadrantBrain(QuadrantBrain):
             self.commands.append(step_5)
             step_5.apply_on_pos(curr_pos)
             # END.
+            self.extend_then_clear_commands(self.brain.commands)
             return
 
         # There is an obstacle in front of the robot, so we need to move the robot away.
@@ -79,6 +83,7 @@ class SecondQuadrantBrain(QuadrantBrain):
         step_4.apply_on_pos(curr_pos)
 
         # We set is_start to True, since we have moved away from the obstacle.
+        self.extend_then_clear_commands(self.brain.commands)
         self.brain.plan_curr_to_target(curr_pos, target_pos, True)
 
     def north_image(self, curr_pos, target_pos, is_start):

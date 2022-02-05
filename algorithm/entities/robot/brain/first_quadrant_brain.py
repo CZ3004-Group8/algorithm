@@ -15,6 +15,7 @@ class FirstQuadrantBrain(QuadrantBrain):
     def plan(self, curr_pos: Position, target_pos: Position, is_start: bool):
         offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
         if offset_pos.direction == Direction.BOTTOM:
+            print("Planning for picture at south.")
             self.south_image(curr_pos, target_pos, is_start)
 
     def south_image(self, curr_pos, target_pos, is_start):
@@ -61,6 +62,7 @@ class FirstQuadrantBrain(QuadrantBrain):
             self.commands.append(step_5)
             step_5.apply_on_pos(curr_pos)
             # END
+            self.extend_then_clear_commands(self.brain.commands)
             return
 
         # There is an obstacle in front of the robot, so we need to move the robot away.
@@ -87,6 +89,7 @@ class FirstQuadrantBrain(QuadrantBrain):
         step_4.apply_on_pos(curr_pos)
 
         # We set is_start to True, since we have moved away from the obstacle.
+        self.extend_then_clear_commands(self.brain.commands)
         self.brain.plan_curr_to_target(curr_pos, target_pos, True)
 
     def north_image(self, curr_pos, target_pos, is_start):

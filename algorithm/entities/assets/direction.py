@@ -30,13 +30,14 @@ class Direction(Enum):
 
         If no suitable Direction is found, then return current direction.
         """
-        if math.isclose(angle, 0):
+        tolerance = 0.005
+        if math.isclose(angle, 0, abs_tol=tolerance):
             return self.RIGHT
-        elif math.isclose(angle, math.pi / 2):
+        elif math.isclose(angle, math.pi / 2, abs_tol=tolerance):
             return self.TOP
-        elif math.isclose(angle, math.pi) or math.isclose(angle, -math.pi):
+        elif math.isclose(angle, math.pi, abs_tol=tolerance) or math.isclose(angle, -math.pi, abs_tol=tolerance):
             return self.LEFT
-        elif math.isclose(angle, -math.pi / 2):
+        elif math.isclose(angle, -math.pi / 2, abs_tol=tolerance):
             return self.BOTTOM
         else:
             return self

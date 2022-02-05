@@ -68,7 +68,7 @@ class Brain:
             is_start = False
             print("-" * 40)
             curr_pos = target_pos
-            break  # NOTE: Processing only until first node for now.
+            break
 
         for c in self.commands:
             print(c)
@@ -88,19 +88,15 @@ class Brain:
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
             self.first.plan(curr_pos, target_pos, is_start)
-            self.first.extend_then_clear_commands(self.commands)
         elif math.pi / 2 <= angle <= math.pi:
             print("Obstacle in robot's 2nd quadrant.")
             self.second.plan(curr_pos, target_pos, is_start)
-            self.second.extend_then_clear_commands(self.commands)
         elif -math.pi < angle < -math.pi / 2:
             print("Obstacle in robot's 3rd quadrant.")
             self.third.plan(curr_pos, target_pos, is_start)
-            self.third.extend_then_clear_commands(self.commands)
         else:
             print("Obstacle in robot's 4th quadrant.")
             self.fourth.plan(curr_pos, target_pos, is_start)
-            self.fourth.extend_then_clear_commands(self.commands)
 
     @staticmethod
     def wrt_bot(bot_pos: Position, target_pos: Position) -> Position:
