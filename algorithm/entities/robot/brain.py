@@ -230,7 +230,6 @@ class Brain:
         # We set is_start to True, since we have moved away from the obstacle.
         return self.plan_curr_to_target(curr_pos, target_pos, True)
 
-
     def plan_third_quadrant(self, curr_pos, target_pos, is_start):
         return target_pos
 
