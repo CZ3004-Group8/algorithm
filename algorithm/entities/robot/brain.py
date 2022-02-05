@@ -160,6 +160,9 @@ class Brain:
         # We set is_start to True, since we have moved away from the obstacle.
         return self.plan_curr_to_target(curr_pos, target_pos, True)
 
+    def first_quadrant_east_image(self, curr_pos, target_pos, is_start):
+        pass
+
     def plan_second_quadrant(self, curr_pos, target_pos, is_start):
         return target_pos
 
@@ -230,6 +233,9 @@ class Brain:
         # We set is_start to True, since we have moved away from the obstacle.
         return self.plan_curr_to_target(curr_pos, target_pos, True)
 
+    def second_quadrant_east_image(self, curr_pos, target_pos, is_start):
+        pass
+
     def plan_third_quadrant(self, curr_pos, target_pos, is_start):
         return target_pos
 
@@ -285,6 +291,9 @@ class Brain:
         # END
         return curr_pos
 
+    def third_quadrant_east_image(self, curr_pos, target_pos, is_start):
+        pass
+
     def plan_fourth_quadrant(self, curr_pos, target_pos, is_start):
         return target_pos
 
@@ -339,6 +348,9 @@ class Brain:
         curr_pos = step_7.apply_on_pos(curr_pos)
         # END
         return curr_pos
+
+    def fourth_quadrant_east_image(self, curr_pos, target_pos, is_start):
+        pass
 
     @classmethod
     def wrt_bot(cls, bot_pos, target_pos) -> Position:

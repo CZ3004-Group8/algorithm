@@ -93,7 +93,11 @@ class Robot:
 
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
-        self.path_hist.append(self.pos.xy())
+        if len(self.path_hist) == 0 or self.pos.xy() != self.path_hist[-1]:
+            self.path_hist.append(self.pos.xy())
 
         # Draw the robot itself.
         self.draw_self(screen)
+
+    def update(self):
+        pass
