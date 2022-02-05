@@ -1,4 +1,6 @@
 import math
+import time
+
 import pygame
 
 from algorithm import settings
@@ -25,6 +27,9 @@ class Robot:
 
         self.path_hist = []
 
+        self.current_command = 0  # Index of the current command being executed.
+        self.command_started = time.time()  # Keep track of when last command was executed.
+
     def get_current_pos(self):
         return self.pos
 
@@ -45,18 +50,9 @@ class Robot:
         turn_command = TurnCommand(d_angle, rev)
         self.pos = turn_command.apply_on_pos(self.pos)
 
-    def turn_left(self, rev):
-        self.turn(-math.pi / 2, rev)
-
-    def turn_right(self, rev):
-        self.turn(math.pi / 2, rev)
-
-    def straight(self, dt):
-        # Get straight distance travelled within this time.
-        distance = dt * settings.ROBOT_SPEED_PER_SECOND
-
+    def straight(self, dist):
         # Create the straight command
-        straight_command = StraightCommand(distance)
+        straight_command = StraightCommand(dist)
         self.pos = straight_command.apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
@@ -95,4 +91,24 @@ class Robot:
         self.draw_self(screen)
 
     def update(self):
-        pass
+        # If no more commands to execute, then return.
+        if self.current_command >= len(self.brain.commands):
+            return
+
+        command = self.brain.commands[self.current_command]
+        # Check for elapsed time of this command.
+        # If elapsed time is more than time needed for current command,
+        # then we start executing the next command.
+        if time.time() - self.command_started >= command.time:
+            print(f"{command} finished.")
+            print(self.pos)
+            self.current_command += 1
+            self.command_started = time.time()
+            return
+
+        # Check the command to execute.
+        total_frames = settings.FRAMES * command.time
+        if command.c == "turn":
+            self.turn(command.angle / total_frames, command.rev)
+        elif command.c == "straight":
+            self.straight(command.dist / total_frames)

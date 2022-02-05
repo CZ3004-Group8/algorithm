@@ -12,7 +12,7 @@ class StraightCommand(Command):
         self.dist = dist
 
     def __str__(self):
-        return f"StraightCommand(dist={self.dist})"
+        return f"StraightCommand(dist={self.dist}, {self.time:.2f}s)"
 
     __repr__ = __str__
 
@@ -21,9 +21,9 @@ class StraightCommand(Command):
         if curr_pos.angle == 0:
             curr_pos.x += self.dist
         elif curr_pos.angle == math.pi / 2:
-            curr_pos.y += self.dist
-        elif curr_pos.angle == -math.pi / 2:
             curr_pos.y -= self.dist
+        elif curr_pos.angle == -math.pi / 2:
+            curr_pos.y += self.dist
         else:
             curr_pos.x -= self.dist
 

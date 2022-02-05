@@ -50,7 +50,7 @@ class AlgoApp:
         pygame.display.set_caption("Algorithm")
 
     def do_updates(self):
-        pass
+        self.robot.update()
 
     def render(self):
         """
@@ -69,7 +69,7 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
-
+        print(self.robot.pos)
         while self.running:
             # Check for Pygame events.
             self.settle_events()

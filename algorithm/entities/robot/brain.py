@@ -53,6 +53,7 @@ class Brain:
         """
         # Plan the path.
         curr_pos = self.robot.get_current_pos()
+        curr_pos = Position(curr_pos.x, curr_pos.y, curr_pos.angle)  # Do not modify robot's position.
         is_start = True
         for obs in self.simple_hamiltonian:
             print("-" * 40)
@@ -62,6 +63,7 @@ class Brain:
             print("-" * 40)
             # Update the current pos and angle.
             curr_pos = dest_pos
+            break
 
     def plan_curr_to_target(self, curr_pos, target_pos, is_start):
         """
@@ -86,7 +88,9 @@ class Brain:
             return self.plan_fourth_quadrant(curr_pos, target_pos, is_start)
 
     def plan_first_quadrant(self, curr_pos, target_pos, is_start):
-        return target_pos
+        offset_pos = self.wrt_bot(curr_pos, target_pos)
+        if offset_pos.angle == -math.pi / 2:
+            return self.first_quadrant_south_image(curr_pos, target_pos, is_start)
 
     def first_quadrant_south_image(self, curr_pos, target_pos, is_start):
         # Get the offset.
@@ -116,6 +120,7 @@ class Brain:
             # offset_x must be -turning_radius.
             realign_dist = -settings.ROBOT_TURN_RADIUS - offset_pos.x
             step_3 = StraightCommand(realign_dist)
+            self.commands.append(step_3)
             # Update offsets
             offset_pos.x = -settings.ROBOT_TURN_RADIUS
             curr_pos = step_3.apply_on_pos(curr_pos)
@@ -381,4 +386,4 @@ class Brain:
         print(f"Target's new coordinate wrt to robot's POV is {offset_x / settings.SCALING_FACTOR}, "
               f"{offset_y / settings.SCALING_FACTOR}")
 
-        return Position(offset_x, offset_y, 0)
+        return Position(offset_x, offset_y, -math.pi / 2)
