@@ -111,19 +111,55 @@ class Brain:
         """
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
-
+        target_direction = target_pos.direction.value
+        target_facing = target_pos.direction
+        if target_facing == Direction.RIGHT:
+            target_facing = Direction.LEFT
+        elif target_facing == Direction.LEFT:
+            target_facing = Direction.RIGHT
+        elif target_facing == Direction.TOP:
+            target_facing = Direction.BOTTOM
+        else:
+            target_facing = Direction.TOP
         facing = 0
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
+            if target_facing != bot_pos.direction:
+                if target_facing == Direction.LEFT:
+                    target_facing = Direction.BOTTOM
+                else:
+                    target_direction +=1
+                    target_facing = Direction(target_direction)
+            else:
+                target_facing = Direction.TOP
             facing = 3
         elif bot_pos.direction == Direction.BOTTOM:
+            if target_facing != bot_pos.direction:
+                if target_facing == Direction.Bottom:
+                    target_facing = Direction.TOP
+                elif target_facing == Direction.LEFT:
+                    target_facing = Direction.RIGHT
+                else:
+                    target_direction +=2
+                    target_facing = Direction(target_direction)
+            else:
+                target_facing = Direction.TOP
             facing = 2
         elif bot_pos.direction == Direction.LEFT:
+            if target_facing != bot_pos.direction:
+                if target_facing != Direction.RIGHT:
+                    target_direction -= 1
+                    target_facing = Direction(target_direction)
+                else:
+                    target_facing = Direction.BOTTOM
+            else:
+                target_facing = Direction.TOP
             facing = 1
 
         # check target's next coordinates with respect to robot's pov
         offset_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
         offset_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
+        print(target_facing)
 
         # TODO: Logic to get correct direction.
-        return Position(offset_x, offset_y, Direction.BOTTOM)
+        return Position(offset_x, offset_y, target_facing)
