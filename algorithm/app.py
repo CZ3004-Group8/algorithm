@@ -13,7 +13,6 @@ from algorithm.entities.robot.robot import Robot
 
 class AlgoApp:
     def __init__(self, obstacles: List[Obstacle]):
-        pygame.init()
         self.running = False
         self.size = self.width, self.height = settings.WINDOW_SIZE
         self.screen = self.clock = None
@@ -39,6 +38,7 @@ class AlgoApp:
         """
         Set initial values for the app.
         """
+        pygame.init()
         self.running = True
 
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
