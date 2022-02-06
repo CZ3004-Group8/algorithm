@@ -26,14 +26,12 @@ class SecondQuadrantBrain(QuadrantBrain):
             self.commands.append(
                 StraightCommand(settings.OBSTACLE_SAFETY_WIDTH).apply_on_pos(curr_pos)
             )
-            print(offset_pos.x)
             offset_pos.x = offset_pos.x - settings.ROBOT_TURN_RADIUS + settings.OBSTACLE_SAFETY_WIDTH
             offset_pos.y += settings.ROBOT_TURN_RADIUS
-            print(offset_pos.x)
 
             # If the next obstacle is not on top of current obstacle
-            if offset_pos.x <= -settings.OBSTACLE_SAFETY_WIDTH:
-                # Move straight until there is ROBOT_TURN_RADIUS to turn forward left.
+            if offset_pos.x > -settings.OBSTACLE_SAFETY_WIDTH:
+                # Move straight until there is ROBOT_TURN_RADIUS to turn forward right.
                 dist = -settings.ROBOT_TURN_RADIUS - offset_pos.x
                 self.commands.append(
                     StraightCommand(dist).apply_on_pos(curr_pos)
