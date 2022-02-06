@@ -1,21 +1,14 @@
 import math
 
 from algorithm import settings
-from algorithm.entities.assets.direction import Direction
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
-from algorithm.entities.grid.position import Position
 from algorithm.entities.robot.brain.quadrant_brain import QuadrantBrain
 
 
 class SecondQuadrantBrain(QuadrantBrain):
     def __init__(self, brain):
         super().__init__(brain)
-
-    def plan(self, curr_pos: Position, target_pos: Position, is_start: bool):
-        offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
-        if offset_pos.direction == Direction.BOTTOM:
-            self.south_image(curr_pos, target_pos, is_start)
 
     def south_image(self, curr_pos, target_pos, is_start):
         # Get the offset

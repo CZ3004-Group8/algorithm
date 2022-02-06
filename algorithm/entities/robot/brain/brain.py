@@ -60,7 +60,7 @@ class Brain:
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
         curr_pos = self.robot.get_current_pos().copy()
-        is_start = False  # At starting position, the robot has no obstacle in front of it.
+        is_start = True  # At starting position, the robot has no obstacle in front of it.
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
