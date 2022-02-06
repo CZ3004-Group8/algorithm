@@ -13,6 +13,8 @@ class FirstQuadrantBrain(QuadrantBrain):
     def south_image(self, curr_pos, target_pos, is_start):
         # Get the offset.
         offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
+        if math.isclose(offset_pos.x, 0) and math.isclose(offset_pos.y, 0):
+            return
 
         # If robot is moving from a starting point (no obstacle in front of the robot).
         if is_start:

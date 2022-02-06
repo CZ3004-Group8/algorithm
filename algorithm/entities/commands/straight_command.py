@@ -42,3 +42,5 @@ class StraightCommand(Command):
             curr_pos.y += self.dist
         else:
             curr_pos.x -= self.dist
+
+        return self

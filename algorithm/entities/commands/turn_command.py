@@ -69,3 +69,4 @@ class TurnCommand(Command):
 
         # Update the Position's direction.
         curr_pos.direction = curr_pos.direction.get_direction(curr_pos.angle)
+        return self

@@ -26,5 +26,7 @@ class Command(ABC):
         """
         Apply this command to a Position, such that its attributes will reflect the correct values
         after the command is done.
+
+        This method should return itself.
         """
         pass
