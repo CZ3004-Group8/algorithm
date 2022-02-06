@@ -5,7 +5,7 @@ from algorithm.entities.assets.direction import Direction
 class Position:
     def __init__(self, x, y, direction: Direction, angle=None):
         """
-        Take note that x and y ae both PyGame coordinates, and not coordinates
+        Take note that x and y are both PyGame coordinates, and not coordinates
         in terms of the arena grid.
         """
         self.x = x

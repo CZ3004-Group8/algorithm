@@ -50,7 +50,12 @@ class Brain:
                 dist += math.sqrt(((targets[i][0] - targets[i + 1][0]) ** 2) +
                                   ((targets[i][1] - targets[i + 1][1]) ** 2))
             return dist
-        return min(perms, key=calc_distance)
+
+        simple = min(perms, key=calc_distance)
+        print("Found a simple hamiltonian path:")
+        for ob in simple:
+            print(f"\t{ob}")
+        return simple
 
     def plan_path(self):
         """
