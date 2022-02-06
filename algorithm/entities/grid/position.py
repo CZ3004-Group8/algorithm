@@ -30,8 +30,5 @@ class Position:
     def xy(self):
         return self.x, self.y
 
-    def angle(self):
-        return self.angle
-
     def copy(self):
         return Position(self.x, self.y, self.direction, self.angle)

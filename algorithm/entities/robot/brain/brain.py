@@ -42,8 +42,8 @@ class Brain:
         def calc_distance(path):
             # Create all target points, including the start.
             targets = [self.grid.get_start_box_rect().center]
-            for ob in path:
-                targets.append(ob.get_robot_target_pos().xy())
+            for o in path:
+                targets.append(o.get_robot_target_pos().xy())
 
             dist = 0
             for i in range(len(targets) - 1):
@@ -122,25 +122,26 @@ class Brain:
         else:
             target_facing = Direction.TOP
         facing = 0
+
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
             if target_facing != bot_pos.direction:
                 if target_facing == Direction.LEFT:
                     target_facing = Direction.BOTTOM
                 else:
-                    target_direction +=1
+                    target_direction += 1
                     target_facing = Direction(target_direction)
             else:
                 target_facing = Direction.TOP
             facing = 3
         elif bot_pos.direction == Direction.BOTTOM:
             if target_facing != bot_pos.direction:
-                if target_facing == Direction.Bottom:
+                if target_facing == Direction.BOTTOM:
                     target_facing = Direction.TOP
                 elif target_facing == Direction.LEFT:
                     target_facing = Direction.RIGHT
                 else:
-                    target_direction +=2
+                    target_direction += 2
                     target_facing = Direction(target_direction)
             else:
                 target_facing = Direction.TOP
@@ -159,7 +160,5 @@ class Brain:
         # check target's next coordinates with respect to robot's pov
         offset_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
         offset_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
-        print(target_facing)
 
-        # TODO: Logic to get correct direction.
         return Position(offset_x, offset_y, target_facing)
