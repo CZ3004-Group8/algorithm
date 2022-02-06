@@ -11,10 +11,17 @@ class QuadrantBrain(ABC):
         self.commands = []
 
     def extend_then_clear_commands(self, li: deque):
+        """
+        Append the generated commands from this quadrant brain into the main brain,
+        and then clears all commands from this quadrant brain.
+        """
         li.extend(self.commands)
         self.commands.clear()
 
     def plan(self, curr_pos: Position, target_pos: Position, is_start):
+        """
+        Make this quadrant brain plan the path for this iteration.
+        """
         offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
         if offset_pos.direction == Direction.BOTTOM:
             print("Planning for picture at south.")
@@ -31,16 +38,28 @@ class QuadrantBrain(ABC):
 
     @abstractmethod
     def south_image(self, curr_pos, target_pos, is_start):
+        """
+        Plan the path for when the obstacle image is facing south for this quadrant.
+        """
         pass
 
     @abstractmethod
     def north_image(self, curr_pos, target_pos, is_start):
+        """
+        Plan the path for when the obstacle image is facing north for this quadrant.
+        """
         pass
 
     @abstractmethod
     def east_image(self, curr_pos, target_pos, is_start):
+        """
+        Plan the path for when the obstacle image is facing east for this quadrant.
+        """
         pass
 
     @abstractmethod
     def west_image(self, curr_pos, target_pos, is_start):
+        """
+        Plan the path for when the obstacle image is facing west for this quadrant.
+        """
         pass
