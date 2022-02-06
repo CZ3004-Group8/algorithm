@@ -16,8 +16,10 @@ class Grid:
         """
         Get the Rect that shows the start box.
         """
-        return pygame.Rect(0, settings.GRID_LENGTH - settings.GRID_START_BOX_LENGTH,
-                           settings.GRID_START_BOX_LENGTH, settings.GRID_START_BOX_LENGTH)  # left, top, width, height
+        # TODO: Change back to the actual starting box.
+        return pygame.Rect(100 * settings.SCALING_FACTOR - settings.GRID_START_BOX_LENGTH / 2,  # Left
+                           100 * settings.SCALING_FACTOR - settings.GRID_START_BOX_LENGTH / 2,  # Top
+                           settings.GRID_START_BOX_LENGTH, settings.GRID_START_BOX_LENGTH)  # width, height
 
     @staticmethod
     def draw_arena_borders(screen):

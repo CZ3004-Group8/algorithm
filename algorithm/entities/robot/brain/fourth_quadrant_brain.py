@@ -24,10 +24,10 @@ class FourthQuadrantBrain(QuadrantBrain):
         step_1 = TurnCommand(-math.pi / 2, True)
         self.commands.append(step_1)
         offset_pos.x += settings.ROBOT_TURN_RADIUS
-        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        offset_pos.y += settings.ROBOT_TURN_RADIUS
         step_1.apply_on_pos(curr_pos)
 
-        realign_dist = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS - offset_pos.x
+        realign_dist = offset_pos.x - (settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS)
         step_2 = StraightCommand(realign_dist)
         self.commands.append(step_2)
         offset_pos.x = settings.OBSTACLE_SAFETY_WIDTH + settings.ROBOT_TURN_RADIUS
@@ -36,7 +36,7 @@ class FourthQuadrantBrain(QuadrantBrain):
         step_3 = TurnCommand(-math.pi / 2, False)
         self.commands.append(step_3)
         offset_pos.x -= settings.ROBOT_TURN_RADIUS
-        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        offset_pos.y += settings.ROBOT_TURN_RADIUS
         step_3.apply_on_pos(curr_pos)
 
         step_4 = StraightCommand(-offset_pos.y)
@@ -47,10 +47,10 @@ class FourthQuadrantBrain(QuadrantBrain):
         step_5 = TurnCommand(math.pi / 2, False)
         self.commands.append(step_5)
         offset_pos.x -= settings.ROBOT_TURN_RADIUS
-        offset_pos.y -= settings.ROBOT_TURN_RADIUS
+        offset_pos.y += settings.ROBOT_TURN_RADIUS
         step_5.apply_on_pos(curr_pos)
 
-        realign_dist = settings.ROBOT_TURN_RADIUS - offset_pos.x
+        realign_dist = offset_pos.x - settings.ROBOT_TURN_RADIUS
         step_6 = StraightCommand(realign_dist)
         self.commands.append(step_6)
         offset_pos.x = settings.ROBOT_TURN_RADIUS
@@ -60,7 +60,7 @@ class FourthQuadrantBrain(QuadrantBrain):
         self.commands.append(step_7)
         step_7.apply_on_pos(curr_pos)
         # END
-        return
+        self.extend_then_clear_commands(self.brain.commands)
 
     def north_image(self, curr_pos, target_pos, is_start):
         pass

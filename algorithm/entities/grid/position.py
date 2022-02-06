@@ -18,11 +18,14 @@ class Position:
 
     def __str__(self):
         return f"Position({(self.x / settings.SCALING_FACTOR):.2f}, " \
-               f"{(self.y / settings.SCALING_FACTOR):.2f}, " \
+               f"{((settings.GRID_LENGTH - self.y) / settings.SCALING_FACTOR):.2f}, " \
                f"direction={self.direction}, " \
                f"angle={self.angle:.2f})"
 
     __repr__ = __str__
+
+    def as_offset_pos(self):
+        print(f"PositionOffset({self.x / settings.SCALING_FACTOR}, {self.y / settings.SCALING_FACTOR})")
 
     def xy(self):
         return self.x, self.y

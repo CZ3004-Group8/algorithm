@@ -26,6 +26,9 @@ class TurnCommand(Command):
     __repr__ = __str__
 
     def process_one_tick(self, robot):
+        if self.total_ticks == 0:
+            return
+
         self.tick()
         angle = self.angle / self.total_ticks
         robot.turn(angle, self.rev)

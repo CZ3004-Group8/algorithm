@@ -23,6 +23,9 @@ class StraightCommand(Command):
     __repr__ = __str__
 
     def process_one_tick(self, robot):
+        if self.total_ticks == 0:
+            return
+
         self.tick()
         distance = self.dist / self.total_ticks
         robot.straight(distance)

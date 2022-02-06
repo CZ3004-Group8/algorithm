@@ -50,7 +50,7 @@ class ThirdQuadrantBrain(QuadrantBrain):
         offset_pos.y += settings.ROBOT_TURN_RADIUS
         step_5.apply_on_pos(curr_pos)
 
-        realign_dist = -offset_pos.x - settings.ROBOT_TURN_RADIUS
+        realign_dist = -settings.ROBOT_TURN_RADIUS - offset_pos.x
         step_6 = StraightCommand(realign_dist)
         self.commands.append(step_6)
         offset_pos.x = -settings.ROBOT_TURN_RADIUS
@@ -60,7 +60,7 @@ class ThirdQuadrantBrain(QuadrantBrain):
         self.commands.append(step_7)
         step_7.apply_on_pos(curr_pos)
         # END
-        return
+        self.extend_then_clear_commands(self.brain.commands)
 
     def north_image(self, curr_pos, target_pos, is_start):
         pass
