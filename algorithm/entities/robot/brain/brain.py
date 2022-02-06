@@ -70,8 +70,9 @@ class Brain:
             curr_pos = target_pos
             break
 
+        print("Commands:")
         for c in self.commands:
-            print(c)
+            print(f"\t{c}")
 
     def plan_curr_to_target(self, curr_pos: Position, target_pos: Position, is_start: bool):
         """
