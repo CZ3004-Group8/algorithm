@@ -106,7 +106,25 @@ class FirstQuadrantBrain(QuadrantBrain):
         pass
 
     def east_image(self, curr_pos, target_pos, is_start):
-        pass
+        # Get the offset
+        offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
+
+        # If there is an obstacle in front of the robot.
+        if not is_start:
+            # Reverse turn to face east.
+            self.commands.append(
+                TurnCommand(-math.pi / 2, True).apply_on_pos(curr_pos)
+            )
+            offset_pos.x += settings.ROBOT_TURN_RADIUS
+            offset_pos.y += settings.ROBOT_TURN_RADIUS
+
+            # TODO
+            # We travel straight to at least clear the obstacle, or reach x-offset of the target,
+            # whichever is greater.
+
+        # End.
+        self.extend_then_clear_commands(self.brain.commands)
+        return
 
     def west_image(self, curr_pos, target_pos, is_start):
         pass

@@ -6,7 +6,7 @@ if __name__ == '__main__':
     # Fill in obstacle positions with respect to lower bottom left corner.
     # (x-coordinate, y-coordinate, Direction)
     obs = [
-        Obstacle(150, 50, Direction.BOTTOM)
+        Obstacle(85, 150, Direction.RIGHT)
     ]
 
     app = AlgoApp(obs)
