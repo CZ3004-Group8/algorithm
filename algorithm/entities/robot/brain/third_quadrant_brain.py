@@ -95,42 +95,23 @@ class ThirdQuadrantBrain(QuadrantBrain):
             self.extend_then_clear_commands(self.brain.commands)
             return
         else:
-            # Travel backwards until y-offset is equal ROBOT_TURN_RADIUS + OBSTACLE_SAFETY_WIDTH
-            dist = offset_pos.y - settings.ROBOT_TURN_RADIUS - settings.OBSTACLE_SAFETY_WIDTH
+            # Travel backwards until y-offset is equal ROBOT_TURN_RADIUS
+            dist = offset_pos.y + settings.ROBOT_TURN_RADIUS
             self.commands.append(
                 StraightCommand(dist).apply_on_pos(curr_pos)
             )
-            offset_pos.y = settings.ROBOT_TURN_RADIUS + settings.OBSTACLE_SAFETY_WIDTH
+            offset_pos.y = settings.ROBOT_TURN_RADIUS
 
-            # Do a forward turn to the left.
+            # Do a reverse turn to face west.
             self.commands.append(
-                TurnCommand(math.pi / 2, False).apply_on_pos(curr_pos)
-            )
-            offset_pos.x += settings.ROBOT_TURN_RADIUS
-            offset_pos.y -= settings.ROBOT_TURN_RADIUS
-
-            # Move until x-offset is 0
-            self.commands.append(
-                StraightCommand(-offset_pos.x).apply_on_pos(curr_pos)
-            )
-            offset_pos.x = 0
-
-            # Do a reverse turn to face north.
-            self.commands.append(
-                TurnCommand(-math.pi / 2, True).apply_on_pos(curr_pos)
+                TurnCommand(math.pi / 2, True).apply_on_pos(curr_pos)
             )
             offset_pos.x -= settings.ROBOT_TURN_RADIUS
-            offset_pos.y += settings.ROBOT_TURN_RADIUS
+            offset_pos.y -= settings.ROBOT_TURN_RADIUS
 
-            # Move straight until enough y-offset to complete forward turn to the left.
-            dist = offset_pos.y - settings.ROBOT_TURN_RADIUS
+            # Move until x-offset is 0.
             self.commands.append(
-                StraightCommand(dist).apply_on_pos(curr_pos)
-            )
-
-            # Do a forward turn to the left.
-            self.commands.append(
-                TurnCommand(math.pi / 2, False).apply_on_pos(curr_pos)
+                StraightCommand(-offset_pos.x).apply_on_pos(curr_pos)
             )
 
             # End.
