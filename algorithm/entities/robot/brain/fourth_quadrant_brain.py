@@ -73,25 +73,25 @@ class FourthQuadrantBrain(QuadrantBrain):
         # that means we cannot just reverse, as we may collide. Instead, we need
         # to sidestep the obstacle.
         if offset_pos.x < 2 * settings.OBSTACLE_SAFETY_WIDTH:
-            # Do a reverse turn to face east.
+            # Do a reverse turn to face west.
             self.commands.append(
-                TurnCommand(-math.pi / 2, True).apply_on_pos(curr_pos)
+                TurnCommand(math.pi / 2, True).apply_on_pos(curr_pos)
             )
-            offset_pos.x += settings.ROBOT_TURN_RADIUS
+            offset_pos.x -= settings.ROBOT_TURN_RADIUS
             offset_pos.y += settings.ROBOT_TURN_RADIUS
 
             # Move straight until we line up the x-offsets.
             self.commands.append(
-                StraightCommand(offset_pos.x).apply_on_pos(curr_pos)
+                StraightCommand(-offset_pos.x).apply_on_pos(curr_pos)
             )
             offset_pos.x = 0
 
-            # Do a forward turn to the right.
+            # Do a reverse turn to face south.
             self.commands.append(
-                TurnCommand(-math.pi / 2, False).apply_on_pos(curr_pos)
+                TurnCommand(math.pi / 2, True).apply_on_pos(curr_pos)
             )
             offset_pos.x -= settings.ROBOT_TURN_RADIUS
-            offset_pos.y += settings.ROBOT_TURN_RADIUS
+            offset_pos.y -= settings.ROBOT_TURN_RADIUS
 
             # Move until we have enough y-offset to make a forward turn to the right.
             dist = -offset_pos.y - settings.ROBOT_TURN_RADIUS
