@@ -17,8 +17,8 @@ class Grid:
         Get the Rect that shows the start box.
         """
         # TODO: Change back to the actual starting box.
-        return pygame.Rect(0,  # Left
-                           settings.GRID_LENGTH - settings.GRID_START_BOX_LENGTH,  # Top
+        return pygame.Rect(settings.GRID_LENGTH / 2 - settings.GRID_START_BOX_LENGTH / 2,  # Left
+                           settings.GRID_LENGTH / 2 - settings.GRID_START_BOX_LENGTH / 2,  # Top
                            settings.GRID_START_BOX_LENGTH, settings.GRID_START_BOX_LENGTH)  # width, height
 
     @staticmethod

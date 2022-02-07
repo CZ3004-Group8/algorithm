@@ -93,10 +93,10 @@ class Brain:
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
             self.first.plan(curr_pos, target_pos, is_start)
-        elif math.pi / 2 <= angle <= math.pi:
+        elif math.pi / 2 <= angle or angle < -math.pi:
             print("Obstacle in robot's 2nd quadrant.")
             self.second.plan(curr_pos, target_pos, is_start)
-        elif -math.pi < angle < -math.pi / 2:
+        elif -math.pi < angle or angle > math.pi:
             print("Obstacle in robot's 3rd quadrant.")
             self.third.plan(curr_pos, target_pos, is_start)
         else:
