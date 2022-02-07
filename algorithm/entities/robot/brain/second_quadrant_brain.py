@@ -107,6 +107,14 @@ class SecondQuadrantBrain(QuadrantBrain):
 
     def east_image(self, curr_pos, target_pos, is_start):
         pass
+        # If there is an obstacle currently in front of the robot:
+        #   If target is directly above object
+        #      - We travel from the right side of the obstacle.
+        #      - Realign to right side of the obstacle.
+        #      - Travel until enough offset to reverse turn to face west.
+        #      - Reverse turn to face west.
+        #      - Travel straight to the object.
+        # Else
 
     def west_image(self, curr_pos, target_pos, is_start):
         pass

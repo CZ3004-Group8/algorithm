@@ -65,10 +65,12 @@ class Brain:
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
         curr_pos = self.robot.get_current_pos().copy()
-        is_start = True  # At starting position, the robot has no obstacle in front of it.
+        is_start = False  # At starting position, the robot has no obstacle in front of it.
         for obs in self.simple_hamiltonian:
             print("-" * 40)
             target_pos = obs.get_robot_target_pos()
+            print("Offset: ", end="")
+            self.wrt_bot(curr_pos, target_pos).as_offset_pos()
             self.plan_curr_to_target(curr_pos, target_pos, is_start)
             is_start = False
             print("-" * 40)
@@ -93,10 +95,10 @@ class Brain:
         if 0 <= angle < math.pi / 2:
             print("Obstacle in robot's 1st quadrant.")
             self.first.plan(curr_pos, target_pos, is_start)
-        elif math.pi / 2 <= angle or angle < -math.pi:
+        elif math.pi / 2 <= angle <= math.pi or angle < -math.pi:
             print("Obstacle in robot's 2nd quadrant.")
             self.second.plan(curr_pos, target_pos, is_start)
-        elif -math.pi < angle or angle > math.pi:
+        elif -math.pi < angle <= -math.pi / 2 or angle > math.pi:
             print("Obstacle in robot's 3rd quadrant.")
             self.third.plan(curr_pos, target_pos, is_start)
         else:
