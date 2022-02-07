@@ -114,7 +114,7 @@ class Brain:
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
         target_direction = target_pos.direction.value
-        target_facing = target_pos.direction
+        target_facing = bot_pos.direction
         if target_facing == Direction.RIGHT:
             target_facing = Direction.LEFT
         elif target_facing == Direction.LEFT:
