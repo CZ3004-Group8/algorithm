@@ -28,7 +28,7 @@ class Robot:
 
         self.path_hist = []  # Stores the history of the path taken by the robot.
 
-        self.current_command = 0  # Index of the current command being executed.
+        self.__current_command = 0  # Index of the current command being executed.
 
     def get_current_pos(self):
         return self.pos
@@ -100,15 +100,22 @@ class Robot:
 
     def update(self):
         # If no more commands to execute, then return.
-        if len(self.brain.commands) == 0:
+        if self.__current_command >= len(self.brain.commands):
             return
 
+        # Check current command has non-null ticks.
+        # Needed to check commands that have 0 tick execution time.
+        if self.brain.commands[self.__current_command].total_ticks == 0:
+            self.__current_command += 1
+            if self.__current_command >= len(self.brain.commands):
+                return
+
         # If not, the first command in the list is always the command to execute.
-        command: Command = self.brain.commands[0]
+        command: Command = self.brain.commands[self.__current_command]
         command.process_one_tick(self)
         # If there are no more ticks to do, then we can assume that we have
         # successfully completed this command, and so we can remove it.
         # The next time this method is run, then we will process the next command in the list.
         if command.ticks <= 0:
             print(f"Finished processing {command}, {self.pos}")
-            self.brain.commands.popleft()
+            self.__current_command += 1

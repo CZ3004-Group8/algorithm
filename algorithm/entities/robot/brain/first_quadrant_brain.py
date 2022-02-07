@@ -111,20 +111,70 @@ class FirstQuadrantBrain(QuadrantBrain):
 
         # If there is an obstacle in front of the robot.
         if not is_start:
-            # Reverse turn to face east.
+            # If the y-offset is less than OBSTACLE_SAFETY_WIDTH, we need to go lower.
+            if offset_pos.y < settings.OBSTACLE_SAFETY_WIDTH:
+                # Reverse turn to face east.
+                self.commands.append(
+                    TurnCommand(-math.pi / 2, True).apply_on_pos(curr_pos)
+                )
+                offset_pos.x += settings.ROBOT_TURN_RADIUS
+                offset_pos.y += settings.ROBOT_TURN_RADIUS
+
+                dist = max(settings.ROBOT_TURN_RADIUS + settings.OBSTACLE_SAFETY_WIDTH,
+                           offset_pos.x)
+            else:
+                # If enough space, then we can reverse and then do a forward right turn.
+                # This will help us keep to the quadrant better.
+                self.commands.append(
+                    StraightCommand(-settings.ROBOT_TURN_RADIUS).apply_on_pos(curr_pos)
+                )
+
+                # Do the forward turn.
+                self.commands.append(
+                    TurnCommand(-math.pi / 2, False).apply_on_pos(curr_pos)
+                )
+                offset_pos.x -= settings.ROBOT_TURN_RADIUS
+
+                dist = max(offset_pos.x, 0)
+            # We travel to at least clear the obstacle, or reach x-coor of the target,
+            # whichever is greater.
             self.commands.append(
-                TurnCommand(-math.pi / 2, True).apply_on_pos(curr_pos)
+                StraightCommand(dist).apply_on_pos(curr_pos)
+            )
+            offset_pos.x -= dist
+
+            # Do a forward turn to the left.
+            self.commands.append(
+                TurnCommand(math.pi / 2, False).apply_on_pos(curr_pos)
+            )
+            offset_pos.x -= settings.ROBOT_TURN_RADIUS
+            offset_pos.y -= settings.ROBOT_TURN_RADIUS
+
+            # Realign to allow ROBOT_TURN_RADIUS for a forward turn to the left.
+            dist = -settings.ROBOT_TURN_RADIUS + offset_pos.y
+            self.commands.append(
+                StraightCommand(dist).apply_on_pos(curr_pos)
+            )
+            offset_pos.y = settings.ROBOT_TURN_RADIUS
+
+            # Do a forward turn to the left.
+            self.commands.append(
+                TurnCommand(math.pi / 2, False).apply_on_pos(curr_pos)
             )
             offset_pos.x += settings.ROBOT_TURN_RADIUS
-            offset_pos.y += settings.ROBOT_TURN_RADIUS
+            offset_pos.y = 0
 
-            # TODO
-            # We travel straight to at least clear the obstacle, or reach x-offset of the target,
-            # whichever is greater.
+            # Travel straight to the target
+            self.commands.append(
+                StraightCommand(-offset_pos.x).apply_on_pos(curr_pos)
+            )
 
-        # End.
-        self.extend_then_clear_commands(self.brain.commands)
-        return
+            # End.
+            self.extend_then_clear_commands(self.brain.commands)
+            return
+        else:
+            # TODO: There is no obstacle in front of the robot.
+            pass
 
     def west_image(self, curr_pos, target_pos, is_start):
         pass
