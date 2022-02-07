@@ -113,6 +113,7 @@ class Brain:
         """
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
+        print(target_pos)
         target_direction = target_pos.direction.value
         target_facing = target_pos.direction
         if target_facing == Direction.RIGHT:
@@ -124,23 +125,20 @@ class Brain:
         else:
             target_facing = Direction.TOP
         facing = 0
-
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
             if target_facing != bot_pos.direction:
-                if target_facing == Direction.BOTTOM:
-                    target_facing = Direction.RIGHT
+                if target_facing == Direction.RIGHT:
+                    target_facing = Direction.BOTTOM
                 else:
-                    target_direction += 1
+                    target_direction -= 1
                     target_facing = Direction(target_direction)
             else:
                 target_facing = Direction.TOP
             facing = 3
         elif bot_pos.direction == Direction.BOTTOM:
             if target_facing != bot_pos.direction:
-                if target_facing == Direction.BOTTOM:
-                    target_facing = Direction.TOP
-                elif target_facing == Direction.LEFT:
+                if target_facing == Direction.LEFT:
                     target_facing = Direction.RIGHT
                 else:
                     target_direction += 2
@@ -150,11 +148,11 @@ class Brain:
             facing = 2
         elif bot_pos.direction == Direction.LEFT:
             if target_facing != bot_pos.direction:
-                if target_facing != Direction.RIGHT:
-                    target_direction -= 1
+                if target_facing != Direction.BOTTOM:
+                    target_direction += 1
                     target_facing = Direction(target_direction)
                 else:
-                    target_facing = Direction.BOTTOM
+                    target_facing = Direction.RIGHT
             else:
                 target_facing = Direction.TOP
             facing = 1
