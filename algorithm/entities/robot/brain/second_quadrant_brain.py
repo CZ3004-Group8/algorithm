@@ -17,7 +17,6 @@ class SecondQuadrantBrain(QuadrantBrain):
             return
 
         # If there is an obstacle currently in front of the robot.
-        # and the next obstacle is almost directly on top of current obstacle.
         if not is_start:
             # If the next obstacle is almost directly on top of current obstacle.
             if offset_pos.x > -settings.OBSTACLE_SAFETY_WIDTH:
@@ -88,7 +87,6 @@ class SecondQuadrantBrain(QuadrantBrain):
             self.commands.append(
                 StraightCommand(dist).apply_on_pos(curr_pos)
             )
-            offset_pos.x = settings.ROBOT_TURN_RADIUS
 
             # We do a reverse turn to face north.
             self.commands.append(
