@@ -73,7 +73,6 @@ class Brain:
             is_start = False
             print("-" * 40)
             curr_pos = target_pos
-            break  # TODO: Remove this next time. This is temporary to only plan until the first obstacle.
 
         print("Commands:")
         for c in self.commands:
