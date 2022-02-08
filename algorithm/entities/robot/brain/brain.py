@@ -75,7 +75,6 @@ class Brain:
             self.plan_curr_to_target(curr_pos, target_pos, is_start)
             is_start = False
             print("-" * 40)
-            curr_pos = target_pos
 
         print("Commands:")
         for c in self.commands:
