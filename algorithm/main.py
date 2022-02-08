@@ -7,6 +7,8 @@ if __name__ == '__main__':
     # (x-coordinate, y-coordinate, Direction)
     obs = [
         Obstacle(150, 150, Direction.RIGHT),
+        Obstacle(0, 145, Direction.RIGHT),
+        Obstacle(30, 20, Direction.RIGHT)
     ]
 
     app = AlgoApp(obs)

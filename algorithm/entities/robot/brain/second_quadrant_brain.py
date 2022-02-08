@@ -10,7 +10,7 @@ class SecondQuadrantBrain(QuadrantBrain):
     def __init__(self, brain):
         super().__init__(brain)
 
-    def south_image(self, curr_pos, target_pos, is_start):
+    def bottom_image(self, curr_pos, target_pos, is_start):
         # Get the offset
         offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
         if math.isclose(offset_pos.x, 0) and math.isclose(offset_pos.y, 0):
@@ -102,10 +102,10 @@ class SecondQuadrantBrain(QuadrantBrain):
         self.extend_then_clear_commands(self.brain.commands)
         return
 
-    def north_image(self, curr_pos, target_pos, is_start):
+    def top_image(self, curr_pos, target_pos, is_start):
         pass
 
-    def east_image(self, curr_pos, target_pos, is_start):
+    def right_image(self, curr_pos, target_pos, is_start):
         pass
         # If there is an obstacle currently in front of the robot:
         #   If target is directly above object
@@ -116,5 +116,5 @@ class SecondQuadrantBrain(QuadrantBrain):
         #      - Travel straight to the object.
         # Else
 
-    def west_image(self, curr_pos, target_pos, is_start):
+    def left_image(self, curr_pos, target_pos, is_start):
         pass

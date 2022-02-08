@@ -3,6 +3,7 @@ import math
 from collections import deque
 from typing import Tuple
 
+
 from algorithm import settings
 from algorithm.entities.assets.direction import Direction
 from algorithm.entities.grid.obstacle import Obstacle
@@ -113,6 +114,7 @@ class Brain:
         """
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
+
         target_direction = target_pos.direction.value
         target_facing = target_pos.direction
         if target_facing == Direction.RIGHT:
@@ -124,23 +126,20 @@ class Brain:
         else:
             target_facing = Direction.TOP
         facing = 0
-
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
             if target_facing != bot_pos.direction:
-                if target_facing == Direction.LEFT:
+                if target_facing == Direction.RIGHT:
                     target_facing = Direction.BOTTOM
                 else:
-                    target_direction += 1
+                    target_direction -= 1
                     target_facing = Direction(target_direction)
             else:
                 target_facing = Direction.TOP
             facing = 3
         elif bot_pos.direction == Direction.BOTTOM:
             if target_facing != bot_pos.direction:
-                if target_facing == Direction.BOTTOM:
-                    target_facing = Direction.TOP
-                elif target_facing == Direction.LEFT:
+                if target_facing == Direction.LEFT:
                     target_facing = Direction.RIGHT
                 else:
                     target_direction += 2
@@ -150,17 +149,16 @@ class Brain:
             facing = 2
         elif bot_pos.direction == Direction.LEFT:
             if target_facing != bot_pos.direction:
-                if target_facing != Direction.RIGHT:
-                    target_direction -= 1
+                if target_facing != Direction.BOTTOM:
+                    target_direction += 1
                     target_facing = Direction(target_direction)
                 else:
-                    target_facing = Direction.BOTTOM
+                    target_facing = Direction.RIGHT
             else:
                 target_facing = Direction.TOP
             facing = 1
 
         # check target's next coordinates with respect to robot's pov
-        offset_x = bot_pos.x + (math.cos(facing * 0.5) * x_diff) - (math.sin(facing * 0.5) * y_diff) - bot_pos.x
-        offset_y = bot_pos.y + (math.sin(facing * 0.5) * x_diff) + (math.cos(facing * 0.5) * y_diff) - bot_pos.y
-
+        offset_x = round((bot_pos.x + (math.cos(facing * 0.5 *math.pi) * x_diff) - (math.sin(facing * 0.5*math.pi) * y_diff) - bot_pos.x))
+        offset_y = round((bot_pos.y + (math.sin(facing * 0.5 *math.pi) * x_diff) + (math.cos(facing * 0.5*math.pi) * y_diff) - bot_pos.y))
         return Position(offset_x, offset_y, target_facing)
