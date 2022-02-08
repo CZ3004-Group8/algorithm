@@ -9,20 +9,19 @@ from algorithm.entities.commands.command import Command
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.grid.position import Position
+from algorithm.entities.robot.brain.brain import Brain
 
 
 class Robot:
-    def __init__(self, x, y, direction: Direction, grid):
-        """
-        We take the robot as a point in the center.
+    def __init__(self, grid):
+        # Hardcode robot starting location.
+        self.pos = Position(15 * settings.SCALING_FACTOR, 15 * settings.SCALING_FACTOR,
+                            Direction.TOP, math.pi / 2)
 
-        Note that the specified x, y coordinates are PyGame coordinates.
-        """
-        self.pos = Position(x, y, direction)
+        self.brain = Brain(self, grid)
 
-        self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
-                                            (settings.ROBOT_LENGTH / 2, settings.ROBOT_LENGTH / 2))
-        self.rot_image = self.image  # Store rotated image
+        self.__image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
+                                              (settings.ROBOT_LENGTH / 2, settings.ROBOT_LENGTH / 2))
 
         self.path_hist = []  # Stores the history of the path taken by the robot.
 
@@ -61,22 +60,22 @@ class Robot:
         StraightCommand(dist).apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
-        prev = self.brain.grid.get_start_box_rect().center
+        prev = self.pos.xy_pygame()
         for obs in self.brain.simple_hamiltonian:
-            target = obs.get_robot_target_pos()
+            target = obs.get_robot_target_pos().xy_pygame()
             pygame.draw.line(screen, colors.DARK_GREEN,
-                             prev, target.xy())
-            prev = target.xy()
+                             prev, target)
+            prev = target
 
     def draw_self(self, screen):
         # The red background
-        pygame.draw.circle(screen, colors.RED, self.pos.xy(), settings.ROBOT_LENGTH / 2)
+        pygame.draw.circle(screen, colors.RED, self.pos.xy_pygame(), settings.ROBOT_LENGTH / 2)
 
         # The arrow to represent the direction of the robot.
-        rot_image = pygame.transform.rotate(self.image,
+        rot_image = pygame.transform.rotate(self.__image,
                                             -math.degrees(math.pi / 2 - self.pos.angle))
         rect = rot_image.get_rect()
-        rect.center = self.pos.xy()
+        rect.center = self.pos.xy_pygame()
         screen.blit(rot_image, rect)
 
     def draw_historic_path(self, screen):
@@ -89,9 +88,9 @@ class Robot:
 
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
-        if len(self.path_hist) == 0 or self.pos.xy() != self.path_hist[-1]:
+        if len(self.path_hist) == 0 or self.pos.xy_pygame() != self.path_hist[-1]:
             # Only add a new point history if there is none, and it is different from previous history.
-            self.path_hist.append(self.pos.xy())
+            self.path_hist.append(self.pos.xy_pygame())
 
         # Draw the robot itself.
         self.draw_self(screen)

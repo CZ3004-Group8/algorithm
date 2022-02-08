@@ -31,15 +31,6 @@ class Grid:
         return nodes
 
     @classmethod
-    def get_start_box_rect(cls,):
-        """
-        Get the Rect that shows the start box.
-        """
-        return pygame.Rect(0,  # Left
-                           settings.GRID_LENGTH - settings.GRID_START_BOX_LENGTH,  # Top
-                           settings.GRID_START_BOX_LENGTH, settings.GRID_START_BOX_LENGTH)  # width, height
-
-    @classmethod
     def draw_arena_borders(cls, screen):
         """
         Draw the arena borders.
@@ -53,11 +44,6 @@ class Grid:
         # Draw right border
         pygame.draw.line(screen, colors.RED, (settings.GRID_LENGTH, 0), (settings.GRID_LENGTH, settings.GRID_LENGTH))
 
-    def draw_start_box(self, screen):
-        # Starting box
-        start_box = self.get_start_box_rect()
-        pygame.draw.rect(screen, colors.GREY, start_box)
-
     def draw_obstacles(self, screen):
         for ob in self.obstacles:
             ob.draw(screen)
@@ -70,12 +56,7 @@ class Grid:
     def draw(self, screen):
         # Draw nodes
         self.draw_nodes(screen)
-
         # Draw arena borders
         self.draw_arena_borders(screen)
-
-        # Draw starting box
-        self.draw_start_box(screen)
-
         # Draw obstacles
         self.draw_obstacles(screen)

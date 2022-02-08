@@ -7,10 +7,6 @@ from algorithm.entities.grid.position import Position
 
 
 class Obstacle:
-    """
-    Obstacle abstracts an image obstacle in the arena.
-    """
-
     def __init__(self, x, y, direction: Direction):
         """
         x -> x-coordinate of the obstacle.

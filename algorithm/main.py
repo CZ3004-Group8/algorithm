@@ -1,4 +1,4 @@
-from algorithm.app import AlgoApp
+from algorithm.app import AlgoSimulator
 from algorithm.entities.assets.direction import Direction
 from algorithm.entities.grid.obstacle import Obstacle
 
@@ -12,5 +12,5 @@ if __name__ == '__main__':
         Obstacle(155, 55, Direction.TOP)
     ]
 
-    app = AlgoApp(obs)
+    app = AlgoSimulator(obs)
     app.execute()

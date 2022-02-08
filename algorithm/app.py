@@ -4,14 +4,13 @@ import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
-from algorithm.entities.assets.direction import Direction
 from algorithm.entities.connection import rpi_connection
 from algorithm.entities.grid.grid import Grid
 from algorithm.entities.grid.obstacle import Obstacle
 from algorithm.entities.robot.robot import Robot
 
 
-class AlgoApp:
+class AlgoSimulator:
     def __init__(self, obstacles: List[Obstacle]):
         self.running = False
         self.size = self.width, self.height = settings.WINDOW_SIZE
@@ -21,9 +20,7 @@ class AlgoApp:
         self.connection = rpi_connection.RPiConnection()
 
         self.grid = Grid(obstacles)
-        # Get the starting coordinate of the robot.
-        start_pos = self.grid.get_start_box_rect().center
-        # self.robot = Robot(*start_pos, Direction.TOP, self.grid)
+        self.robot = Robot(self.grid)
 
     def settle_events(self):
         """
@@ -63,7 +60,7 @@ class AlgoApp:
         self.screen.fill(colors.WHITE, None)
 
         self.grid.draw(self.screen)
-        #self.robot.draw(self.screen)
+        self.robot.draw(self.screen)
 
         # Really render now.
         pygame.display.flip()
@@ -73,7 +70,7 @@ class AlgoApp:
         Initialise the app and start the game loop.
         """
         self.init()
-        #self.robot.brain.plan_path()
+        self.robot.brain.plan_path()
 
         while self.running:
             # Check for Pygame events.
