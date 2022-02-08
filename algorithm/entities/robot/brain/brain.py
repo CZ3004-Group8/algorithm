@@ -117,6 +117,14 @@ class Brain:
 
         target_direction = target_pos.direction.value
         target_facing = target_pos.direction
+        if target_facing == Direction.RIGHT:
+            target_facing = Direction.LEFT
+        elif target_facing == Direction.LEFT:
+            target_facing = Direction.RIGHT
+        elif target_facing == Direction.TOP:
+            target_facing = Direction.BOTTOM
+        else:
+            target_facing = Direction.TOP
         facing = 0
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
@@ -151,6 +159,6 @@ class Brain:
             facing = 1
 
         # check target's next coordinates with respect to robot's pov
-        offset_x = round((bot_pos.x + (math.cos(facing * 0.5 *math.pi) * x_diff) - (math.sin(facing * 0.5*math.pi) * y_diff) - bot_pos.x)/settings.SCALING_FACTOR)
-        offset_y = round((bot_pos.y + (math.sin(facing * 0.5 *math.pi) * x_diff) + (math.cos(facing * 0.5*math.pi) * y_diff) - bot_pos.y)/settings.SCALING_FACTOR)
+        offset_x = round((bot_pos.x + (math.cos(facing * 0.5 *math.pi) * x_diff) - (math.sin(facing * 0.5*math.pi) * y_diff) - bot_pos.x))
+        offset_y = round((bot_pos.y + (math.sin(facing * 0.5 *math.pi) * x_diff) + (math.cos(facing * 0.5*math.pi) * y_diff) - bot_pos.y))
         return Position(offset_x, offset_y, target_facing)
