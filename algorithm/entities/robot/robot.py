@@ -9,7 +9,6 @@ from algorithm.entities.commands.command import Command
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
 from algorithm.entities.grid.position import Position
-from algorithm.entities.robot.brain.brain import Brain
 
 
 class Robot:
@@ -20,7 +19,6 @@ class Robot:
         Note that the specified x, y coordinates are PyGame coordinates.
         """
         self.pos = Position(x, y, direction)
-        self.brain = Brain(self, grid)
 
         self.image = pygame.transform.scale(pygame.image.load("entities/assets/left-arrow.png"),
                                             (settings.ROBOT_LENGTH / 2, settings.ROBOT_LENGTH / 2))

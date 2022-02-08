@@ -3,32 +3,43 @@ from algorithm.entities.assets.direction import Direction
 
 
 class Position:
-    def __init__(self, x, y, direction: Direction, angle=None):
+    def __init__(self, x, y, direction: Direction = None, angle=0):
         """
-        Take note that x and y are both PyGame coordinates, and not coordinates
-        in terms of the arena grid.
+        x and y coordinates are in terms of the grid.
+        Note that they should already be scaled properly.
+
+        Most of the time, we do not need to set angle. Should only be used for the robot.
         """
+        # Setting default value for direction.
+        if direction is None:
+            direction = Direction.RIGHT
+
         self.x = x
         self.y = y
-
         self.direction = direction
         self.angle = angle
-        if angle is None:
-            self.angle = self.direction.get_angle()
 
     def __str__(self):
-        return f"Position({(self.x / settings.SCALING_FACTOR):.2f}, " \
-               f"{((settings.GRID_LENGTH - self.y) / settings.SCALING_FACTOR):.2f}, " \
-               f"direction={self.direction}, " \
+        return f"Position({(self.x // settings.SCALING_FACTOR)}, {self.y // settings.SCALING_FACTOR}, " \
+               f"dir={self.direction}, " \
                f"angle={self.angle:.2f})"
 
     __repr__ = __str__
 
-    def as_offset_pos(self):
-        print(f"PositionOffset({self.x / settings.SCALING_FACTOR}, {self.y / settings.SCALING_FACTOR})")
-
     def xy(self):
+        """
+        Return the true x, y coordinates of the current Position.
+        """
         return self.x, self.y
 
+    def xy_pygame(self):
+        """
+        Return the x, y coordinates in terms of Pygame coordinates. Useful for drawing on screen.
+        """
+        return self.x, settings.GRID_LENGTH - self.y
+
     def copy(self):
+        """
+        Create a new copy of this Position.
+        """
         return Position(self.x, self.y, self.direction, self.angle)
