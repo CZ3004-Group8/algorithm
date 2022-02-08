@@ -72,23 +72,23 @@ class Obstacle:
         # Draw the obstacle onto the grid.
         # We need to translate the obstacle's center into that with respect to PyGame
         # Get the coordinates of the grid's bottom left-hand corner.
-        rect = pygame.Rect(0, 0, settings.GRID_CELL_LENGTH, settings.GRID_CELL_LENGTH)
+        rect = pygame.Rect(0, 0, settings.OBSTACLE_LENGTH, settings.OBSTACLE_LENGTH)
         rect.center = self.pos.xy_pygame()
         pygame.draw.rect(screen, colors.BLACK, rect)
 
         # Draw the direction of the picture
-        rect.width = settings.GRID_CELL_LENGTH / 2
-        rect.height = settings.GRID_CELL_LENGTH / 2
+        rect.width = settings.OBSTACLE_LENGTH / 2
+        rect.height = settings.OBSTACLE_LENGTH / 2
         rect.center = self.pos.xy_pygame()
 
         if self.pos.direction == Direction.TOP:
-            rect.centery -= settings.GRID_CELL_LENGTH / 4
+            rect.centery -= settings.OBSTACLE_LENGTH / 4
         elif self.pos.direction == Direction.BOTTOM:
-            rect.centery += settings.GRID_CELL_LENGTH / 4
+            rect.centery += settings.OBSTACLE_LENGTH / 4
         elif self.pos.direction == Direction.LEFT:
-            rect.centerx -= settings.GRID_CELL_LENGTH / 4
+            rect.centerx -= settings.OBSTACLE_LENGTH / 4
         else:
-            rect.centerx += settings.GRID_CELL_LENGTH / 4
+            rect.centerx += settings.OBSTACLE_LENGTH / 4
 
         # Draw the picture place
         pygame.draw.rect(screen, colors.RED, rect)

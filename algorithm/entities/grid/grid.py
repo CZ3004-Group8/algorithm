@@ -18,18 +18,20 @@ class Grid:
         """
         Generate the nodes for this grid.
         """
-        rows = settings.GRID_LENGTH // settings.SCALING_FACTOR // 10
+        rows = settings.GRID_LENGTH // settings.GRID_CELL_LENGTH
+        print(rows)
         nodes = deque()
         for i in range(rows):
             row = deque()
             for j in range(rows):
-                x, y = (5 + 10 * j) * settings.SCALING_FACTOR, (5 + 10 * i) * settings.SCALING_FACTOR
+                x, y = (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * j), \
+                       (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * i)
                 # Check if the current node falls within the boundary of a Node or if it is close to the border.
                 occupied = any(obstacle.check_within_boundary(x, y) for obstacle in self.obstacles) or \
-                    (y < settings.OBSTACLE_SAFETY_WIDTH or
-                     y > settings.GRID_LENGTH - settings.OBSTACLE_SAFETY_WIDTH) or \
-                    (x < settings.OBSTACLE_SAFETY_WIDTH or
-                     x > settings.GRID_LENGTH - settings.OBSTACLE_SAFETY_WIDTH)
+                    (y < settings.ROBOT_SAFETY_DISTANCE or
+                     y > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE) or \
+                    (x < settings.ROBOT_SAFETY_DISTANCE or
+                     x > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE)
                 row.append(Node(x, y, occupied))
             nodes.appendleft(row)
         return nodes

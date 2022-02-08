@@ -14,8 +14,8 @@ from algorithm.entities.robot.brain.brain import Brain
 
 class Robot:
     def __init__(self, grid):
-        self.pos = Position(settings.OBSTACLE_SAFETY_WIDTH,
-                            settings.OBSTACLE_SAFETY_WIDTH,
+        self.pos = Position(settings.ROBOT_SAFETY_DISTANCE,
+                            settings.ROBOT_SAFETY_DISTANCE,
                             Direction.TOP, math.pi / 2)
 
         self.brain = Brain(self, grid)
