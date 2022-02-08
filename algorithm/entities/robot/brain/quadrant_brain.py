@@ -25,41 +25,41 @@ class QuadrantBrain(ABC):
         offset_pos = self.brain.wrt_bot(curr_pos, target_pos)
         if offset_pos.direction == Direction.BOTTOM:
             print("Planning for picture at south.")
-            self.south_image(curr_pos, target_pos, is_start)
+            self.bottom_image(curr_pos, target_pos, is_start)
         elif offset_pos.direction == Direction.RIGHT:
             print("Planning for picture at east.")
-            self.east_image(curr_pos, target_pos, is_start)
+            self.right_image(curr_pos, target_pos, is_start)
         elif offset_pos.direction == Direction.LEFT:
             print("Planning for picture at west.")
-            self.west_image(curr_pos, target_pos, is_start)
+            self.left_image(curr_pos, target_pos, is_start)
         else:
             print("Planning for picture at north.")
-            self.north_image(curr_pos, target_pos, is_start)
+            self.top_image(curr_pos, target_pos, is_start)
 
     @abstractmethod
-    def south_image(self, curr_pos, target_pos, is_start):
+    def bottom_image(self, curr_pos, target_pos, is_start):
         """
-        Plan the path for when the obstacle image is facing south for this quadrant.
+        Plan the path for when the obstacle image is facing top.
         """
         pass
 
     @abstractmethod
-    def north_image(self, curr_pos, target_pos, is_start):
+    def top_image(self, curr_pos, target_pos, is_start):
         """
-        Plan the path for when the obstacle image is facing north for this quadrant.
-        """
-        pass
-
-    @abstractmethod
-    def east_image(self, curr_pos, target_pos, is_start):
-        """
-        Plan the path for when the obstacle image is facing east for this quadrant.
+        Plan the path for when the obstacle image is facing bottom.
         """
         pass
 
     @abstractmethod
-    def west_image(self, curr_pos, target_pos, is_start):
+    def right_image(self, curr_pos, target_pos, is_start):
         """
-        Plan the path for when the obstacle image is facing west for this quadrant.
+        Plan the path for when the obstacle image is facing right.
+        """
+        pass
+
+    @abstractmethod
+    def left_image(self, curr_pos, target_pos, is_start):
+        """
+        Plan the path for when the obstacle image is facing left.
         """
         pass
