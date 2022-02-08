@@ -114,9 +114,9 @@ class Brain:
         """
         # Get the x, y difference between the current and target
         x_diff, y_diff = target_pos.x - bot_pos.x, bot_pos.y - target_pos.y
-
         target_direction = target_pos.direction.value
         target_facing = target_pos.direction
+        print(target_facing)
         if target_facing == Direction.RIGHT:
             target_facing = Direction.LEFT
         elif target_facing == Direction.LEFT:
@@ -125,7 +125,8 @@ class Brain:
             target_facing = Direction.BOTTOM
         else:
             target_facing = Direction.TOP
-        facing = 0
+        # north = 0, west 1, south 2 , east 3
+
         # We change it to depend on the current orientation.
         if bot_pos.direction == Direction.RIGHT:
             if target_facing != bot_pos.direction:
@@ -136,7 +137,7 @@ class Brain:
                     target_facing = Direction(target_direction)
             else:
                 target_facing = Direction.TOP
-            facing = 3
+            facing = 1
         elif bot_pos.direction == Direction.BOTTOM:
             if target_facing != bot_pos.direction:
                 if target_facing == Direction.LEFT:
@@ -156,7 +157,9 @@ class Brain:
                     target_facing = Direction.RIGHT
             else:
                 target_facing = Direction.TOP
-            facing = 1
+            facing = 3
+        else:
+            facing = 0
 
         # check target's next coordinates with respect to robot's pov
         offset_x = round((bot_pos.x + (math.cos(facing * 0.5 *math.pi) * x_diff) - (math.sin(facing * 0.5*math.pi) * y_diff) - bot_pos.x))
