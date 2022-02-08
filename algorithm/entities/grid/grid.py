@@ -18,12 +18,10 @@ class Grid:
         """
         Generate the nodes for this grid.
         """
-        rows = settings.GRID_LENGTH // settings.GRID_CELL_LENGTH
-        print(rows)
         nodes = deque()
-        for i in range(rows):
+        for i in range(settings.GRID_NUM_GRIDS):
             row = deque()
-            for j in range(rows):
+            for j in range(settings.GRID_NUM_GRIDS):
                 x, y = (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * j), \
                        (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * i)
                 # Check if the current node falls within the boundary of a Node or if it is close to the border.
@@ -35,6 +33,18 @@ class Grid:
                 row.append(Node(x, y, occupied))
             nodes.appendleft(row)
         return nodes
+
+    def get_coordinate_node(self, x, y):
+        """
+        Get the corresponding Node object that contains specified x, y coordinates.
+
+        Note that the x-y coordinates are in terms of the grid, and must be scaled properly.
+        """
+        rows = settings.GRID_NUM_GRIDS
+
+        col_num = round(x / settings.GRID_CELL_LENGTH)
+        row_num = rows - round(y / settings.GRID_CELL_LENGTH)
+        return self.nodes[row_num][col_num]
 
     @classmethod
     def draw_arena_borders(cls, screen):
