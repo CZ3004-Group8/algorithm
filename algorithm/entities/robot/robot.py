@@ -14,8 +14,8 @@ from algorithm.entities.robot.brain.brain import Brain
 
 class Robot:
     def __init__(self, grid):
-        # Hardcode robot starting location.
-        self.pos = Position(15 * settings.SCALING_FACTOR, 15 * settings.SCALING_FACTOR,
+        self.pos = Position(settings.OBSTACLE_SAFETY_WIDTH,
+                            settings.OBSTACLE_SAFETY_WIDTH,
                             Direction.TOP, math.pi / 2)
 
         self.brain = Brain(self, grid)
@@ -68,9 +68,6 @@ class Robot:
             prev = target
 
     def draw_self(self, screen):
-        # The red background
-        pygame.draw.circle(screen, colors.RED, self.pos.xy_pygame(), settings.ROBOT_LENGTH / 2)
-
         # The arrow to represent the direction of the robot.
         rot_image = pygame.transform.rotate(self.__image,
                                             -math.degrees(math.pi / 2 - self.pos.angle))
@@ -83,19 +80,20 @@ class Robot:
             pygame.draw.circle(screen, colors.BLACK, dot, 3)
 
     def draw(self, screen):
+        # Draw the robot itself.
+        self.draw_self(screen)
         # Draw the simple hamiltonian path found by the robot.
         self.draw_simple_hamiltonian_path(screen)
 
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
+
+    def update(self):
+        # Store historic path
         if len(self.path_hist) == 0 or self.pos.xy_pygame() != self.path_hist[-1]:
             # Only add a new point history if there is none, and it is different from previous history.
             self.path_hist.append(self.pos.xy_pygame())
 
-        # Draw the robot itself.
-        self.draw_self(screen)
-
-    def update(self):
         # If no more commands to execute, then return.
         if self.__current_command >= len(self.brain.commands):
             return

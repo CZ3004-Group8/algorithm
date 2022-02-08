@@ -24,8 +24,12 @@ class Grid:
             row = deque()
             for j in range(rows):
                 x, y = (5 + 10 * j) * settings.SCALING_FACTOR, (5 + 10 * i) * settings.SCALING_FACTOR
-                # Check if the current node falls within the boundary of a Node.
-                occupied = any(obstacle.check_within_boundary(x, y) for obstacle in self.obstacles)
+                # Check if the current node falls within the boundary of a Node or if it is close to the border.
+                occupied = any(obstacle.check_within_boundary(x, y) for obstacle in self.obstacles) or \
+                    (y < settings.OBSTACLE_SAFETY_WIDTH or
+                     y > settings.GRID_LENGTH - settings.OBSTACLE_SAFETY_WIDTH) or \
+                    (x < settings.OBSTACLE_SAFETY_WIDTH or
+                     x > settings.GRID_LENGTH - settings.OBSTACLE_SAFETY_WIDTH)
                 row.append(Node(x, y, occupied))
             nodes.appendleft(row)
         return nodes
