@@ -32,6 +32,9 @@ class Position:
         """
         return self.x, self.y
 
+    def xy_angle(self):
+        return *self.xy(), self.angle
+
     def xy_pygame(self):
         """
         Return the x, y coordinates in terms of Pygame coordinates. Useful for drawing on screen.

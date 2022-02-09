@@ -17,6 +17,7 @@ class Robot:
         self.pos = Position(settings.ROBOT_SAFETY_DISTANCE,
                             settings.ROBOT_SAFETY_DISTANCE,
                             Direction.TOP, math.pi / 2)
+        self._start_copy = self.pos.copy()
 
         self.brain = Brain(self, grid)
 
@@ -60,11 +61,10 @@ class Robot:
         StraightCommand(dist).apply_on_pos(self.pos)
 
     def draw_simple_hamiltonian_path(self, screen):
-        prev = self.pos.xy_pygame()
+        prev = self._start_copy.xy_pygame()
         for obs in self.brain.simple_hamiltonian:
             target = obs.get_robot_target_pos().xy_pygame()
-            pygame.draw.line(screen, colors.DARK_GREEN,
-                             prev, target)
+            pygame.draw.line(screen, colors.DARK_GREEN, prev, target)
             prev = target
 
     def draw_self(self, screen):

@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from algorithm import settings
@@ -57,16 +59,22 @@ class Obstacle:
     def get_robot_target_pos(self):
         """
         Returns the point that the robot should target for, including the target orientation.
+
+        Note that the target orientation is now with respect to the robot. If the robot needs to face right, then
+        we use Direction.RIGHT.
+
         We can store this information within a Position object.
+
+        The object will also store the angle that the robot should face.
         """
         if self.pos.direction == Direction.TOP:
-            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM)
+            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM, -math.pi / 2)
         elif self.pos.direction == Direction.BOTTOM:
-            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP)
+            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP, math.pi / 2)
         elif self.pos.direction == Direction.LEFT:
-            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT)
+            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT, 0)
         else:
-            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT)
+            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT, math.pi)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.

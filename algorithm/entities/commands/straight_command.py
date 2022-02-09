@@ -37,9 +37,9 @@ class StraightCommand(Command):
         if curr_pos.direction == Direction.RIGHT:
             curr_pos.x += self.dist
         elif curr_pos.direction == Direction.TOP:
-            curr_pos.y -= self.dist
-        elif curr_pos.direction == Direction.BOTTOM:
             curr_pos.y += self.dist
+        elif curr_pos.direction == Direction.BOTTOM:
+            curr_pos.y -= self.dist
         else:
             curr_pos.x -= self.dist
 
