@@ -7,9 +7,10 @@ if __name__ == '__main__':
     # (x-coordinate, y-coordinate, Direction)
     obs = [
         Obstacle(155, 155, Direction.BOTTOM),
-        Obstacle(55, 55, Direction.RIGHT),
+        Obstacle(55, 30, Direction.RIGHT),
         Obstacle(55, 155, Direction.LEFT),
-        Obstacle(155, 55, Direction.TOP)
+        Obstacle(155, 55, Direction.TOP),
+        Obstacle(100, 100, Direction.TOP)
     ]
 
     app = AlgoSimulator(obs)
