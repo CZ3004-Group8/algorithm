@@ -2,6 +2,8 @@ import math
 from queue import PriorityQueue
 from typing import List, Tuple
 
+import pygame
+
 from algorithm import settings
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
@@ -11,10 +13,11 @@ from algorithm.entities.grid.position import Position, RobotPosition
 
 
 class AStar:
-    def __init__(self, grid, start: RobotPosition, end: RobotPosition):
+    def __init__(self, grid, brain, start: RobotPosition, end: RobotPosition):
         # We use a copy of the grid rather than use a reference
         # to the exact grid.
         self.grid: Grid = grid.copy()
+        self.brain = brain
 
         self.start = start
         self.end = end
@@ -89,13 +92,12 @@ class AStar:
 
         while not frontier.empty():  # While there are still nodes to process.
             # Get the highest priority node.
-            current_node, current_position = frontier.get()
-
+            priority, (current_node, current_position) = frontier.get()
+            print(current_node, current_position)
             # If the current node is our goal.
             if current_node == goal_node:
                 break
 
             # Otherwise, we check through all possible locations that we can
             # travel to from this node.
-            for n_node, n_pos, weight in self.get_neighbours(current_position):
-                print(n_node, n_pos, weight)
+            self.brain.commands.extend(self.get_neighbours(current_position))

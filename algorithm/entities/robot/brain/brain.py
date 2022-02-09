@@ -4,6 +4,7 @@ from collections import deque
 from typing import Tuple
 
 from algorithm.entities.grid.obstacle import Obstacle
+from algorithm.entities.robot.brain.hybrid_a_star import AStar
 
 
 class Brain:
@@ -51,5 +52,6 @@ class Brain:
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")
-            # TODO: Add some planner here.
+            AStar(self.grid, self, curr, target).start_astar()
             curr = target
+            break

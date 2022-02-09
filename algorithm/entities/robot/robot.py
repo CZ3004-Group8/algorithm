@@ -89,6 +89,9 @@ class Robot:
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
 
+        for node, pos, weight in self.brain.commands:
+            pygame.draw.circle(screen, colors.BLACK, pos.xy_pygame(), 4)
+
     def update(self):
         # Store historic path
         if len(self.path_hist) == 0 or self.pos.xy_pygame() != self.path_hist[-1]:

@@ -12,6 +12,11 @@ class Node:
         """
         self.pos = Position(x, y, direction)
 
+    def __str__(self):
+        return f"Node({self.pos})"
+
+    __repr__ = __str__
+
     def __eq__(self, other):
         return self.pos.xy_dir() == other.pos.xy_dir()
 

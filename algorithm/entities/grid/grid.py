@@ -38,11 +38,10 @@ class Grid:
         Note that the x-y coordinates are in terms of the grid, and must be scaled properly.
         """
         col_num = math.floor(x / settings.GRID_CELL_LENGTH)
-        row_num = settings.GRID_NUM_GRIDS - math.floor(y / settings.GRID_CELL_LENGTH)
+        row_num = settings.GRID_NUM_GRIDS - math.floor(y / settings.GRID_CELL_LENGTH) - 1
         try:
             return self.nodes[row_num][col_num]
         except IndexError:
-            print("Out of arena!")
             return None
 
     def copy(self):
