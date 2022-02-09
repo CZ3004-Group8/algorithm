@@ -85,12 +85,8 @@ class Robot:
         self.draw_self(screen)
         # Draw the simple hamiltonian path found by the robot.
         self.draw_simple_hamiltonian_path(screen)
-
         # Draw the path sketched by the robot
         self.draw_historic_path(screen)
-
-        for node, pos, weight in self.brain.commands:
-            pygame.draw.circle(screen, colors.BLACK, pos.xy_pygame(), 4)
 
     def update(self):
         # Store historic path

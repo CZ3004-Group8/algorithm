@@ -50,8 +50,7 @@ class AlgoSimulator:
         pygame.display.set_caption("Algorithm")
 
     def do_updates(self):
-        # self.robot.update()
-        pass
+        self.robot.update()
 
     def render(self):
         """

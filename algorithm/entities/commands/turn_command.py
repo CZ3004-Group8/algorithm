@@ -13,14 +13,15 @@ class TurnCommand(Command):
 
         Note that negative angles will always result in the robot being rotated clockwise.
         """
-        time = abs((angle * settings.ROBOT_LENGTH) / (settings.ROBOT_SPEED_PER_SECOND * settings.ROBOT_S_FACTOR))
+        time = abs((math.radians(angle) * settings.ROBOT_LENGTH) /
+                   (settings.ROBOT_SPEED_PER_SECOND * settings.ROBOT_S_FACTOR))
         super().__init__(time)
 
         self.angle = angle
         self.rev = rev
 
     def __str__(self):
-        return f"TurnCommand({self.angle:.2f}rad, {self.total_ticks} ticks, rev={self.rev})"
+        return f"TurnCommand({self.angle:.2f}degrees, {self.total_ticks} ticks, rev={self.rev})"
 
     __repr__ = __str__
 
@@ -55,14 +56,14 @@ class TurnCommand(Command):
 
         if self.angle < 0 and not self.rev:  # Wheels to right moving forward.
             curr_pos.x -= x_change
-            curr_pos.y -= y_change
+            curr_pos.y += y_change
         elif (self.angle < 0 and self.rev) or (self.angle >= 0 and not self.rev):
             # (Wheels to left moving backwards) or (Wheels to left moving forwards).
             curr_pos.x += x_change
-            curr_pos.y += y_change
+            curr_pos.y -= y_change
         else:  # Wheels to right moving backwards.
             curr_pos.x -= x_change
-            curr_pos.y -= y_change
+            curr_pos.y += y_change
         curr_pos.angle += self.angle
 
         if curr_pos.angle < -180:
@@ -71,7 +72,7 @@ class TurnCommand(Command):
             curr_pos.angle -= 2 * 180
 
         # Update the Position's direction.
-        if 3 * 45 <= curr_pos.angle <= 45:
+        if 45 <= curr_pos.angle <= 3 * 45:
             curr_pos.direction = Direction.TOP
         elif -45 < curr_pos.angle < 45:
             curr_pos.direction = Direction.RIGHT

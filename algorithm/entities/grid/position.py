@@ -50,5 +50,10 @@ class RobotPosition(Position):
         if direction is not None:
             self.angle = direction.value
 
+    def __str__(self):
+        return f"RobotPosition({super().__str__()}, angle={self.angle})"
+
+    __repr__ = __str__
+
     def copy(self):
         return RobotPosition(self.x, self.y, self.direction, self.angle)
