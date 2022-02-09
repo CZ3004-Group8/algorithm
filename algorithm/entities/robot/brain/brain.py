@@ -47,11 +47,10 @@ class Brain:
     def plan_path(self):
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
-        curr = self.robot.pos
+        curr = self.robot.pos  # Remember that the robot's position has no Direction.
+
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")
-            # path = reeds_shepp.get_optimal_path(curr.xy_angle(), target.xy_angle())
-            # print(path)
-            # self.commands.extend([p.to_command() for p in path if p.to_command() is not None])
+            # TODO: Add some planner here.
             curr = target

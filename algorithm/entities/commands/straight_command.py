@@ -1,5 +1,5 @@
 from algorithm import settings
-from algorithm.entities.assets.direction import Direction
+from algorithm.entities.assets.Direction import Direction
 from algorithm.entities.commands.command import Command
 from algorithm.entities.grid.position import Position
 

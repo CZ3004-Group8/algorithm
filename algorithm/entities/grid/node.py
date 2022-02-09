@@ -6,12 +6,24 @@ from algorithm.entities.grid.position import Position
 
 
 class Node:
-    def __init__(self, x, y, occupied):
+    def __init__(self, x, y, occupied=False):
         """
         x and y coordinates are in terms of the grid.
         """
         self.pos = Position(x, y)
         self.occupied = occupied
+
+    def __eq__(self, other):
+        return self.pos.xy() == other.pos.xy()
+
+    def __hash__(self):
+        return hash((self.pos.x, self.pos.y))
+
+    def copy(self):
+        """
+        Return a copy of this node.
+        """
+        return Node(self.pos.x, self.pos.y, self.occupied)
 
     def draw_self(self, screen):
         if self.occupied:  # If current node is not permissible to the robot

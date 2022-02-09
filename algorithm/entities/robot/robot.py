@@ -1,10 +1,8 @@
-import math
-
 import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
-from algorithm.entities.assets.direction import Direction
+from algorithm.entities.assets.Direction import Direction
 from algorithm.entities.commands.command import Command
 from algorithm.entities.commands.straight_command import StraightCommand
 from algorithm.entities.commands.turn_command import TurnCommand
@@ -14,10 +12,15 @@ from algorithm.entities.robot.brain.brain import Brain
 
 class Robot:
     def __init__(self, grid):
+        # Note that we assume the robot starts always facing the top.
+        # This value will never change, but it will not affect us as the robot uses a more fine-tuned internal
+        # angle tracker.
         self.pos = Position(settings.ROBOT_SAFETY_DISTANCE,
                             settings.ROBOT_SAFETY_DISTANCE,
-                            Direction.TOP, math.pi / 2)
+                            Direction.TOP)
         self._start_copy = self.pos.copy()
+
+        self.angle = 90  # Internal angle tracker for refined turning rendering.
 
         self.brain = Brain(self, grid)
 
@@ -69,8 +72,7 @@ class Robot:
 
     def draw_self(self, screen):
         # The arrow to represent the direction of the robot.
-        rot_image = pygame.transform.rotate(self.__image,
-                                            -math.degrees(math.pi / 2 - self.pos.angle))
+        rot_image = pygame.transform.rotate(self.__image, -(90 - self.angle))
         rect = rot_image.get_rect()
         rect.center = self.pos.xy_pygame()
         screen.blit(rot_image, rect)

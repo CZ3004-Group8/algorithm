@@ -1,28 +1,23 @@
 from algorithm import settings
-from algorithm.entities.assets.direction import Direction
+from algorithm.entities.assets.Direction import Direction
 
 
 class Position:
-    def __init__(self, x, y, direction: Direction = None, angle=0):
+    def __init__(self, x, y, direction: Direction = None):
         """
         x and y coordinates are in terms of the grid.
         Note that they should already be scaled properly.
 
         Most of the time, we do not need to set angle. Should only be used for the robot.
+        Note that the angle should be in DEGREES.
         """
-        # Setting default value for direction.
-        if direction is None:
-            direction = Direction.RIGHT
-
         self.x = x
         self.y = y
         self.direction = direction
-        self.angle = angle
 
     def __str__(self):
         return f"Position({(self.x // settings.SCALING_FACTOR)}, {self.y // settings.SCALING_FACTOR}, " \
-               f"dir={self.direction}, " \
-               f"angle={self.angle:.2f})"
+               f"angle={self.direction})"
 
     __repr__ = __str__
 
@@ -31,9 +26,6 @@ class Position:
         Return the true x, y coordinates of the current Position.
         """
         return self.x, self.y
-
-    def xy_angle(self):
-        return *self.xy(), self.angle
 
     def xy_pygame(self):
         """
@@ -45,4 +37,4 @@ class Position:
         """
         Create a new copy of this Position.
         """
-        return Position(self.x, self.y, self.direction, self.angle)
+        return Position(self.x, self.y, self.direction)

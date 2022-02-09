@@ -46,6 +46,21 @@ class Grid:
         row_num = rows - round(y / settings.GRID_CELL_LENGTH)
         return self.nodes[row_num][col_num]
 
+    def copy(self):
+        """
+        Return a copy of the grid.
+        """
+        nodes = []
+        for row in self.nodes:
+            new_row = []
+            for col in row:
+                new_row.append(col.copy())
+            nodes.append(new_row)
+        return nodes
+
+    def get_neighbours(self, node):
+        pass
+
     @classmethod
     def draw_arena_borders(cls, screen):
         """

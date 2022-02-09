@@ -1,15 +1,13 @@
-import math
-
 import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
-from algorithm.entities.assets.direction import Direction
+from algorithm.entities.assets.Direction import Direction
 from algorithm.entities.grid.position import Position
 
 
 class Obstacle:
-    def __init__(self, x, y, direction: Direction):
+    def __init__(self, x, y, direction):
         """
         x -> x-coordinate of the obstacle.
         y -> y-coordinate of the obstacle.
@@ -32,8 +30,8 @@ class Obstacle:
         """
         Checks whether a given x-y coordinate is within the safety boundary of this obstacle.
         """
-        if self.pos.x - settings.OBSTACLE_SAFETY_WIDTH <= x <= self.pos.x + settings.OBSTACLE_SAFETY_WIDTH and \
-                self.pos.y - settings.OBSTACLE_SAFETY_WIDTH <= y <= self.pos.y + settings.OBSTACLE_SAFETY_WIDTH:
+        if self.pos.x - settings.OBSTACLE_SAFETY_WIDTH < x < self.pos.x + settings.OBSTACLE_SAFETY_WIDTH and \
+                self.pos.y - settings.OBSTACLE_SAFETY_WIDTH < y < self.pos.y + settings.OBSTACLE_SAFETY_WIDTH:
             return True
         return False
 
@@ -50,10 +48,10 @@ class Obstacle:
 
         return [
             # Note that in this case, the direction does not matter.
-            Position(left, lower, Direction.LEFT),  # Bottom left.
-            Position(right, lower, Direction.LEFT),  # Bottom right.
-            Position(left, upper, Direction.LEFT),  # Upper left.
-            Position(right, upper, Direction.LEFT)  # Upper right.
+            Position(left, lower),  # Bottom left.
+            Position(right, lower),  # Bottom right.
+            Position(left, upper),  # Upper left.
+            Position(right, upper)  # Upper right.
         ]
 
     def get_robot_target_pos(self):
@@ -61,20 +59,20 @@ class Obstacle:
         Returns the point that the robot should target for, including the target orientation.
 
         Note that the target orientation is now with respect to the robot. If the robot needs to face right, then
-        we use Direction.RIGHT.
+        we use 0 degrees.
 
         We can store this information within a Position object.
 
         The object will also store the angle that the robot should face.
         """
         if self.pos.direction == Direction.TOP:
-            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM, -math.pi / 2)
+            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM)
         elif self.pos.direction == Direction.BOTTOM:
-            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP, math.pi / 2)
+            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP)
         elif self.pos.direction == Direction.LEFT:
-            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT, 0)
+            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT)
         else:
-            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT, math.pi)
+            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.
