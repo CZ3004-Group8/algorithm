@@ -55,7 +55,9 @@ class Grid:
             for col in row:
                 new_row.append(col.copy())
             nodes.append(new_row)
-        return nodes
+        new_grid = Grid(self.obstacles)
+        new_grid.nodes = nodes
+        return new_grid
 
     def check_valid_position(self, pos: Position):
         """
@@ -72,17 +74,6 @@ class Grid:
                  pos.x > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE):
             return False
         return True
-
-    def get_neighbours(self, pos: Position):
-        """
-        Get movement neighbours from this position.
-        """
-        # We assume the robot will always make a full 90-degree turn to the next neighbour, and that it will travel
-        # a fix distance of 10 when travelling straight.
-        neighbours = []
-        # TODO: Check travel straight, including turns.
-        # TODO: Check travel backwards, including turns.
-        return neighbours
 
     @classmethod
     def draw_arena_borders(cls, screen):

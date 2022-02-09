@@ -5,15 +5,13 @@ from algorithm.entities.grid.position import Position
 
 
 class StraightCommand(Command):
-    COMMAND_TYPE = "straight"
-
     def __init__(self, dist):
         """
         Specified distance is scaled. Do not divide the provided distance by the scaling factor!
         """
         # Calculate the time needed to travel the required distance.
         time = abs(dist / settings.ROBOT_SPEED_PER_SECOND)
-        super().__init__(self.COMMAND_TYPE, time)
+        super().__init__(time)
 
         self.dist = dist
 

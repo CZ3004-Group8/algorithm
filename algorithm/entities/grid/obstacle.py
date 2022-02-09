@@ -3,7 +3,7 @@ import pygame
 from algorithm import settings
 from algorithm.entities.assets import colors
 from algorithm.entities.assets.direction import Direction
-from algorithm.entities.grid.position import Position
+from algorithm.entities.grid.position import Position, RobotPosition
 
 
 class Obstacle:
@@ -66,13 +66,13 @@ class Obstacle:
         The object will also store the angle that the robot should face.
         """
         if self.pos.direction == Direction.TOP:
-            return Position(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM)
+            return RobotPosition(self.pos.x, self.pos.y + settings.OBSTACLE_SAFETY_WIDTH, Direction.BOTTOM)
         elif self.pos.direction == Direction.BOTTOM:
-            return Position(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP)
+            return RobotPosition(self.pos.x, self.pos.y - settings.OBSTACLE_SAFETY_WIDTH, Direction.TOP)
         elif self.pos.direction == Direction.LEFT:
-            return Position(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT)
+            return RobotPosition(self.pos.x - settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.RIGHT)
         else:
-            return Position(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT)
+            return RobotPosition(self.pos.x + settings.OBSTACLE_SAFETY_WIDTH, self.pos.y, Direction.LEFT)
 
     def draw_self(self, screen):
         # Draw the obstacle onto the grid.

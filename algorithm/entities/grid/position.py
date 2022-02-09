@@ -41,3 +41,14 @@ class Position:
         Create a new copy of this Position.
         """
         return Position(self.x, self.y, self.direction)
+
+
+class RobotPosition(Position):
+    def __init__(self, x, y, direction: Direction = None, angle=None):
+        super().__init__(x, y, direction)
+        self.angle = angle
+        if direction is not None:
+            self.angle = direction.value
+
+    def copy(self):
+        return RobotPosition(self.x, self.y, self.direction, self.angle)

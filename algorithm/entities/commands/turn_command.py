@@ -1,21 +1,20 @@
 import math
 
 from algorithm import settings
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.commands.command import Command
-from algorithm.entities.grid.position import Position
+from algorithm.entities.grid.position import Position, RobotPosition
 
 
 class TurnCommand(Command):
-    COMMAND_TYPE = "turn"
-
     def __init__(self, angle, rev):
         """
-        Angle to turn and whether the turn is done in reverse or not.
+        Angle to turn and whether the turn is done in reverse or not. Note that this is in degrees.
 
         Note that negative angles will always result in the robot being rotated clockwise.
         """
         time = abs((angle * settings.ROBOT_LENGTH) / (settings.ROBOT_SPEED_PER_SECOND * settings.ROBOT_S_FACTOR))
-        super().__init__(self.COMMAND_TYPE, time)
+        super().__init__(time)
 
         self.angle = angle
         self.rev = rev
@@ -46,9 +45,13 @@ class TurnCommand(Command):
 
         Note that ∆θ is in radians.
         """
+        assert isinstance(curr_pos, RobotPosition), print("Cannot apply turn command on non-robot positions!")
+
         # Get change in (x, y) coordinate.
-        x_change = settings.ROBOT_TURN_RADIUS * (math.sin(curr_pos.angle + self.angle) - math.sin(curr_pos.angle))
-        y_change = settings.ROBOT_TURN_RADIUS * (math.cos(curr_pos.angle + self.angle) - math.cos(curr_pos.angle))
+        x_change = settings.ROBOT_TURN_RADIUS * (math.sin(math.radians(curr_pos.angle + self.angle)) -
+                                                 math.sin(math.radians(curr_pos.angle)))
+        y_change = settings.ROBOT_TURN_RADIUS * (math.cos(math.radians(curr_pos.angle + self.angle)) -
+                                                 math.cos(math.radians(curr_pos.angle)))
 
         if self.angle < 0 and not self.rev:  # Wheels to right moving forward.
             curr_pos.x -= x_change
@@ -62,11 +65,18 @@ class TurnCommand(Command):
             curr_pos.y -= y_change
         curr_pos.angle += self.angle
 
-        if curr_pos.angle <= -math.pi:
-            curr_pos.angle += 2 * math.pi
-        elif curr_pos.angle >= math.pi:
-            curr_pos.angle -= 2 * math.pi
+        if curr_pos.angle < -180:
+            curr_pos.angle += 2 * 180
+        elif curr_pos.angle >= 180:
+            curr_pos.angle -= 2 * 180
 
         # Update the Position's direction.
-        curr_pos.direction = curr_pos.direction.get_direction(curr_pos.angle)
+        if 3 * 45 <= curr_pos.angle <= 45:
+            curr_pos.direction = Direction.TOP
+        elif -45 < curr_pos.angle < 45:
+            curr_pos.direction = Direction.RIGHT
+        elif -45 * 3 <= curr_pos.angle <= -45:
+            curr_pos.direction = Direction.BOTTOM
+        else:
+            curr_pos.direction = Direction.LEFT
         return self

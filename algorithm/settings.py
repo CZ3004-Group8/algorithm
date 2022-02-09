@@ -23,4 +23,4 @@ GRID_NUM_GRIDS = GRID_LENGTH // GRID_CELL_LENGTH
 
 # Obstacle Attributes
 OBSTACLE_LENGTH = 10 * SCALING_FACTOR
-OBSTACLE_SAFETY_WIDTH = ROBOT_SAFETY_DISTANCE // 3 * 4   # With respect to the center of the obstacle
+OBSTACLE_SAFETY_WIDTH = ROBOT_SAFETY_DISTANCE // 3 * 4  # With respect to the center of the obstacle
