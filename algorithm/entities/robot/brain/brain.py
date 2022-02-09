@@ -52,6 +52,4 @@ class Brain:
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")
-            AStar(self.grid, self, curr, target).start_astar()
-            curr = target
-            break
+            curr = AStar(self.grid, self, curr, target).start_astar()

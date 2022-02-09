@@ -97,7 +97,9 @@ class AStar:
             # If the current node is our goal.
             if current_node == goal_node:
                 print(f"Found path to {self.end}!")
-                break
+                # Get the commands needed to get to destination.
+                self.extract_commands(backtrack, goal_node)
+                return current_position
 
             # Otherwise, we check through all possible locations that we can
             # travel to from this node.
@@ -110,9 +112,6 @@ class AStar:
                     frontier.put((priority, time.time(), (new_node, new_pos)))
                     backtrack[new_node] = (current_node, c)
                     cost[new_node] = new_cost
-
-        # Get the commands needed to get to destination.
-        self.extract_commands(backtrack, goal_node)
 
     def extract_commands(self, backtrack, goal_node):
         """
