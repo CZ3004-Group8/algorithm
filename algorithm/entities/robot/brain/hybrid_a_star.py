@@ -39,17 +39,19 @@ class AStar:
         start_node: Node = self.grid.get_coordinate_node(*self.start.xy())
         start_node.direction = self.start.direction  # Make the node know which direction the robot is facing.
 
-        frontier.put((0, start_node))
-        backtrack[start_node] = None  # Having None as the value means this key is the starting node.
+        start_pair = (start_node, self.start)
+        frontier.put((0, start_pair))
+        backtrack[start_pair] = None  # Having None as the value means this key is the starting node.
 
         while not frontier.empty():  # While there are still nodes to process.
             # Get the highest priority node.
-            current_node = frontier.get()
+            current_node, current_position = frontier.get()
 
-            # If the current node is our goal, then we return.
+            # If the current node is our goal.
             if current_node == goal_node:
                 break
 
             # Otherwise, we check through all possible locations that we can
             # travel to from this node.
-            pass
+            for nnode, npos in self.grid.get_neighbours(current_position):
+                pass

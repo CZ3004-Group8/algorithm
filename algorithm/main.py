@@ -1,5 +1,5 @@
 from algorithm.app import AlgoSimulator
-from algorithm.entities.assets.Direction import Direction
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.grid.obstacle import Obstacle
 
 if __name__ == '__main__':

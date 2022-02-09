@@ -47,8 +47,7 @@ class Brain:
     def plan_path(self):
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
 
-        curr = self.robot.pos  # Remember that the robot's position has no Direction.
-
+        curr = self.robot.pos.copy()  # We use a copy rather than get a reference.
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")

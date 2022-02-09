@@ -1,5 +1,5 @@
 from algorithm import settings
-from algorithm.entities.assets.Direction import Direction
+from algorithm.entities.assets.direction import Direction
 
 
 class Position:
@@ -26,6 +26,9 @@ class Position:
         Return the true x, y coordinates of the current Position.
         """
         return self.x, self.y
+
+    def xy_dir(self):
+        return *self.xy(), self.direction
 
     def xy_pygame(self):
         """

@@ -2,7 +2,7 @@ import pygame
 
 from algorithm import settings
 from algorithm.entities.assets import colors
-from algorithm.entities.assets.Direction import Direction
+from algorithm.entities.assets.direction import Direction
 from algorithm.entities.grid.position import Position
 
 

@@ -1,3 +1,4 @@
+import math
 from collections import deque
 from typing import List
 
@@ -7,6 +8,7 @@ from algorithm import settings
 from algorithm.entities.assets import colors
 from algorithm.entities.grid.node import Node
 from algorithm.entities.grid.obstacle import Obstacle
+from algorithm.entities.grid.position import Position
 
 
 class Grid:
@@ -14,7 +16,8 @@ class Grid:
         self.obstacles = obstacles
         self.nodes = self.generate_nodes()
 
-    def generate_nodes(self):
+    @classmethod
+    def generate_nodes(cls):
         """
         Generate the nodes for this grid.
         """
@@ -24,13 +27,7 @@ class Grid:
             for j in range(settings.GRID_NUM_GRIDS):
                 x, y = (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * j), \
                        (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * i)
-                # Check if the current node falls within the boundary of a Node or if it is close to the border.
-                occupied = any(obstacle.check_within_boundary(x, y) for obstacle in self.obstacles) or \
-                    (y < settings.ROBOT_SAFETY_DISTANCE or
-                     y > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE) or \
-                    (x < settings.ROBOT_SAFETY_DISTANCE or
-                     x > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE)
-                row.append(Node(x, y, occupied))
+                row.append(Node(x, y))
             nodes.appendleft(row)
         return nodes
 
@@ -40,11 +37,13 @@ class Grid:
 
         Note that the x-y coordinates are in terms of the grid, and must be scaled properly.
         """
-        rows = settings.GRID_NUM_GRIDS
-
-        col_num = round(x / settings.GRID_CELL_LENGTH)
-        row_num = rows - round(y / settings.GRID_CELL_LENGTH)
-        return self.nodes[row_num][col_num]
+        col_num = math.floor(x / settings.GRID_CELL_LENGTH)
+        row_num = settings.GRID_NUM_GRIDS - math.floor(y / settings.GRID_CELL_LENGTH)
+        try:
+            return self.nodes[row_num][col_num]
+        except IndexError:
+            print("Out of arena!")
+            return None
 
     def copy(self):
         """
@@ -58,8 +57,32 @@ class Grid:
             nodes.append(new_row)
         return nodes
 
-    def get_neighbours(self, node):
-        pass
+    def check_valid_position(self, pos: Position):
+        """
+        Check if a current position can be here.
+        """
+        # Check if position is inside any obstacle.
+        if any(obstacle.check_within_boundary(*pos.xy()) for obstacle in self.obstacles):
+            return False
+
+        # Check if position too close to the border
+        if (pos.y < settings.ROBOT_SAFETY_DISTANCE or
+            pos.y > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE) or \
+                (pos.x < settings.ROBOT_SAFETY_DISTANCE or
+                 pos.x > settings.GRID_LENGTH - settings.ROBOT_SAFETY_DISTANCE):
+            return False
+        return True
+
+    def get_neighbours(self, pos: Position):
+        """
+        Get movement neighbours from this position.
+        """
+        # We assume the robot will always make a full 90-degree turn to the next neighbour, and that it will travel
+        # a fix distance of 10 when travelling straight.
+        neighbours = []
+        # TODO: Check travel straight, including turns.
+        # TODO: Check travel backwards, including turns.
+        return neighbours
 
     @classmethod
     def draw_arena_borders(cls, screen):
