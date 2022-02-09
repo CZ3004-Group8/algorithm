@@ -53,8 +53,7 @@ class AStar:
         for c in straight_commands:
             p = pos.copy()
             c.apply_on_pos(p)
-            after = self.grid.get_coordinate_node(*p.xy())
-            if after:
+            if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
                 neighbours.append((after, p, straight_dist))
 
         # Check turns
@@ -69,7 +68,7 @@ class AStar:
             p = pos.copy()
             c.apply_on_pos(p)
             after = self.grid.get_coordinate_node(*p.xy())
-            if after:
+            if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
                 neighbours.append((after, p, turn_penalty))
         return neighbours
 
