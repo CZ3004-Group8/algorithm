@@ -12,7 +12,7 @@ from algorithm.entities.grid.node import Node
 from algorithm.entities.grid.position import RobotPosition
 
 
-class AStar:
+class ModifiedAStar:
     def __init__(self, grid, brain, start: RobotPosition, end: RobotPosition):
         # We use a copy of the grid rather than use a reference
         # to the exact grid.

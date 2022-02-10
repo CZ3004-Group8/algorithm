@@ -5,7 +5,7 @@ from typing import Tuple
 
 from algorithm.entities.commands.scan_command import ScanCommand
 from algorithm.entities.grid.obstacle import Obstacle
-from algorithm.entities.robot.brain.hybrid_a_star import AStar
+from algorithm.entities.robot.brain.mod_a_star import ModifiedAStar
 
 
 class Brain:
@@ -56,7 +56,7 @@ class Brain:
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} to {target}")
-            res = AStar(self.grid, self, curr, target).start_astar()
+            res = ModifiedAStar(self.grid, self, curr, target).start_astar()
             if res is None:
                 print(f"\tNo path found from {curr} to {obstacle}")
             else:
