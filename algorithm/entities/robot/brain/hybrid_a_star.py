@@ -71,8 +71,9 @@ class AStar:
         p = p.copy()
         if isinstance(command, TurnCommand):
             p_c = p.copy()
-            for tick in range(command.ticks):
-                tick_command = TurnCommand(command.angle / command.ticks, command.rev)
+            for tick in range(command.ticks // settings.PATH_TURN_CHECK_GRANULARITY):
+                tick_command = TurnCommand(command.angle / (command.ticks // settings.PATH_TURN_CHECK_GRANULARITY),
+                                           command.rev)
                 tick_command.apply_on_pos(p_c)
                 if not (self.grid.check_valid_position(p_c) and self.grid.get_coordinate_node(*p_c.xy())):
                     return None, None
