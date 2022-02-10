@@ -6,11 +6,11 @@ if __name__ == '__main__':
     # Fill in obstacle positions with respect to lower bottom left corner.
     # (x-coordinate, y-coordinate, Direction)
     obs = [
-        Obstacle(155, 155, Direction.BOTTOM),
-        Obstacle(55, 30, Direction.RIGHT),
-        Obstacle(55, 155, Direction.LEFT),
-        Obstacle(155, 55, Direction.TOP),
-        Obstacle(100, 100, Direction.TOP)
+        Obstacle(115, 45, Direction.LEFT),
+        Obstacle(25, 95, Direction.BOTTOM),
+        Obstacle(35, 175, Direction.BOTTOM),
+        Obstacle(155, 165, Direction.LEFT),
+        Obstacle(175, 85, Direction.LEFT),
     ]
 
     app = AlgoSimulator(obs)

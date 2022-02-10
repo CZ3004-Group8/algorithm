@@ -53,5 +53,9 @@ class Brain:
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")
-            curr = AStar(self.grid, self, curr, target).start_astar()
-            self.commands.append(ScanCommand(2))
+            res = AStar(self.grid, self, curr, target).start_astar()
+            if res is None:
+                print(f"No path found from {curr} to {obstacle}")
+            else:
+                curr = res
+                self.commands.append(ScanCommand(2))

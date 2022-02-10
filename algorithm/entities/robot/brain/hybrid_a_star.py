@@ -112,6 +112,9 @@ class AStar:
                     frontier.put((priority, time.time(), (new_node, new_pos)))
                     backtrack[new_node] = (current_node, c)
                     cost[new_node] = new_cost
+        # If we are here, means that there was no path that we could find.
+        # We return None to show that we cannot find a path.
+        return None
 
     def extract_commands(self, backtrack, goal_node):
         """
