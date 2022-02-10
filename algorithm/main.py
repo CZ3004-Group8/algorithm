@@ -6,9 +6,9 @@ if __name__ == '__main__':
     # Fill in obstacle positions with respect to lower bottom left corner.
     # (x-coordinate, y-coordinate, Direction)
     obs = [
-        Obstacle(20, 80, Direction.RIGHT),
-        Obstacle(100, 30, Direction.TOP),
-        Obstacle(185, 105, Direction.LEFT),
+        Obstacle(55, 85, Direction.RIGHT),
+        Obstacle(105, 35, Direction.TOP),
+        Obstacle(135, 105, Direction.RIGHT),
         Obstacle(185, 185, Direction.LEFT),
         Obstacle(65, 175, Direction.LEFT),
     ]

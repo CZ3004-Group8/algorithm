@@ -47,7 +47,7 @@ class AStar:
                 neighbours.append((after, p, straight_dist, c))
 
         # Check turns
-        turn_penalty = 2 * settings.ROBOT_TURN_RADIUS
+        turn_penalty = settings.PATH_TURN_COST
         turn_commands = [
             TurnCommand(90, False),  # Forward right turn
             TurnCommand(-90, False),  # Forward left turn
@@ -67,8 +67,15 @@ class AStar:
 
         If invalid, we return None for both the resulting grid location and the resulting position.
         """
-        # TODO : Check specifically for validity of turn command.
+        # Check specifically for validity of turn command.
         p = p.copy()
+        if isinstance(command, TurnCommand):
+            p_c = p.copy()
+            for tick in range(command.ticks):
+                tick_command = TurnCommand(command.angle / command.ticks, command.rev)
+                tick_command.apply_on_pos(p_c)
+                if not (self.grid.check_valid_position(p_c) and self.grid.get_coordinate_node(*p_c.xy())):
+                    return None, None
         command.apply_on_pos(p)
         if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
             after.pos.direction = p.direction
