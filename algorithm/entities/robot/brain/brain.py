@@ -3,6 +3,7 @@ import math
 from collections import deque
 from typing import Tuple
 
+from algorithm.entities.commands.scan_command import ScanCommand
 from algorithm.entities.grid.obstacle import Obstacle
 from algorithm.entities.robot.brain.hybrid_a_star import AStar
 
@@ -53,3 +54,4 @@ class Brain:
             target = obstacle.get_robot_target_pos()
             print(f"Planning {curr} against {target}")
             curr = AStar(self.grid, self, curr, target).start_astar()
+            self.commands.append(ScanCommand(2))
