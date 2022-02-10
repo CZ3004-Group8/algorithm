@@ -41,11 +41,10 @@ class AStar:
             StraightCommand(-straight_dist)
         ]
         for c in straight_commands:
-            p = pos.copy()
-            c.apply_on_pos(p)
-            if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
-                after.pos.direction = p.direction
-                neighbours.append((after.copy(), p, straight_dist, c))
+            # Check if doing this command does not bring us to any invalid position.
+            after, p = self.check_valid_command(c, pos)
+            if after:
+                neighbours.append((after, p, straight_dist, c))
 
         # Check turns
         turn_penalty = 2 * settings.ROBOT_TURN_RADIUS
@@ -56,13 +55,25 @@ class AStar:
             TurnCommand(-90, True),  # Reverse with wheels to left.
         ]
         for c in turn_commands:
-            p = pos.copy()
-            c.apply_on_pos(p)
-            # TODO: Check that turning does not cause position to go into invalid positions.
-            if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
-                after.pos.direction = p.direction
-                neighbours.append((after.copy(), p, turn_penalty, c))
+            # Check if doing this command does not bring us to any invalid position.
+            after, p = self.check_valid_command(c, pos)
+            if after:
+                neighbours.append((after, p, turn_penalty, c))
         return neighbours
+
+    def check_valid_command(self, command: Command, p: RobotPosition):
+        """
+        Checks if a command will bring a point into any invalid position.
+
+        If invalid, we return None for both the resulting grid location and the resulting position.
+        """
+        # TODO : Check specifically for validity of turn command.
+        p = p.copy()
+        command.apply_on_pos(p)
+        if self.grid.check_valid_position(p) and (after := self.grid.get_coordinate_node(*p.xy())):
+            after.pos.direction = p.direction
+            return after.copy(), p
+        return None, None
 
     def heuristic(self, curr_pos: RobotPosition):
         """
