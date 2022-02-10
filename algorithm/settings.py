@@ -1,7 +1,7 @@
 # PyGame settings
 SCALING_FACTOR = 4
 FRAMES = 60
-WINDOW_SIZE = 1200, 1200
+WINDOW_SIZE = 800, 800
 
 # Connection to RPi
 HOST: str = "192.168.8.8"
@@ -26,4 +26,4 @@ OBSTACLE_LENGTH = 10 * SCALING_FACTOR
 OBSTACLE_SAFETY_WIDTH = ROBOT_SAFETY_DISTANCE // 3 * 4  # With respect to the center of the obstacle
 
 # Path Finding Attributes
-PATH_TURN_COST = 2 * ROBOT_TURN_RADIUS
+PATH_TURN_COST = 10 * ROBOT_TURN_RADIUS

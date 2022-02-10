@@ -69,7 +69,19 @@ class AlgoSimulator:
         Initialise the app and start the game loop.
         """
         self.init()
+
+        # Inform user that it is finding path...
+        pygame.display.set_caption("Calculating path...")
+        font = pygame.font.SysFont("arial", 35)
+        text = font.render("Calculating path...", True, colors.WHITE)
+        text_rect = text.get_rect()
+        text_rect.center = settings.WINDOW_SIZE[0] / 2, settings.WINDOW_SIZE[1] / 2
+        self.screen.blit(text, text_rect)
+        pygame.display.flip()
+
+        # Calculate the path.
         self.robot.brain.plan_path()
+        pygame.display.set_caption("Simulating path!")  # Update the caption once done.
 
         while self.running:
             # Check for Pygame events.
