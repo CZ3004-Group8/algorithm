@@ -107,7 +107,6 @@ class AStar:
             priority, _, (current_node, current_position) = frontier.get()
             # If the current node is our goal.
             if current_node == goal_node:
-                print(f"Found path to {self.end}!")
                 # Get the commands needed to get to destination.
                 self.extract_commands(backtrack, goal_node)
                 return current_position

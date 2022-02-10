@@ -16,8 +16,7 @@ class Grid:
         self.obstacles = obstacles
         self.nodes = self.generate_nodes()
 
-    @classmethod
-    def generate_nodes(cls):
+    def generate_nodes(self):
         """
         Generate the nodes for this grid.
         """
@@ -27,7 +26,8 @@ class Grid:
             for j in range(settings.GRID_NUM_GRIDS):
                 x, y = (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * j), \
                        (settings.GRID_CELL_LENGTH // 2 + settings.GRID_CELL_LENGTH * i)
-                row.append(Node(x, y))
+                new_node = Node(x, y, not self.check_valid_position(Position(x, y)))
+                row.append(new_node)
             nodes.appendleft(row)
         return nodes
 

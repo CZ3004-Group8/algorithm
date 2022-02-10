@@ -6,11 +6,12 @@ from algorithm.entities.grid.position import Position
 
 
 class Node:
-    def __init__(self, x, y, direction=None):
+    def __init__(self, x, y, occupied, direction=None):
         """
         x and y coordinates are in terms of the grid.
         """
         self.pos = Position(x, y, direction)
+        self.occupied = occupied
 
     def __str__(self):
         return f"Node({self.pos})"
@@ -27,7 +28,13 @@ class Node:
         """
         Return a copy of this node.
         """
-        return Node(self.pos.x, self.pos.y, self.pos.direction)
+        return Node(self.pos.x, self.pos.y, self.occupied, self.pos.direction)
+
+    def draw_self(self, screen):
+        if self.occupied:  # If current node is not permissible to the robot
+            rect = pygame.Rect(0, 0, settings.GRID_CELL_LENGTH, settings.GRID_CELL_LENGTH)
+            rect.center = self.pos.xy_pygame()
+            pygame.draw.rect(screen, colors.ORANGE, rect)
 
     def draw_boundary(self, screen):
         x_pygame, y_pygame = self.pos.xy_pygame()
@@ -44,5 +51,7 @@ class Node:
         pygame.draw.line(screen, colors.GREY, (left, bottom), (right, bottom))  # Bottom border
 
     def draw(self, screen):
+        # Draw self
+        self.draw_self(screen)
         # Draw node border
         self.draw_boundary(screen)

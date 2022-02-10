@@ -47,15 +47,20 @@ class Brain:
         return simple
 
     def plan_path(self):
+        print("-" * 40)
+        print("STARTING PATH COMPUTATION...")
         self.simple_hamiltonian = self.compute_simple_hamiltonian_path()
+        print()
 
         curr = self.robot.pos.copy()  # We use a copy rather than get a reference.
         for obstacle in self.simple_hamiltonian:
             target = obstacle.get_robot_target_pos()
-            print(f"Planning {curr} against {target}")
+            print(f"Planning {curr} to {target}")
             res = AStar(self.grid, self, curr, target).start_astar()
             if res is None:
-                print(f"No path found from {curr} to {obstacle}")
+                print(f"\tNo path found from {curr} to {obstacle}")
             else:
+                print("\tPath found.")
                 curr = res
                 self.commands.append(ScanCommand(2))
+        print("-" * 40)
